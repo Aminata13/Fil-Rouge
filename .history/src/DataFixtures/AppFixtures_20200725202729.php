@@ -16,7 +16,7 @@ class AppFixtures extends Fixture
 
         for ($i=0; $i < 3; $i++) { 
             $profil = new UserProfils();
-            $profil->setLibelle($faker->unique()->randomElement(['Adminn', 'Formateur', 'CM']));
+            $profil->setLibelle($faker->unique()->randomElement(['Admin', 'Formateur', 'CM']));
 
             $manager->persist($profil);
 
