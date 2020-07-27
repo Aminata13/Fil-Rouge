@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
+use App\Controller\ApprenantController;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -11,14 +12,26 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ApiResource(iri="http://schema.org/Users",
+ *  routePrefix="/admin",
  *  collectionOperations={
- *      "get",
- *      "add_user" = {
- *          "method"="POST",
- *          "path"="/users",
- *          "route_name"="add_user"
+ *      "get"={"access_control"="(is_granted('ROLE_ADMIN'))"},
+ *      "show_apprenants"={
+ *         "method"="GET",
+ *         "path"="/apprenants",
+ *         "controller"=ApprenantController::class,
+ *         "access_control"="(is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
+ *         "route_name"="apprenant_liste"
+ *     }
+ *  },
+ *  subresourceOperations={
+ *      "api_user_profils_users_get_subresource"={
+ *          "access_control"="(is_granted('ROLE_ADMIN'))"
  *      }
- *  }
+ *  },
+ *  itemOperations={
+ *      "get"={"access_control"="(is_granted('ROLE_ADMIN'))"}, 
+ *      "put"={"access_control"="(is_granted('ROLE_ADMIN'))"}
+ * }
  * )
  * @UniqueEntity(
  * fields={"username"},
@@ -106,7 +119,7 @@ class User implements UserInterface
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_'.strtoupper($this->profil->getLibelle());;
+        $roles[] = 'ROLE_'.strtoupper($this->profil->getLibelle());
 
         return array_unique($roles);
     }
@@ -188,7 +201,7 @@ class User implements UserInterface
 
     public function getAvatar(): ?string
     {
-        return $this->avatar;
+        return stream_get_contents($this->avatar);
     }
 
     public function setAvatar(?string $avatar): self

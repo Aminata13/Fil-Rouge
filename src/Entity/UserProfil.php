@@ -22,11 +22,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *      "security"="is_granted('ROLE_ADMIN')",
  *      "security_message"="Vous n'avez pas accès à cette ressource."
  *  },
- *  itemOperations={"get","put","patch"}
+ *  itemOperations={"get", "put"}
  * )
  * @UniqueEntity(
  * fields={"libelle"},
- * message="Le libelle doit être unique."
+ * message="Le libelle existe déjà."
  * )
  */
 class UserProfil
