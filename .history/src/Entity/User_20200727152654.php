@@ -2,16 +2,30 @@
 
 namespace App\Entity;
 
-use App\Repository\UsersRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
+use App\Repository\UserRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * @ORM\Entity(repositoryClass=UsersRepository::class)
- * @ApiResource(iri="http://schema.org/Users")
+ * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @ApiResource(iri="http://schema.org/Users",
+ *  collectionOperations={
+ *      "get",
+ *      "add_user" = {
+ *          "method"="POST",
+ *          "path"="/users",
+ *          
+ *          "route_name"="add_user"
+ *      }
+ *  }
+ * )
+ * @UniqueEntity(
+ * fields={"username"},
+ * message="Le username doit être unique.")
  */
-class Users implements UserInterface
+class User implements UserInterface
 {
     /**
      * @ORM\Id()
@@ -25,9 +39,6 @@ class Users implements UserInterface
      */
     private $username;
 
-    /**
-     * @ORM\Column(type="json")
-     */
     private $roles = [];
 
     /**
@@ -52,15 +63,20 @@ class Users implements UserInterface
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="blob", nullable=true)
      */
     private $avatar;
 
     /**
-     * @ORM\ManyToOne(targetEntity=UserProfils::class, inversedBy="users")
+     * @ORM\ManyToOne(targetEntity=UserProfil::class, inversedBy="users", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $profil;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $deleted=false;
 
     public function getId(): ?int
     {
@@ -91,7 +107,7 @@ class Users implements UserInterface
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        $roles[] = 'ROLE_'.strtoupper($this->profil->getLibelle());;
 
         return array_unique($roles);
     }
@@ -178,19 +194,31 @@ class Users implements UserInterface
 
     public function setAvatar(?string $avatar): self
     {
-        $this->avatar = $avatar;
+        $this->avatar = base64_encode($avatar);
 
         return $this;
     }
 
-    public function getProfil(): ?UserProfils
+    public function getProfil(): ?UserProfil
     {
         return $this->profil;
     }
 
-    public function setProfil(?UserProfils $profil): self
+    public function setProfil(?UserProfil $profil): self
     {
         $this->profil = $profil;
+
+        return $this;
+    }
+
+    public function getDeleted(): ?bool
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(bool $deleted): self
+    {
+        $this->deleted = $deleted;
 
         return $this;
     }
