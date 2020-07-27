@@ -15,7 +15,7 @@ class AppFixtures extends Fixture
 
     public function __construct(UserPasswordEncoderInterface $encode)
     {
-        $this->encode = $encode ;
+        
     }
     public function load(ObjectManager $manager)
     {
@@ -32,7 +32,7 @@ class AppFixtures extends Fixture
             $user->setLastname($faker->lastName);
             $user->setEmail($faker->email);
             $user->setUsername($faker->unique()->userName);
-            $user->setPassword($this->encode->encodePassword($user,"password"));
+            $user->setPassword($faker->password);
             $user->setProfil($profil);
 
             $manager->persist($user);

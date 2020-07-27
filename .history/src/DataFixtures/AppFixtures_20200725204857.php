@@ -32,7 +32,7 @@ class AppFixtures extends Fixture
             $user->setLastname($faker->lastName);
             $user->setEmail($faker->email);
             $user->setUsername($faker->unique()->userName);
-            $user->setPassword($this->encode->encodePassword($user,"password"));
+            $user->setPassword($this->encode->encodePassword($user,""));
             $user->setProfil($profil);
 
             $manager->persist($user);
