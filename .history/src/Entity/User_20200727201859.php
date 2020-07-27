@@ -201,8 +201,8 @@ class User implements UserInterface
 
     public function getAvatar(): ?string
     {
-        
-        return $this->avatar!=null ? stream_get_contents($this->avatar) : null;
+        if
+        return stream_get_contents($this->avatar);
     }
 
     public function setAvatar(?string $avatar): self
