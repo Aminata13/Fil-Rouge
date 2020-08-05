@@ -2,12 +2,15 @@
 
 namespace App\Entity;
 
+
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use App\Controller\ApprenantController;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -21,7 +24,19 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *         "controller"=ApprenantController::class,
  *         "access_control"="(is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
  *         "route_name"="apprenant_liste"
- *     }
+ *     },
+ *      "show_formateurs"={
+ *         "method"="GET",
+ *         "path"="/formateurs",
+ *         "controller"=FormateurController::class,
+ *         "access_control"="(is_granted('ROLE_CM'))",
+ *         "route_name"="formateur_liste"
+ *     },
+ *      "add_user" = {
+ *          "method"="POST",
+ *          "path"="/admin/users",
+ *          "route_name"="add_user"
+ *      }
  *  },
  *  subresourceOperations={
  *      "api_user_profils_users_get_subresource"={
@@ -30,7 +45,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *  },
  *  itemOperations={
  *      "get"={"access_control"="(is_granted('ROLE_ADMIN'))"}, 
- *      "put"={"access_control"="(is_granted('ROLE_ADMIN'))"}
+ *      "put"={"access_control"="(is_granted('ROLE_ADMIN'))"},
+ *      "show_formateur"={
+ *          "method"="GET",
+ *          "path"="/formateurs/{id}",
+ *          "security"="is_granted('USER_VIEW', object)",
+ *          "security_message"="Vous n'avez pas accès à ces informations."
+ *      }
  * }
  * )
  * @UniqueEntity(
@@ -48,6 +69,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Assert\NotBlank(message="Le nom d'utilisateur est obligatoire.")
      */
     private $username;
 
@@ -56,32 +78,39 @@ class User implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(message="Le mot de passe est obligatoire.")
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Le prénom est obligatoire.")
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Le nom est obligatoire.")
      */
     private $lastname;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="L'adresse mail est obligatoire.")
+     * @Assert\Email(message="L'adresse mail est invalide")
      */
     private $email;
 
     /**
      * @ORM\Column(type="blob", nullable=true)
+     * @Assert\NotBlank(message="L'avatar est obligatoire.")
      */
     private $avatar;
 
     /**
      * @ORM\ManyToOne(targetEntity=UserProfil::class, inversedBy="users", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotBlank(message="Le profil est obligatoire.")
      */
     private $profil;
 
@@ -202,7 +231,7 @@ class User implements UserInterface
     public function getAvatar(): ?string
     {
         
-        return $this->avatar!=null ? stream_get_contents($this->avatar) : null;
+        return $this->avatar!=null?stream_get_contents($this->avatar):null;
     }
 
     public function setAvatar(?string $avatar): self

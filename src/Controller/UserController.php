@@ -30,6 +30,9 @@ class UserController extends AbstractController
         }
 
         $userTab = $request->request->all();
+        if (empty($userTab['profil'])) {
+            return new JsonResponse("Le profil est obligatoire", Response::HTTP_BAD_REQUEST, [], true);
+        }
         $profilId = explode("/", $userTab['profil'])[2];
         $profil = $repo->find($profilId);
         unset($userTab['profil']);
@@ -38,6 +41,9 @@ class UserController extends AbstractController
         $user->setPassword($encoder->encodePassword($user, $userTab['password']));
 
         $avatar = $request->files;
+        if (is_null($avatar->get('avatar'))) {
+            return new JsonResponse("L'avatar est obligatoire", Response::HTTP_BAD_REQUEST, [], true);
+        }
         $avatarType = explode("/", $avatar->get('avatar')->getMimeType())[1];
         $avatarPath = $avatar->get('avatar')->getRealPath();
         
@@ -46,6 +52,7 @@ class UserController extends AbstractController
         
         $errors = $validator->validate($user);
         if (($errors)>0) {
+            dd('ok');
             $errorsString = $serializer->serialize($errors, 'json');
             return new JsonResponse($errorsString, Response::HTTP_BAD_REQUEST, [], true);
         }
