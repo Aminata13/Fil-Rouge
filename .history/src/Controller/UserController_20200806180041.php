@@ -21,12 +21,12 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class UserController extends AbstractController
 {
     /**
-     * @Route("/admin/users", name="add_user", methods="POST")
-     */
+    * @Route("/admin/users", name="add_user", methods="POST")
+    */
     public function addUser(SerializerInterface $serializer, Request $request, ValidatorInterface $validator, EntityManagerInterface $em, UserProfilRepository $repo, UserPasswordEncoderInterface $encoder)
     {
         $currentUser = $this->getUser();
-        if (!in_array("ROLE_ADMIN", $currentUser->getRoles())) {
+        if(!in_array("ROLE_ADMIN", $currentUser->getRoles())){
             return new JsonResponse('Vous n\'avez pas accès à cette ressource.', Response::HTTP_FORBIDDEN, [], true);
         }
 
@@ -38,7 +38,7 @@ class UserController extends AbstractController
         $profil = $repo->find($profilId);
 
         $libelle = $profil->getLibelle();
-        $object = "";
+        $object= "";
         if ($libelle == "APPRENANT") {
             $object = new Apprenant();
         }
@@ -53,12 +53,12 @@ class UserController extends AbstractController
         }
         $avatarType = explode("/", $avatar->get('avatar')->getMimeType())[1];
         $avatarPath = $avatar->get('avatar')->getRealPath();
-
-        $image = file_get_contents($avatarPath, 'img/img.' . $avatarType);
+        
+        $image = file_get_contents($avatarPath, 'img/img.'.$avatarType);
         $user->setAvatar($image);
-
+        
         $errors = $validator->validate($user);
-        if (($errors) > 0) {
+        if (($errors)>0) {
             dd('ok');
             $errorsString = $serializer->serialize($errors, 'json');
             return new JsonResponse($errorsString, Response::HTTP_BAD_REQUEST, [], true);
@@ -66,10 +66,10 @@ class UserController extends AbstractController
         $object->setUser($user);
         if ($object != "") {
             $em->persist($user);
-            $em->persist($object);
-            $em->flush();
+        $em->persist($object);
+        $em->flush();
         }
-
+        
         return new JsonResponse('success', Response::HTTP_CREATED, [], true);
     }
 }
