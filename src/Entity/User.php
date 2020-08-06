@@ -15,9 +15,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ApiResource(iri="http://schema.org/Users",
- *  routePrefix="/admin",
  *  collectionOperations={
- *      "get"={"access_control"="(is_granted('ROLE_ADMIN'))"},
+ *      "get"={
+ *          "path"="/admin/users",
+ *          "access_control"="(is_granted('ROLE_ADMIN'))"
+ *      },
  *      "show_apprenants"={
  *         "method"="GET",
  *         "path"="/apprenants",
@@ -44,13 +46,37 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *      }
  *  },
  *  itemOperations={
- *      "get"={"access_control"="(is_granted('ROLE_ADMIN'))"}, 
- *      "put"={"access_control"="(is_granted('ROLE_ADMIN'))"},
+ *      "get"={
+ *          "path"="/admin/users/{id}",
+ *          "access_control"="(is_granted('ROLE_ADMIN'))"
+ *      }, 
  *      "show_formateur"={
  *          "method"="GET",
  *          "path"="/formateurs/{id}",
- *          "security"="is_granted('USER_VIEW', object)",
+ *          "security"="is_granted('FORMATEUR_VIEW', object)",
  *          "security_message"="Vous n'avez pas accès à ces informations."
+ *      },
+ *      "show_apprenant"={
+ *          "method"="GET",
+ *          "path"="/apprenants/{id}",
+ *          "security"="is_granted('APPRENANT_VIEW', object)",
+ *          "security_message"="Vous n'avez pas accès à ces informations."
+ *      },
+ *      "put"={
+ *          "path"="/admin/users/{id}",
+ *          "access_control"="(is_granted('ROLE_ADMIN'))"
+ *      },
+ *      "edit_formateur"={
+ *          "method"="PUT",
+ *          "path"="/formateurs/{id}",
+ *          "security"="is_granted('FORMATEUR_EDIT', object)",
+ *          "security_message"="Vous n'avez pas le droit de modifier ces informations."
+ *      },
+ *      "edit_apprenant"={
+ *          "method"="PUT",
+ *          "path"="/apprenants/{id}",
+ *          "security"="is_granted('APPRENANT_EDIT', object)",
+ *          "security_message"="Vous n'avez pas le droit de modifier ces informations."
  *      }
  * }
  * )

@@ -20,7 +20,7 @@ class UserVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, ['USER_EDIT', 'USER_VIEW'])
+        return in_array($attribute, ['FORMATEUR_EDIT', 'APPRENANT_VIEW', 'FORMATEUR_VIEW', 'APPRENANT_VIEW'])
             && $subject instanceof \App\Entity\User;
     }
 
@@ -34,16 +34,30 @@ class UserVoter extends Voter
 
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
-            case 'USER_EDIT':
+            case 'FORMATEUR_EDIT':
                 // logic to determine if the user can EDIT
                 // return true or false
-                break;
-            case 'USER_VIEW':
-                // logic to determine if the user can VIEW
-                // return true or false
-                if ($this->security->isGranted('ROLE_ADMIN') || $subject === $user) {
+                if ($this->security->isGranted('ROLE_FORMATEUR') && $subject === $user) {
                     return true;
                 }
+                return false;
+            case 'APPRENANT_EDIT':
+                if ($this->security->isGranted('ROLE_FORMATEUR') || ($this->security->isGranted('ROLE_APPRENANT') && $subject === $user)) {
+                    return true;
+                }
+                return false;
+            case 'FORMATEUR_VIEW':
+                // logic to determine if the user can VIEW
+                // return true or false
+                if ($this->security->isGranted('ROLE_CM') || ($this->security->isGranted('ROLE_FORMATEUR') && $subject === $user)) {
+                    return true;
+                }
+                return false;
+            case 'APPRENANT_VIEW':
+                if ($this->security->isGranted('ROLE_CM') || ($this->security->isGranted('ROLE_APPRENANT') && $subject === $user)) {
+                    return true;
+                }
+                return false; 
         }
 
         return false;
