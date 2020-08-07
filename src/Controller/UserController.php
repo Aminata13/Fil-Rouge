@@ -59,7 +59,6 @@ class UserController extends AbstractController
 
         $errors = $validator->validate($user);
         if (($errors) > 0) {
-            dd('ok');
             $errorsString = $serializer->serialize($errors, 'json');
             return new JsonResponse($errorsString, Response::HTTP_BAD_REQUEST, [], true);
         }

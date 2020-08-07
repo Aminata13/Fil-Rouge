@@ -24,8 +24,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *  itemOperations={"get", "put"}
  * )
  * @UniqueEntity(
- * fields={"libelle"},
- * message="Le libelle existe déjà."
+ *  fields={"libelle"},
+ *  message="Le libelle existe déjà."
  * )
  */
 class UserProfil

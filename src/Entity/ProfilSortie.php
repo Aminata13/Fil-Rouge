@@ -13,13 +13,16 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Entity(repositoryClass=ProfilSortieRepository::class)
  * @UniqueEntity(
- * fields={"libelle"},
- * message="Le libelle existe déjà."
+ *  fields={"libelle"},
+ *  message="Le libelle existe déjà."
  * )
  * @ApiResource(
- * routePrefix="/admin",
- * attributes={"security"="is_granted('ROLE_ADMIN')"},
- * itemOperations={
+ *  routePrefix="/admin",
+ *  attributes={
+ *      "security"="is_granted('ROLE_ADMIN')",
+ *      "security_message"="Vous n'avez pas accès à cette ressource."
+ *  },
+ *  itemOperations={
  *      "put","get"
  * })
  */
@@ -44,7 +47,7 @@ class ProfilSortie
 
     /**
      * @ORM\OneToMany(targetEntity=Apprenant::class, mappedBy="profilSortie")
-     *  @ApiSubresource
+     * @ApiSubresource
      */
     private $apprenants;
 
