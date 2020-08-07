@@ -11,9 +11,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ORM\Entity(repositoryClass=ApprenantRepository::class)
  * @ApiResource(
- *  itemOperations={
- *      "put","get"
- *  },
  *  normalizationContext={"groups"={"apprenant:read"}}
  * )
  */
@@ -40,13 +37,6 @@ class Apprenant
      */
     private $profilSortie;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Statut::class, inversedBy="apprenants")
-     * @ORM\JoinColumn(nullable=false)
-     * @Groups({"apprenant:read"})
-     */
-    private $statut;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -72,18 +62,6 @@ class Apprenant
     public function setProfilSortie(?ProfilSortie $profilSortie): self
     {
         $this->profilSortie = $profilSortie;
-
-        return $this;
-    }
-
-    public function getStatut(): ?Statut
-    {
-        return $this->statut;
-    }
-
-    public function setStatut(?Statut $statut): self
-    {
-        $this->statut = $statut;
 
         return $this;
     }

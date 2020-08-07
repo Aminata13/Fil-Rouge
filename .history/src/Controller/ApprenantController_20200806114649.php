@@ -23,7 +23,7 @@ class ApprenantController
     /**
      * @Route(
      *     name="apprenant_liste",
-     *     path="/api/eleves",
+     *     path="/api/apprenants",
      *     methods={"GET"},
      *     defaults={
      *         "_api_resource_class"=User::class,

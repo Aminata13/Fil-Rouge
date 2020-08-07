@@ -5,16 +5,12 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ApprenantRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Annotation\ApiSubresource;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ApprenantRepository::class)
  * @ApiResource(
- *  itemOperations={
- *      "put","get"
- *  },
- *  normalizationContext={"groups"={"apprenant:read"}}
+ *  denormalizationContext={"groups"={"apprenant:read"}}
  * )
  */
 class Apprenant
@@ -36,16 +32,8 @@ class Apprenant
 
     /**
      * @ORM\ManyToOne(targetEntity=ProfilSortie::class, inversedBy="apprenants")
-     * @Groups({"apprenant:read"})
      */
     private $profilSortie;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Statut::class, inversedBy="apprenants")
-     * @ORM\JoinColumn(nullable=false)
-     * @Groups({"apprenant:read"})
-     */
-    private $statut;
 
     public function getId(): ?int
     {
@@ -72,18 +60,6 @@ class Apprenant
     public function setProfilSortie(?ProfilSortie $profilSortie): self
     {
         $this->profilSortie = $profilSortie;
-
-        return $this;
-    }
-
-    public function getStatut(): ?Statut
-    {
-        return $this->statut;
-    }
-
-    public function setStatut(?Statut $statut): self
-    {
-        $this->statut = $statut;
 
         return $this;
     }

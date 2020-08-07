@@ -128,7 +128,6 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="L'adresse mail est obligatoire.")
      * @Assert\Email(message="L'adresse mail est invalide")
-     * @Groups({"apprenant:read"})
      */
     private $email;
 

@@ -16,6 +16,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ApiResource(iri="http://schema.org/Users",
+ *  attributes={"normalization_context"={"groups"={"user:read"}}},
  *  collectionOperations={
  *      "get"={
  *          "path"="/admin/users",
@@ -91,7 +92,7 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"apprenant:read"})
+     * @Groups({"apprenant:read","user:read"})
      */
     private $id;
 
@@ -113,14 +114,14 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Le prénom est obligatoire.")
-     * @Groups({"apprenant:read"})
+     * @Groups({"apprenant:read","user:read"})
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Le nom est obligatoire.")
-     * @Groups({"apprenant:read"})
+     * @Groups({"apprenant:read","user:read"})
      */
     private $lastname;
 
@@ -128,7 +129,6 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="L'adresse mail est obligatoire.")
      * @Assert\Email(message="L'adresse mail est invalide")
-     * @Groups({"apprenant:read"})
      */
     private $email;
 

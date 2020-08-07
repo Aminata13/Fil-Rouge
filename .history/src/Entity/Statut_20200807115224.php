@@ -3,31 +3,17 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\ProfilSortieRepository;
+use App\Repository\StatutRepository;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * @ORM\Entity(repositoryClass=ProfilSortieRepository::class)
- * @UniqueEntity(
- *  fields={"libelle"},
- *  message="Le libelle existe déjà."
- * )
- * @ApiResource(
- *  routePrefix="/admin",
- *  attributes={
- *      "security"="is_granted('ROLE_ADMIN')",
- *      "security_message"="Vous n'avez pas accès à cette ressource."
- *  },
- *  itemOperations={
- *      "put","get"
- * })
+ * @ORM\Entity(repositoryClass=StatutRepository::class)
+ * @ApiResource()
  */
-class ProfilSortie
+class Statut
 {
     /**
      * @ORM\Id()
@@ -43,13 +29,7 @@ class ProfilSortie
     private $libelle;
 
     /**
-     * @ORM\Column(type="boolean")
-     */
-    private $deleted=false;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Apprenant::class, mappedBy="profilSortie")
-     * @ApiSubresource
+     * @ORM\OneToMany(targetEntity=Apprenant::class, mappedBy="statut")
      */
     private $apprenants;
 
@@ -57,6 +37,8 @@ class ProfilSortie
     {
         $this->apprenants = new ArrayCollection();
     }
+
+    
 
     public function getId(): ?int
     {
@@ -75,18 +57,6 @@ class ProfilSortie
         return $this;
     }
 
-    public function getDeleted(): ?bool
-    {
-        return $this->deleted;
-    }
-
-    public function setDeleted(bool $deleted): self
-    {
-        $this->deleted = $deleted;
-
-        return $this;
-    }
-
     /**
      * @return Collection|Apprenant[]
      */
@@ -99,7 +69,7 @@ class ProfilSortie
     {
         if (!$this->apprenants->contains($apprenant)) {
             $this->apprenants[] = $apprenant;
-            $apprenant->setProfilSortie($this);
+            $apprenant->setStatut($this);
         }
 
         return $this;
@@ -110,11 +80,12 @@ class ProfilSortie
         if ($this->apprenants->contains($apprenant)) {
             $this->apprenants->removeElement($apprenant);
             // set the owning side to null (unless already changed)
-            if ($apprenant->getProfilSortie() === $this) {
-                $apprenant->setProfilSortie(null);
+            if ($apprenant->getStatut() === $this) {
+                $apprenant->setStatut(null);
             }
         }
 
         return $this;
     }
+
 }
