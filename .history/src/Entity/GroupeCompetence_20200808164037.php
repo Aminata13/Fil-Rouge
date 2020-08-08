@@ -80,6 +80,7 @@ class GroupeCompetence
     /**
      * @ORM\ManyToMany(targetEntity=Competence::class, inversedBy="groupeCompetences", cascade={"persist"})
      * @Groups({"grpcompetence:read","grpcompetence:read_all","referentiel:read_all","grpcompetence:write"})
+     * @Assert\NotNull(message="Une compétence est requise.")
      */
     private $competences;
 

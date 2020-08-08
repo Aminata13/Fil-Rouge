@@ -61,6 +61,7 @@ class AddGroupeCompetence
 
         foreach ($competences as $value) {
             if (!empty($value->getLibelle())) {
+                
                 $competence = $this->repo->findBy(array('libelle' => $value->getLibelle()));
                 if ($competence) {
                     $groupeCompetence->addCompetence($competence[0]);
@@ -80,7 +81,7 @@ class AddGroupeCompetence
         }
 
         $this->em->persist($groupeCompetence);
-        $this->em->flush();
+        //$this->em->flush();
         return new JsonResponse("succes", Response::HTTP_CREATED, [], true);
     }
 }

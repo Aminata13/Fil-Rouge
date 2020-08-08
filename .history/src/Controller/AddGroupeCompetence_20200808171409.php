@@ -75,12 +75,12 @@ class AddGroupeCompetence
             }
         }
 
-        if (count($groupeCompetence->getCompetences())<1) {
+        if ($groupeCompetence->getCompetences() == null) {
             return new JsonResponse("Une compétence est requise.", Response::HTTP_BAD_REQUEST, [], true);
         }
 
-        $this->em->persist($groupeCompetence);
-        $this->em->flush();
-        return new JsonResponse("succes", Response::HTTP_CREATED, [], true);
+        //$this->em->persist($groupeCompetence);
+        //$this->em->flush();
+        //return new JsonResponse("succes", Response::HTTP_CREATED, [], true);
     }
 }

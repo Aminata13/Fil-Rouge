@@ -73,13 +73,14 @@ class GroupeCompetence
     /**
      * @ORM\Column(type="text", nullable=true)
      * @Groups({"grpcompetence:read","grpcompetence:read_all","referentiel:read","referentiel:read_all","grpcompetence:write"})
-     * @Assert\NotBlank(message="Une description est requise.")
+     * 
      */
     private $description;
 
     /**
      * @ORM\ManyToMany(targetEntity=Competence::class, inversedBy="groupeCompetences", cascade={"persist"})
      * @Groups({"grpcompetence:read","grpcompetence:read_all","referentiel:read_all","grpcompetence:write"})
+     
      */
     private $competences;
 

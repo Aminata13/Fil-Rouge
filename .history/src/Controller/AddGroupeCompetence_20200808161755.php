@@ -48,39 +48,54 @@ class AddGroupeCompetence
             return new JsonResponse($errorsString, Response::HTTP_BAD_REQUEST, [], true);
         }
 
-        $competences = $data->getCompetences();
-        if (count($competences) < 1) {
-            return new JsonResponse("Une compétence est requise.", Response::HTTP_BAD_REQUEST, [], true);
-        }
-
         $groupeCompetence = new GroupeCompetence();
         $groupeCompetence->setLibelle($data->getLibelle());
         $groupeCompetence->setDescription($data->getDescription());
-        $tabLibelle = [];
+        $tabCompetences = [];
 
-
+        $competences = $data->getCompetences();
+        $in = false;
         foreach ($competences as $value) {
-            if (!empty($value->getLibelle())) {
-                $competence = $this->repo->findBy(array('libelle' => $value->getLibelle()));
-                if ($competence) {
-                    $groupeCompetence->addCompetence($competence[0]);
+            $competence = $this->repo->findBy(array('libelle' => $value->getLibelle()));
+            if ($competence) {
+                $groupeCompetence->addCompetence($competence[0]);
+            } else {
+
+
+
+                
+                if (!$in) {
+                    $competence = new Competence();
+                    $competence->setLibelle($value->getLibelle());
+
+                    $groupeCompetence->addCompetence($competence);
+                    $tabCompetences[] = $competence;
+                    $in = true;
                 } else {
-                    if (!in_array($value->getlibelle(), $tabLibelle)) {
-                        $tabLibelle[] = $value->getlibelle();
+                    for ($i = 0; $i < count($tabCompetences); $i++) {
+                        $c = $tabCompetences[$i];
+                        if ($c->getlibelle() == $value->getLibelle()) {
+                            break;
+                        }
+                    }
+                    if ($i == count($tabCompetences)) {
                         $competence = new Competence();
                         $competence->setLibelle($value->getLibelle());
+
                         $groupeCompetence->addCompetence($competence);
+                        $tabCompetences[] = $competence;
                     }
                 }
             }
         }
 
-        if (count($groupeCompetence->getCompetences())<1) {
-            return new JsonResponse("Une compétence est requise.", Response::HTTP_BAD_REQUEST, [], true);
-        }
+        dd($groupeCompetence);
 
-        $this->em->persist($groupeCompetence);
-        $this->em->flush();
-        return new JsonResponse("succes", Response::HTTP_CREATED, [], true);
+        //dd($data->getCompetences());
+
+
+        //$this->em->persist($groupeCompetence);
+        //$this->em->flush();
+        //return new JsonResponse("succes", Response::HTTP_CREATED, [], true);
     }
 }

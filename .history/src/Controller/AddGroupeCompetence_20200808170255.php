@@ -49,7 +49,7 @@ class AddGroupeCompetence
         }
 
         $competences = $data->getCompetences();
-        if (count($competences) < 1) {
+        if (count($competences)<1) {
             return new JsonResponse("Une compétence est requise.", Response::HTTP_BAD_REQUEST, [], true);
         }
 
@@ -57,26 +57,23 @@ class AddGroupeCompetence
         $groupeCompetence->setLibelle($data->getLibelle());
         $groupeCompetence->setDescription($data->getDescription());
         $tabLibelle = [];
-
+        
 
         foreach ($competences as $value) {
-            if (!empty($value->getLibelle())) {
-                $competence = $this->repo->findBy(array('libelle' => $value->getLibelle()));
-                if ($competence) {
-                    $groupeCompetence->addCompetence($competence[0]);
-                } else {
-                    if (!in_array($value->getlibelle(), $tabLibelle)) {
-                        $tabLibelle[] = $value->getlibelle();
-                        $competence = new Competence();
-                        $competence->setLibelle($value->getLibelle());
-                        $groupeCompetence->addCompetence($competence);
-                    }
+            if (condition) {
+                # code...
+            }
+            $competence = $this->repo->findBy(array('libelle' => $value->getLibelle()));
+            if ($competence) {
+                $groupeCompetence->addCompetence($competence[0]);
+            } else {
+                if (!in_array($value->getlibelle(), $tabLibelle)) {
+                    $tabLibelle[] = $value->getlibelle();
+                    $competence = new Competence();
+                    $competence->setLibelle($value->getLibelle());
+                    $groupeCompetence->addCompetence($competence);
                 }
             }
-        }
-
-        if (count($groupeCompetence->getCompetences())<1) {
-            return new JsonResponse("Une compétence est requise.", Response::HTTP_BAD_REQUEST, [], true);
         }
 
         $this->em->persist($groupeCompetence);

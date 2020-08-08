@@ -75,7 +75,7 @@ class AddGroupeCompetence
             }
         }
 
-        if (count($groupeCompetence->getCompetences())<1) {
+        if ($groupeCompetence->getCompetences() == null) {
             return new JsonResponse("Une compétence est requise.", Response::HTTP_BAD_REQUEST, [], true);
         }
 

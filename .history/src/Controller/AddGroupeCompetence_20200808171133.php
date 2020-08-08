@@ -75,8 +75,8 @@ class AddGroupeCompetence
             }
         }
 
-        if (count($groupeCompetence->getCompetences())<1) {
-            return new JsonResponse("Une compétence est requise.", Response::HTTP_BAD_REQUEST, [], true);
+        if ($groupeCompetence->getCompetences() == null) {
+            return new JsonResponse("le libelle d'Une compétence est requis.", Response::HTTP_BAD_REQUEST, [], true);
         }
 
         $this->em->persist($groupeCompetence);

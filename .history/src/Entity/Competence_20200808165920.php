@@ -52,7 +52,7 @@ class Competence
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"grpcompetence:read","grpcompetence:read_all","competence:read_all","referentiel:read_all","grpcompetence:write"})
-     * @Assert\NotBlank(message="le libelle d'une competence est requis.")
+     * 
      */
     private $libelle;
 

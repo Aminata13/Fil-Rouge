@@ -2,14 +2,12 @@
 
 namespace App\Entity;
 
-
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\GroupeCompetenceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
@@ -73,13 +71,13 @@ class GroupeCompetence
     /**
      * @ORM\Column(type="text", nullable=true)
      * @Groups({"grpcompetence:read","grpcompetence:read_all","referentiel:read","referentiel:read_all","grpcompetence:write"})
-     * @Assert\NotBlank(message="Une description est requise.")
      */
     private $description;
 
     /**
      * @ORM\ManyToMany(targetEntity=Competence::class, inversedBy="groupeCompetences", cascade={"persist"})
      * @Groups({"grpcompetence:read","grpcompetence:read_all","referentiel:read_all","grpcompetence:write"})
+     * @Assert\NotBlank(message="Le mot de passe est obligatoire.")
      */
     private $competences;
 
