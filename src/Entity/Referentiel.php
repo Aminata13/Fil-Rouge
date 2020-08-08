@@ -34,7 +34,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *      },
  *      "getByIdCompetence"={
  *          "method"="GET",
- *          "path"="/referentiels/{id}/groupe_competences/{id}",
+ *          "path"="/referentiels/{id}/groupe_competences",
  *          "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_APPRENANT') or is_granted('ROLE_CM'))"
  *      },
  *      "put"
