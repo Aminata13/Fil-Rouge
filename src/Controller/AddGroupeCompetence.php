@@ -47,33 +47,41 @@ class AddGroupeCompetence
             $errorsString = $this->serializer->serialize($errors, 'json');
             return new JsonResponse($errorsString, Response::HTTP_BAD_REQUEST, [], true);
         }
-        
-        $groupeCompetence=new GroupeCompetence();
+
+        $groupeCompetence = new GroupeCompetence();
         $groupeCompetence->setLibelle($data->getLibelle());
         $groupeCompetence->setDescription($data->getDescription());
-        $tabCompetences=[];
+        $tabCompetences = [];
 
         $competences = $data->getCompetences();
+        $in = false;
         foreach ($competences as $value) {
-            $competence= $this->repo->findBy(array('libelle' => $value->getLibelle()));
+            $competence = $this->repo->findBy(array('libelle' => $value->getLibelle()));
             if ($competence) {
                 $groupeCompetence->addCompetence($competence[0]);
-              
-            }else {
-                
-                $tabCompetences[]=$competence;
-                //dump($tabCompetences);
-                foreach ($tabCompetences as $c) {
-                    if ($c->getlibelle()==$value->getLibelle()) {
-                        # code...
+            } else {
+                if (!$in) {
+                    $competence = new Competence();
+                    $competence->setLibelle($value->getLibelle());
+
+                    $groupeCompetence->addCompetence($competence);
+                    $tabCompetences[] = $competence;
+                    $in = true;
+                } else {
+                    for ($i = 0; $i < count($tabCompetences); $i++) {
+                        $c = $tabCompetences[$i];
+                        if ($c->getlibelle() == $value->getLibelle()) {
+                            break;
+                        }
                     }
-                    dump($c->getlibelle());
-                    
+                    if ($i == count($tabCompetences)) {
+                        $competence = new Competence();
+                        $competence->setLibelle($value->getLibelle());
+
+                        $groupeCompetence->addCompetence($competence);
+                        $tabCompetences[] = $competence;
+                    }
                 }
-                $competence = new Competence();
-                $competence->setLibelle($value->getLibelle());
-                
-                $groupeCompetence->addCompetence($competence);
             }
         }
 
@@ -81,7 +89,7 @@ class AddGroupeCompetence
 
         //dd($data->getCompetences());
 
-        
+
         //$this->em->persist($groupeCompetence);
         //$this->em->flush();
         //return new JsonResponse("succes", Response::HTTP_CREATED, [], true);
