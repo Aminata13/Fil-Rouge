@@ -49,7 +49,7 @@ class EditGroupeCompetenceController extends AbstractController
         $groupeCompetence->setDescription($data['description']);
         
         $tabLibelle = [];
-        //dd($data['competences']);
+        dd($data['competences']);
         foreach ($data['competences'] as $value){
             
             if (!empty($value['libelle'])){
@@ -57,10 +57,10 @@ class EditGroupeCompetenceController extends AbstractController
                 if ($competence) {
                     $groupeCompetence->addCompetence($competence[0]);
                 } else {
-                    if (!in_array($value['libelle'], $tabLibelle)) {
-                        $tabLibelle[] = $value['libelle'];
+                    if (!in_array($value->getlibelle(), $tabLibelle)) {
+                        $tabLibelle[] = $value->getlibelle();
                         $competence = new Competence();
-                        $competence->setLibelle($value['libelle']);
+                        $competence->setLibelle($value->getLibelle());
                         $groupeCompetence->addCompetence($competence);
                     }
                 }

@@ -49,7 +49,7 @@ class EditGroupeCompetenceController extends AbstractController
         $groupeCompetence->setDescription($data['description']);
         
         $tabLibelle = [];
-        //dd($data['competences']);
+        dd($data['competences']);
         foreach ($data['competences'] as $value){
             
             if (!empty($value['libelle'])){

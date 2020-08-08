@@ -11,20 +11,21 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use ApiPlatform\Core\Validator\ValidatorInterface;
 use App\Repository\GroupeCompetenceRepository;
+use App\Repository\NiveauEvaluationRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class EditGroupeCompetenceController extends AbstractController
+class EditCompetenceController extends AbstractController
 {
     /**
      * @Route(
-     *     name="edit_groupe_competence",
-     *     path="/api/admin/groupe_competences/{id}",
+     *     name="edit_competence",
+     *     path="/api/admin/competences/{id}",
      *     methods={"PUT"}
      * )
      */
-    public function editGroupeCompetence(int $id ,CompetenceRepository $repoCompe,GroupeCompetenceRepository $repoGroupCompe, SerializerInterface $serializer, EntityManagerInterface $em, ValidatorInterface $validator,Request $request)
+    public function editGroupeCompetence(int $id ,NiveauEvaluationRepository $repoNiveau,,GroupeCompetenceRepository $repoGroupCompe, SerializerInterface $serializer, EntityManagerInterface $em, ValidatorInterface $validator,Request $request)
     {
         $data=json_decode($request->getContent(),true);
         

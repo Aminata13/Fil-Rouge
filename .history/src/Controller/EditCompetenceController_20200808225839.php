@@ -15,12 +15,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class EditGroupeCompetenceController extends AbstractController
+class EditCompetenceController extends AbstractController
 {
     /**
      * @Route(
-     *     name="edit_groupe_competence",
-     *     path="/api/admin/groupe_competences/{id}",
+     *     name="edit_competence",
+     *     path="/api/admin/competences/{id}",
      *     methods={"PUT"}
      * )
      */

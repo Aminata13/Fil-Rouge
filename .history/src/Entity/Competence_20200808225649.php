@@ -40,10 +40,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *      "put_competence"={
  *         "method"="PUT",
  *         "path"="/competences/{id}",
- *         "controller"=EditCompetenceController::class,
+ *         "controller"=EditGroupeCompetenceController::class,
  *         "access_control"="(is_granted('ROLE_ADMIN'))",
- *         "route_name"="edit_competence",
- *         "denormalization_context"={"groups"={"competence:write"}}
+ *         "route_name"="edit_groupe_competence",
+ *         "denormalization_context"={"groups"={"grpcompetence:write"}}
  *     }
  *  }
  * )

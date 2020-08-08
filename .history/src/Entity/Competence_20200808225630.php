@@ -37,13 +37,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *          "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
  *          "normalization_context"={"groups"={"competence:read_all"}}
  *      },
- *      "put_competence"={
+ *      "put_groupe_competence"={
  *         "method"="PUT",
- *         "path"="/competences/{id}",
- *         "controller"=EditCompetenceController::class,
+ *         "path"="/groupe_competences/{id}",
+ *         "controller"=EditGroupeCompetenceController::class,
  *         "access_control"="(is_granted('ROLE_ADMIN'))",
- *         "route_name"="edit_competence",
- *         "denormalization_context"={"groups"={"competence:write"}}
+ *         "route_name"="edit_groupe_competence",
+ *         "denormalization_context"={"groups"={"grpcompetence:write"}}
  *     }
  *  }
  * )

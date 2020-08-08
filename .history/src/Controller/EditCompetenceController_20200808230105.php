@@ -11,20 +11,21 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use ApiPlatform\Core\Validator\ValidatorInterface;
 use App\Repository\GroupeCompetenceRepository;
+use App\Repository\NiveauEvaluationRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class EditGroupeCompetenceController extends AbstractController
+class EditCompetenceController extends AbstractController
 {
     /**
      * @Route(
-     *     name="edit_groupe_competence",
-     *     path="/api/admin/groupe_competences/{id}",
+     *     name="edit_competence",
+     *     path="/api/admin/competences/{id}",
      *     methods={"PUT"}
      * )
      */
-    public function editGroupeCompetence(int $id ,CompetenceRepository $repoCompe,GroupeCompetenceRepository $repoGroupCompe, SerializerInterface $serializer, EntityManagerInterface $em, ValidatorInterface $validator,Request $request)
+    public function editGroupeCompetence(int $id ,NiveauEvaluationRepository $repoNiveau,CompetenceRepository $repoCompe,GroupeCompetenceRepository $repoGroupCompe, SerializerInterface $serializer, EntityManagerInterface $em, ValidatorInterface $validator,Request $request)
     {
         $data=json_decode($request->getContent(),true);
         
@@ -32,9 +33,9 @@ class EditGroupeCompetenceController extends AbstractController
             return new JsonResponse('Le libelle est requis.', Response::HTTP_BAD_REQUEST, [], true);
         }
 
-        $competences = $data['competences'];
-        if (count($competences) < 1) {
-            return new JsonResponse("Une compétence est requise.", Response::HTTP_BAD_REQUEST, [], true);
+        $niveaux = $data['niveaux'];
+        if (count($niveaux) != 3) {
+            return new JsonResponse("Une est requise.", Response::HTTP_BAD_REQUEST, [], true);
         }
         
         $groupeCompetence = $repoGroupCompe->find($id);
