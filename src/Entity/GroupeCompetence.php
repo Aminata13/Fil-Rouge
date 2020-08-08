@@ -48,25 +48,25 @@ class GroupeCompetence
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"grpcompetence:read","grpcompetence:read_all"})
+     * @Groups({"grpcompetence:read","grpcompetence:read_all","referentiel:read","referentiel:read_all"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"grpcompetence:read","grpcompetence:read_all"})
+     * @Groups({"grpcompetence:read","grpcompetence:read_all","referentiel:read","referentiel:read_all"})
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"grpcompetence:read","grpcompetence:read_all"})
+     * @Groups({"grpcompetence:read","grpcompetence:read_all","referentiel:read","referentiel:read_all"})
      */
     private $description;
 
     /**
      * @ORM\ManyToMany(targetEntity=Competence::class, inversedBy="groupeCompetences")
-     * @Groups({"grpcompetence:read","grpcompetence:read_all"})
+     * @Groups({"grpcompetence:read","grpcompetence:read_all","referentiel:read_all"})
      */
     private $competences;
 

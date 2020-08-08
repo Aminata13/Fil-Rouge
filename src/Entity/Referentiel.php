@@ -2,17 +2,42 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\ReferentielRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ReferentielRepository;
+use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(
  *  routePrefix="/admin",
+ *  normalizationContext={"groups"={"referentiel:read_all"}},
+ *  collectionOperations={
+ *      "get"={
+ *          "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_APPRENANT') or is_granted('ROLE_CM'))",
+ *          "normalization_context"={"groups"={"referentiel:read"}}
+ *      },
+ *      "getByCompetences"={
+ *          "method"="GET",
+ *          "path"="/referentiels/groupe_competences",
+ *          "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))"
+ *      },
+ *      "post"={
+ *          "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))"
+ *      }
+ *  },
  *  itemOperations={
- *      "put","get"
+ *      "get"={
+ *          "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_APPRENANT') or is_granted('ROLE_CM'))",
+ *          "normalization_context"={"groups"={"referentiel:read"}}
+ *      },
+ *      "getByIdCompetence"={
+ *          "method"="GET",
+ *          "path"="/referentiels/{id}/groupe_competences/{id}",
+ *          "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_APPRENANT') or is_granted('ROLE_CM'))"
+ *      },
+ *      "put"
  *  }
  * )
  * @ORM\Entity(repositoryClass=ReferentielRepository::class)
@@ -23,31 +48,37 @@ class Referentiel
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"referentiel:read","referentiel:read_all"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"referentiel:read","referentiel:read_all"})
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"referentiel:read","referentiel:read_all"})
      */
     private $description;
 
     /**
      * @ORM\OneToMany(targetEntity=CritereAdmission::class, mappedBy="referentiel", orphanRemoval=true)
+     * @Groups({"referentiel:read","referentiel:read_all"})
      */
     private $critereAdmissions;
 
     /**
      * @ORM\OneToMany(targetEntity=CritereEvaluation::class, mappedBy="referentiel", orphanRemoval=true)
+     * @Groups({"referentiel:read","referentiel:read_all"})
      */
     private $critereEvaluations;
 
     /**
      * @ORM\ManyToMany(targetEntity=GroupeCompetence::class, inversedBy="referentiels")
+     * @Groups({"referentiel:read","referentiel:read_all"})
      */
     private $groupeCompetences;
 

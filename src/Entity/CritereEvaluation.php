@@ -21,11 +21,13 @@ class CritereEvaluation
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"referentiel:read","referentiel:read_all"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"referentiel:read","referentiel:read_all"})
      */
     private $libelle;
 
