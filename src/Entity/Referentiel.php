@@ -87,11 +87,17 @@ class Referentiel
      */
     private $programme;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Promotion::class, mappedBy="referentiels")
+     */
+    private $promotions;
+
     public function __construct()
     {
         $this->critereAdmissions = new ArrayCollection();
         $this->critereEvaluations = new ArrayCollection();
         $this->groupeCompetences = new ArrayCollection();
+        $this->promotions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -219,6 +225,34 @@ class Referentiel
     public function setProgramme($programme): self
     {
         $this->programme = $programme;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Promotion[]
+     */
+    public function getPromotions(): Collection
+    {
+        return $this->promotions;
+    }
+
+    public function addPromotion(Promotion $promotion): self
+    {
+        if (!$this->promotions->contains($promotion)) {
+            $this->promotions[] = $promotion;
+            $promotion->addReferentiel($this);
+        }
+
+        return $this;
+    }
+
+    public function removePromotion(Promotion $promotion): self
+    {
+        if ($this->promotions->contains($promotion)) {
+            $this->promotions->removeElement($promotion);
+            $promotion->removeReferentiel($this);
+        }
 
         return $this;
     }
