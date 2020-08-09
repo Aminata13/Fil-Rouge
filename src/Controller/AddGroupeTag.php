@@ -2,29 +2,26 @@
 
 namespace App\Controller;
 
+use App\Entity\Tag;
 use App\Entity\GroupeTag;
 use App\Repository\TagRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use ApiPlatform\Core\Validator\ValidatorInterface;
-use App\Entity\Tag;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class AddGroupeTag
 {
     private $em;
     private $repo;
-    private $serializer;
     private $validator;
 
 
-    public function __construct(TagRepository $repo, SerializerInterface $serializer, EntityManagerInterface $em, ValidatorInterface $validator)
+    public function __construct(TagRepository $repo, EntityManagerInterface $em, ValidatorInterface $validator)
     {
         $this->em = $em;
         $this->repo = $repo;
-        $this->serializer = $serializer;
         $this->validator = $validator;
     }
 
@@ -80,6 +77,6 @@ class AddGroupeTag
 
         $this->em->persist($groupeTag);
         $this->em->flush();
-        return new JsonResponse("succes", Response::HTTP_CREATED, [], true);
+        return new JsonResponse("success", Response::HTTP_CREATED, [], true);
     }
 }

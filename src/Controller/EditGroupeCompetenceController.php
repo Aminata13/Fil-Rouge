@@ -3,16 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Competence;
-use App\Entity\GroupeCompetence;
 use App\Repository\CompetenceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use ApiPlatform\Core\Validator\ValidatorInterface;
 use App\Repository\GroupeCompetenceRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class EditGroupeCompetenceController extends AbstractController
@@ -24,7 +21,7 @@ class EditGroupeCompetenceController extends AbstractController
      *     methods={"PUT"}
      * )
      */
-    public function editGroupeCompetence(int $id ,CompetenceRepository $repoCompe,GroupeCompetenceRepository $repoGroupCompe, SerializerInterface $serializer, EntityManagerInterface $em, ValidatorInterface $validator,Request $request)
+    public function editGroupeCompetence(int $id, CompetenceRepository $repoComp, GroupeCompetenceRepository $repoGroupeComp, EntityManagerInterface $em, Request $request)
     {
         $data=json_decode($request->getContent(),true);
         
@@ -37,7 +34,7 @@ class EditGroupeCompetenceController extends AbstractController
             return new JsonResponse("Une compétence est requise.", Response::HTTP_BAD_REQUEST, [], true);
         }
         
-        $groupeCompetence = $repoGroupCompe->find($id);
+        $groupeCompetence = $repoGroupeComp->find($id);
        
         $tabCompetence = $groupeCompetence->getCompetences();
         
@@ -49,11 +46,9 @@ class EditGroupeCompetenceController extends AbstractController
         $groupeCompetence->setDescription($data['description']);
         
         $tabLibelle = [];
-        //dd($data['competences']);
-        foreach ($data['competences'] as $value){
-            
+        foreach ($data['competences'] as $value){ 
             if (!empty($value['libelle'])){
-                $competence = $repoCompe->findBy(array('libelle' => $value['libelle']));
+                $competence = $repoComp->findBy(array('libelle' => $value['libelle']));
                 if ($competence) {
                     $groupeCompetence->addCompetence($competence[0]);
                 } else {
@@ -68,11 +63,11 @@ class EditGroupeCompetenceController extends AbstractController
         }
 
         if (count($groupeCompetence->getCompetences())<1) {
-            return new JsonResponse("Une compétence est requise.", Response::HTTP_BAD_REQUEST, [], true);
+            return new JsonResponse("Les libellés des compétences sont requis.", Response::HTTP_BAD_REQUEST, [], true);
         }
 
         $em->persist($groupeCompetence);
         $em->flush();
-        return new JsonResponse("succes", Response::HTTP_CREATED, [], true);
+        return new JsonResponse("success", Response::HTTP_CREATED, [], true);
     }
 }

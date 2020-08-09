@@ -53,7 +53,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *         "method"="PUT",
  *         "path"="/groupe_competences/{id}",
  *         "controller"=EditGroupeCompetenceController::class,
- *         "access_control"="(is_granted('ROLE_ADMIN'))",
+ *         "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
  *         "route_name"="edit_groupe_competence",
  *         "denormalization_context"={"groups"={"grpcompetence:write"}}
  *     }

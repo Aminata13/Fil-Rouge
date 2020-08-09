@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\GroupeTagRepository;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -23,7 +24,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *  routePrefix="/admin",
  *  collectionOperations={
  *      "get"={
- *          "normalization_context"={"groups"={"tag:read"}}
+ *          "normalization_context"={"groups"={"groupe_tag:read"}}
  *      },
  *      "post_groupe_tag"={
  *         "method"="POST",
@@ -34,15 +35,16 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *     }
  *  },
  *  itemOperations={
- *      "put",
  *      "get"={
- *          "normalization_context"={"groups"={"tag:read"}}
+ *          "normalization_context"={"groups"={"groupe_tag:read"}}
  *      },
- *      "getByTag"={
- *          "method"="GET",
- *          "path"="/groupe_tags/{id}/tags",
- *          "normalization_context"={"groups"={"groupe_tag:read_tag"}}
- *      }
+ *      "put_groupe_tag"={
+ *         "method"="PUT",
+ *         "path"="/groupe_tags/{id}",
+ *         "controller"=EditGroupeTagController::class,
+ *         "route_name"="edit_groupe_tag",
+ *         "denormalization_context"={"groups"={"groupe_tag:write"}}
+ *     }
  *  }
  * )
  * @ORM\Entity(repositoryClass=GroupeTagRepository::class)
@@ -53,19 +55,20 @@ class GroupeTag
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"tag:read"})
+     * @Groups({"groupe_tag:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"tag:read","tag:write","groupe_tag:write"})
+     * @Groups({"groupe_tag:read","tag:write","groupe_tag:write"})
      */
     private $libelle;
 
     /**
      * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="groupeTags", cascade={"persist"})
-     * @Groups({"tag:read","groupe_tag:read_tag","groupe_tag:write"})
+     * @Groups({"groupe_tag:read","groupe_tag:write"})
+     * @ApiSubresource
      */
     private $tags;
 

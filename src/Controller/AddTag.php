@@ -3,28 +3,24 @@
 namespace App\Controller;
 
 use App\Entity\Tag;
-use App\Entity\NiveauEvaluation;
 use App\Repository\GroupeTagRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use ApiPlatform\Core\Validator\ValidatorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class AddTag
 {
     private $em;
     private $repo;
-    private $serializer;
     private $validator;
 
 
-    public function __construct(GroupeTagRepository $repo, SerializerInterface $serializer, EntityManagerInterface $em, ValidatorInterface $validator)
+    public function __construct(GroupeTagRepository $repo, EntityManagerInterface $em, ValidatorInterface $validator)
     {
         $this->em = $em;
         $this->repo = $repo;
-        $this->serializer = $serializer;
         $this->validator = $validator;
     }
 

@@ -33,7 +33,14 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *     }
  *  },
  *  itemOperations={
- *      "put","get"
+ *      "get",
+ *      "put_tag"={
+ *         "method"="PUT",
+ *         "path"="/tags/{id}",
+ *         "controller"=EditTagController::class,
+ *         "route_name"="edit_tag",
+ *         "denormalization_context"={"groups"={"tag:write"}}
+ *     }
  *  }
  *  
  * )
@@ -45,13 +52,13 @@ class Tag
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"tag:read","groupe_tag:read_tag"})
+     * @Groups({"groupe_tag:read","groupe_tag:read_tag"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"tag:read","groupe_tag:read_tag","tag:write","groupe_tag:write"})
+     * @Groups({"groupe_tag:read","tag:write","groupe_tag:write"})
      * @Assert\NotBlank(message="le libelle d'un tag est requis.")
      */
     private $libelle;
