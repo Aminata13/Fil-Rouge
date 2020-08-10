@@ -21,13 +21,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *      },
  *     "get_promo_principal"={
  *          "method"="GET",
- *          "path"="/promotion/principal",
+ *          "path"="/promotions/principal",
  *          "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
  *          "normalization_context"={"groups"={"promotion:read_all"}}
  *      },
  *      "get_apprenants_attente"={
  *         "method"="GET",
- *         "path"="/promotion/apprenants/attente",
+ *         "path"="/promotions/apprenants/attente",
  *         "controller"=ShowApprenantsAttente::class,
  *         "route_name"="show_apprenants_attente"
  *     },
@@ -39,26 +39,26 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *      }, 
  *      "get_promo_principal_id"={
  *          "method"="GET",
- *          "path"="/promotion/{id}/principal",
+ *          "path"="/promotions/{id}/principal",
  *          "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
  *          "normalization_context"={"groups"={"promotion:read_all"}}
  *      },  
  *      "get_promo_id_referentiel"={
  *          "method"="GET",
- *          "path"="/promotion/{id}/referentiels",
+ *          "path"="/promotions/{id}/referentiels",
  *          "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
  *          "normalization_context"={"groups"={"promotion:read_all_ref"}}
  *      },    
  *      "get_apprenants_id_attente"={
  *         "method"="GET",
- *         "path"="/promotion/{id}/apprenants/attente",
+ *         "path"="/promotions/{id}/apprenants/attente",
  *         "controller"=ShowApprenantsAttenteById::class,
  *         "route_name"="show_apprenants_id_attente",
  *         "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))"
  *     },
  *      "get_promo_id_groupes_id_apprenants"={
  *          "method"="GET",
- *          "path"="/promotion/{id_promo}/groupes/{id_groupe}/apprenants",
+ *          "path"="/promotions/{id_promo}/groupes/{id_groupe}/apprenants",
  *          "requirements"={"id_promo"="\d+"},
  *          "controller"=ShowApprenantsByGroupeAndPromo::class,
  *          "route_name"="show_promo_id_groupes_id_apprenants",
@@ -66,7 +66,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *      },
  *      "get_promo_id_formateurs"={
  *          "method"="GET",
- *          "path"="/promotion/{id}/formateurs",
+ *          "path"="/promotions/{id}/formateurs",
  *          "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
  *      } 
  *  }

@@ -23,7 +23,7 @@ class ShowApprenantsAttente
      /**
      * @Route(
      *     name="show_apprenants_attente",
-     *     path="/api/admin/promotion/apprenants/attente",
+     *     path="/api/admin/promotions/apprenants/attente",
      *     methods={"GET"},
      *     defaults={
      *         "_api_resource_class"=Promotion::class,
