@@ -135,9 +135,8 @@ class EditReferentielController extends AbstractController
 
         $programme = file_get_contents($filePath, 'pdf/pdf.' . $fileType);
         $referentiel->setProgramme($programme);
-        $referentiel->setLibelle($data["libelle"]);
-        $referentiel->setDescription($data["description"]);
 
+        dd($)
         $em->persist($referentiel);
         $em->flush();
         return new JsonResponse("success", Response::HTTP_CREATED, [], true);

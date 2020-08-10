@@ -15,6 +15,7 @@ use ApiPlatform\Core\Validator\ValidatorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use ApiPlatform\Core\Validator\ValidatorInterface;
 
 class AddReferentielController extends AbstractController
 {

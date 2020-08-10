@@ -138,6 +138,7 @@ class EditReferentielController extends AbstractController
         $referentiel->setLibelle($data["libelle"]);
         $referentiel->setDescription($data["description"]);
 
+        
         $em->persist($referentiel);
         $em->flush();
         return new JsonResponse("success", Response::HTTP_CREATED, [], true);

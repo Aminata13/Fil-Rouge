@@ -30,9 +30,9 @@ class AddReferentielController extends AbstractController
     {
         $data = $request->request->all();
         $referentiel = $serializer->denormalize($data, Referentiel::class, true, ["groups" => ["referentiel:write"]]);
-        $errors = $validator->validate($referentiel);
+        $errors = $this->validator->validate($referentiel);
         if (($errors) > 0) {
-            $errorsString = $serializer->serialize($errors, 'json');
+            $errorsString = $this->serializer->serialize($errors, 'json');
             return new JsonResponse($errorsString, Response::HTTP_BAD_REQUEST, [], true);
         }
 
