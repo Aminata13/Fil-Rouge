@@ -27,13 +27,13 @@ class EditGroupeCompetenceController extends AbstractController
         
         $groupeCompetence = $repoGroupeComp->find($id);
         if(is_null($groupeCompetence)) {
-            return new JsonResponse("Ce groupe de compétences n'existe pas.", Response::HTTP_BAD_REQUEST, [], true);
+            return new JsonResponse("Ce groupe de compétence n'existe pas.", Response::HTTP_BAD_REQUEST, [], true);
         }
 
         /**Archivage */
         if(isset($data['deleted']) && $data['deleted']) {
             $groupeCompetence->setDeleted(true);
-            return new JsonResponse('Groupe de Compétences archivé.', Response::HTTP_NO_CONTENT, [], true);
+            return new JsonResponse('Compétence archivé archivé.', Response::HTTP_NO_CONTENT, [], true);
         }
 
         if (empty($data['libelle'])) {

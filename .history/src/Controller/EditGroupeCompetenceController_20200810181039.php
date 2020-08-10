@@ -25,17 +25,16 @@ class EditGroupeCompetenceController extends AbstractController
     {
         $data=json_decode($request->getContent(),true);
         
-        $groupeCompetence = $repoGroupeComp->find($id);
-        if(is_null($groupeCompetence)) {
-            return new JsonResponse("Ce groupe de compétences n'existe pas.", Response::HTTP_BAD_REQUEST, [], true);
+        if(is_null($competence)) {
+            return new JsonResponse("Cette compétence n'existe pas.", Response::HTTP_BAD_REQUEST, [], true);
         }
 
         /**Archivage */
         if(isset($data['deleted']) && $data['deleted']) {
-            $groupeCompetence->setDeleted(true);
-            return new JsonResponse('Groupe de Compétences archivé.', Response::HTTP_NO_CONTENT, [], true);
+            $competence->setDeleted(true);
+            return new JsonResponse('Compétence archivé archivé.', Response::HTTP_NO_CONTENT, [], true);
         }
-
+        
         if (empty($data['libelle'])) {
             return new JsonResponse('Le libelle est requis.', Response::HTTP_BAD_REQUEST, [], true);
         }
@@ -45,6 +44,7 @@ class EditGroupeCompetenceController extends AbstractController
             return new JsonResponse("Une compétence est requise.", Response::HTTP_BAD_REQUEST, [], true);
         }
         
+        $groupeCompetence = $repoGroupeComp->find($id);
        
         $tabCompetence = $groupeCompetence->getCompetences();
         

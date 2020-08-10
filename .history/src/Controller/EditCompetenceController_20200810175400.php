@@ -26,15 +26,7 @@ class EditCompetenceController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
         $competence = $repoComp->find($id);
-        if(is_null($competence)) {
-            return new JsonResponse("Cette compétence n'existe pas.", Response::HTTP_BAD_REQUEST, [], true);
-        }
-
-        /**Archivage */
-        if(isset($data['deleted']) && $data['deleted']) {
-            $competence->setDeleted(true);
-            return new JsonResponse('Compétence archivé.', Response::HTTP_NO_CONTENT, [], true);
-        }
+        
 
         if (empty($data['libelle'])) {
             return new JsonResponse('Le libelle est requis.', Response::HTTP_BAD_REQUEST, [], true);

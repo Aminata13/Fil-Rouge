@@ -24,17 +24,6 @@ class EditGroupeTagController extends AbstractController
     public function editGroupeTag(int $id, GroupeTagRepository $repoGroupeTag, TagRepository $repoTag, EntityManagerInterface $em, Request $request)
     {
         $data=json_decode($request->getContent(),true);
-
-        $groupeTag = $repoGroupeTag->find($id);
-        if(is_null($groupeTag)) {
-            return new JsonResponse("Ce groupe de tags n'existe pas.", Response::HTTP_BAD_REQUEST, [], true);
-        }
-
-        /**Archivage */
-        if(isset($data['deleted']) && $data['deleted']) {
-            $groupeTag->setDeleted(true);
-            return new JsonResponse('Groupe de tags archivé.', Response::HTTP_NO_CONTENT, [], true);
-        }
         
         if (empty($data['libelle'])) {
             return new JsonResponse('Le libelle est requis.', Response::HTTP_BAD_REQUEST, [], true);
@@ -45,7 +34,8 @@ class EditGroupeTagController extends AbstractController
             return new JsonResponse("Un tag est requis.", Response::HTTP_BAD_REQUEST, [], true);
         }
         
-        
+        $groupeTag = $repoGroupeTag->find($id);
+       
         $tabTags = $groupeTag->getTags();
         
         foreach ($tabTags as $value) {

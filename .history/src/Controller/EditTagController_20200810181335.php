@@ -32,7 +32,7 @@ class EditTagController extends AbstractController
         /**Archivage */
         if(isset($data['deleted']) && $data['deleted']) {
             $tag->setDeleted(true);
-            return new JsonResponse('Tag archivé.', Response::HTTP_NO_CONTENT, [], true);
+            return new JsonResponse('Groupe de tags archivé.', Response::HTTP_NO_CONTENT, [], true);
         }
 
         if (empty($data['libelle'])) {

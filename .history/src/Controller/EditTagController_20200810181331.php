@@ -26,13 +26,13 @@ class EditTagController extends AbstractController
 
         $tag = $repoTag->find($id);
         if(is_null($tag)) {
-            return new JsonResponse("Ce tag n'existe pas.", Response::HTTP_BAD_REQUEST, [], true);
+            return new JsonResponse("Ce groupe de tag n'existe pas.", Response::HTTP_BAD_REQUEST, [], true);
         }
 
         /**Archivage */
         if(isset($data['deleted']) && $data['deleted']) {
             $tag->setDeleted(true);
-            return new JsonResponse('Tag archivé.', Response::HTTP_NO_CONTENT, [], true);
+            return new JsonResponse('Groupe de tags archivé.', Response::HTTP_NO_CONTENT, [], true);
         }
 
         if (empty($data['libelle'])) {

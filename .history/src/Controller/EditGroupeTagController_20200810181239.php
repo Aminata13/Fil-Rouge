@@ -33,7 +33,7 @@ class EditGroupeTagController extends AbstractController
         /**Archivage */
         if(isset($data['deleted']) && $data['deleted']) {
             $groupeTag->setDeleted(true);
-            return new JsonResponse('Groupe de tags archivé.', Response::HTTP_NO_CONTENT, [], true);
+            return new JsonResponse('Groupe de Compétences archivé.', Response::HTTP_NO_CONTENT, [], true);
         }
         
         if (empty($data['libelle'])) {

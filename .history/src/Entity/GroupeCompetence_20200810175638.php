@@ -98,7 +98,7 @@ class GroupeCompetence
     /**
      * @ORM\Column(type="boolean")
      */
-    private $deleted = false;
+    private $deleted = ;
 
     public function __construct()
     {

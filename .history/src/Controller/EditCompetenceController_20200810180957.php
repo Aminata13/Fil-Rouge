@@ -33,7 +33,7 @@ class EditCompetenceController extends AbstractController
         /**Archivage */
         if(isset($data['deleted']) && $data['deleted']) {
             $competence->setDeleted(true);
-            return new JsonResponse('Compétence archivé.', Response::HTTP_NO_CONTENT, [], true);
+            return new JsonResponse('Référentiel archivé.', Response::HTTP_NO_CONTENT, [], true);
         }
 
         if (empty($data['libelle'])) {
