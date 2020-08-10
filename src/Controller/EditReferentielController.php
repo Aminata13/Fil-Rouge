@@ -28,6 +28,19 @@ class EditReferentielController extends AbstractController
     public function editReferentiel(Request $request, int $id, ReferentielRepository $repoReferentiel, GroupeCompetenceRepository $repoGroupeComp, EntityManagerInterface $em, CritereAdmissionRepository $repoAdmisssion, CritereEvaluationRepository $repoEvaluation)
     {
         $data = $request->request->all();
+
+        $referentiel = $repoReferentiel->find($id);
+        if(is_null($referentiel)) {
+            return new JsonResponse("Ce référentiel n'existe pas.", Response::HTTP_BAD_REQUEST, [], true);
+        }
+
+        /**Archivage */
+        if(isset($data['deleted']) && $data['deleted']) {
+            $referentiel->setDeleted(true);
+            return new JsonResponse('Référentiel archivé.', Response::HTTP_NO_CONTENT, [], true);
+        }
+
+        /**Modification */
         if (empty($data['libelle'])) {
             return new JsonResponse('Le libelle est requis.', Response::HTTP_BAD_REQUEST, [], true);
         }
@@ -44,7 +57,6 @@ class EditReferentielController extends AbstractController
             return new JsonResponse("Un groupe de compétences est requis.", Response::HTTP_BAD_REQUEST, [], true);
         }
 
-        $referentiel = $repoReferentiel->find($id);
 
         $tabCritereAdmission = $referentiel->getCritereAdmissions();
         foreach ($tabCritereAdmission as $value) {
@@ -61,7 +73,7 @@ class EditReferentielController extends AbstractController
             $referentiel->removeGroupeCompetence($value);
         }
 
-        /**Partie ajout */
+        /**Partie ajout de la modification*/
         $tabLibelle = [];
         foreach ($data['critereAdmissions'] as $value) {
             if ($value != "") {
