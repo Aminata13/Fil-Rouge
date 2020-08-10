@@ -30,7 +30,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *         "path"="/promotion/apprenants/attente",
  *         "controller"=ShowApprenantsAttente::class,
  *         "route_name"="show_apprenants_attente"
- *     },
+ *     }
  *     "post"
  *  },
  *  itemOperations={
