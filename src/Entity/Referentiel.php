@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
@@ -69,12 +70,14 @@ class Referentiel
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"referentiel:write","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all", "promotion:read","promotion:read_all","promotion:read_all_ref"})
+     * @Assert\NotBlank(message="Le libelle est requis.")
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="text")
      * @Groups({"referentiel:write","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all", "promotion:read","promotion:read_all","promotion:read_all_ref"})
+     * @Assert\NotBlank(message="La présentation est requise.")
      */
     private $description;
 
