@@ -23,21 +23,35 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          "path"="/referentiels/groupe_competences",
  *          "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))"
  *      },
- *      "post"={
- *          "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))"
- *      }
+ *      "post_referentiel"={
+ *         "method"="POST",
+ *         "path"="/referentiels",
+ *         "controller"=AddReferentiel::class,
+ *         "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
+ *         "route_name"="add_referentiel",
+ *         "denormalization_context"={"groups"={"referentiel:write"}}
+ *     }
  *  },
  *  itemOperations={
  *      "get"={
  *          "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_APPRENANT') or is_granted('ROLE_CM'))",
  *          "normalization_context"={"groups"={"referentiel:read"}}
  *      },
- *      "getByIdCompetence"={
+ *      "get_groupe_referentiel_id"={
  *          "method"="GET",
- *          "path"="/referentiels/{id}/groupe_competences",
+ *          "path"="/referentiels/{id_referentiel}/groupe_competences/{id_groupe}",
+ *          "controller"=ShowGroupeByReferentiel::class,
+ *          "route_name"="show_groupe_referentiel_id",
  *          "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_APPRENANT') or is_granted('ROLE_CM'))"
  *      },
- *      "put"
+ *      "put_referentiel"={
+ *         "method"="PUT",
+ *         "path"="/referentiels/{id}",
+ *         "controller"=EditReferentielController::class,
+ *         "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
+ *         "route_name"="edit_referentiel",
+ *         "denormalization_context"={"groups"={"referentiel:write_all"}}
+ *     }
  *  }
  * )
  * @ORM\Entity(repositoryClass=ReferentielRepository::class)
@@ -54,24 +68,24 @@ class Referentiel
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"promo_groupe_apprenants:read","referentiel:read","referentiel:read_all", "promotion:read","promotion:read_all","promotion:read_all_ref"})
+     * @Groups({"referentiel:write","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all", "promotion:read","promotion:read_all","promotion:read_all_ref"})
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"promo_groupe_apprenants:read","referentiel:read","referentiel:read_all", "promotion:read","promotion:read_all","promotion:read_all_ref"})
+     * @Groups({"referentiel:write","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all", "promotion:read","promotion:read_all","promotion:read_all_ref"})
      */
     private $description;
 
     /**
-     * @ORM\OneToMany(targetEntity=CritereAdmission::class, mappedBy="referentiel", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=CritereAdmission::class, mappedBy="referentiel", orphanRemoval=true, cascade={"persist"})
      * @Groups({"promo_groupe_apprenants:read","referentiel:read","referentiel:read_all","promotion:read","promotion:read_all","promotion:read_all_ref"})
      */
     private $critereAdmissions;
 
     /**
-     * @ORM\OneToMany(targetEntity=CritereEvaluation::class, mappedBy="referentiel", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=CritereEvaluation::class, mappedBy="referentiel", orphanRemoval=true, cascade={"persist"})
      * @Groups({"promo_groupe_apprenants:read","referentiel:read","referentiel:read_all","promotion:read","promotion:read_all","promotion:read_all_ref"})
      */
     private $critereEvaluations;
@@ -84,7 +98,7 @@ class Referentiel
 
     /**
      * @ORM\Column(type="blob")
-     * @Groups({"promo_groupe_apprenants:read","promotion:read","promotion:read_all","promotion:read_all_ref"})
+     * @Groups({"referentiel:write","referentiel:read","referentiel:read_all","promo_groupe_apprenants:read","promotion:read","promotion:read_all","promotion:read_all_ref"})
      */
     private $programme;
 
@@ -92,6 +106,11 @@ class Referentiel
      * @ORM\ManyToMany(targetEntity=Promotion::class, mappedBy="referentiels")
      */
     private $promotions;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $deleted=false;
 
     public function __construct()
     {
@@ -220,12 +239,12 @@ class Referentiel
 
     public function getProgramme()
     {
-        return $this->programme;
+        return $this->programme!=null?stream_get_contents($this->programme):null;
     }
 
     public function setProgramme($programme): self
     {
-        $this->programme = $programme;
+        $this->programme = base64_encode($programme);
 
         return $this;
     }
@@ -254,6 +273,18 @@ class Referentiel
             $this->promotions->removeElement($promotion);
             $promotion->removeReferentiel($this);
         }
+
+        return $this;
+    }
+
+    public function getDeleted(): ?bool
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(bool $deleted): self
+    {
+        $this->deleted = $deleted;
 
         return $this;
     }

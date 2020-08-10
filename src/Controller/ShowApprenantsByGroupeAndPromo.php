@@ -26,7 +26,7 @@ class ShowApprenantsByGroupeAndPromo
     /**
      * @Route(
      *     name="show_promo_id_groupes_id_apprenants",
-     *     path="/api/admin/promotion/{id_promo}/groupes/{id_groupe}/apprenants",
+     *     path="/api/admin/promotions/{id_promo}/groupes/{id_groupe}/apprenants",
      *     methods={"GET"},
      *     defaults={
      *         "_api_resource_class"=Promotion::class,
