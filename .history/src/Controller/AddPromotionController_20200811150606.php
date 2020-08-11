@@ -3,13 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Apprenant;
+use App\Entity\Promotion;
 use App\Repository\UserProfilRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use ApiPlatform\Core\Validator\ValidatorInterface;
-use App\Entity\Apprenant;
+use App\Repository\LangueRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,19 +20,44 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 /**
  * @Route("/api")
  */
-class UserController extends AbstractController
+class AddPromotionController extends AbstractController
 {
     /**
-     * @Route("/admin/users", name="add_user", methods="POST")
+     * @Route("/admin/promotion", name="add_promotion", methods="POST")
      */
-    public function addUser(SerializerInterface $serializer, Request $request, ValidatorInterface $validator, EntityManagerInterface $em, UserProfilRepository $repo, UserPasswordEncoderInterface $encoder)
+    public function addUser(LangueRepository $repoLangue,SerializerInterface $serializer, Request $request, ValidatorInterface $validator, EntityManagerInterface $em, UserProfilRepository $repo, UserPasswordEncoderInterface $encoder)
     {
+        $promotionTab = $request->request->all();
+
+        dd($promotionTab['langue']);
+
+        if (empty($promotionTab['langue'])) {
+            return new JsonResponse("La langue est obligatoire", Response::HTTP_BAD_REQUEST, [], true);
+        }
+        $repoLangue->findBy(array('libelle' => $promotionTab['langue']));
+        
+
+        $promotion = $serializer->denormalize($promotionTab, Promotion::class, true);
+
+        // Traitement Image
+        $image = $request->files;
+        if (is_null($image->get('image'))) {
+            return new JsonResponse("L'image est obligatoire", Response::HTTP_BAD_REQUEST, [], true);
+        }
+        $imageType = explode("/", $image->get('image')->getMimeType())[1];
+        $imagePath = $image->get('image')->getRealPath();
+
+        $image = file_get_contents($imagePath, 'img/img.' . $imageType);
+        $promotion->setimage($image);
+        
+        dd($promotion);
+
         $currentUser = $this->getUser();
         if (!in_array("ROLE_ADMIN", $currentUser->getRoles())) {
             return new JsonResponse('Vous n\'avez pas accès à cette ressource.', Response::HTTP_FORBIDDEN, [], true);
         }
 
-        $userTab = $request->request->all();
+        
 
         if (empty($userTab['profil'])){
             return new JsonResponse("Le profil est obligatoire", Response::HTTP_BAD_REQUEST, [], true);
@@ -52,15 +79,15 @@ class UserController extends AbstractController
         $user->setProfil($profil);
         $user->setPassword($encoder->encodePassword($user, $userTab['password']));
 
-        $avatar = $request->files;
-        if (is_null($avatar->get('avatar'))) {
-            return new JsonResponse("L'avatar est obligatoire", Response::HTTP_BAD_REQUEST, [], true);
+        $image = $request->files;
+        if (is_null($image->get('image'))) {
+            return new JsonResponse("L'image est obligatoire", Response::HTTP_BAD_REQUEST, [], true);
         }
-        $avatarType = explode("/", $avatar->get('avatar')->getMimeType())[1];
-        $avatarPath = $avatar->get('avatar')->getRealPath();
+        $imageType = explode("/", $image->get('image')->getMimeType())[1];
+        $imagePath = $image->get('image')->getRealPath();
 
-        $image = file_get_contents($avatarPath, 'img/img.' . $avatarType);
-        $user->setAvatar($image);
+        $image = file_get_contents($imagePath, 'img/img.' . $imageType);
+        $user->setimage($image);
 
         $errors = $validator->validate($user);
         if (($errors) > 0) {

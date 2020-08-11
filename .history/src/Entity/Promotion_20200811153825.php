@@ -35,6 +35,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          "method"="POST",
  *          "path"="/admin/promotion",
  *          "route_name"="add_promotion",
+ *          "denormalization_context"={"groups"={"promotion:write"}}
  *      }
  *  },
  *  itemOperations={

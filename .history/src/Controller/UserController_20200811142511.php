@@ -45,7 +45,6 @@ class UserController extends AbstractController
         if ($libelle == "APPRENANT") {
             $object = new Apprenant();
         }
-        
         unset($userTab['profil']);
         
         $user = $serializer->denormalize($userTab, User::class, true);

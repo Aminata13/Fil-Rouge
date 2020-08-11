@@ -35,6 +35,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          "method"="POST",
  *          "path"="/admin/promotion",
  *          "route_name"="add_promotion",
+ *          "denormalization_context"={"groups"={"promotion:write"}}
  *      }
  *  },
  *  itemOperations={
@@ -88,37 +89,37 @@ class Promotion
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"promotion:write","promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
+     * @Groups({,"promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
      */
     private $titre;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"promotion:write","promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
+     * @Groups({"promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
      */
     private $description;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"promotion:write","promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
+     * @Groups({"promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
      */
     private $lieu;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"promotion:write","promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
+     * @Groups({"promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
      */
     private $referenceAgate;
 
     /**
      * @ORM\Column(type="date")
-     * @Groups({"promotion:write","promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
+     * @Groups({"promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
      */
     private $dateDebut;
 
     /**
      * @ORM\Column(type="date")
-     * @Groups({"promotion:write","promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
+     * @Groups({"promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
      */
     private $dateFin;
 

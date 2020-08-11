@@ -44,10 +44,10 @@ class UserController extends AbstractController
         $object = "";
         if ($libelle == "APPRENANT") {
             $object = new Apprenant();
+        
         }
-        
         unset($userTab['profil']);
-        
+
         $user = $serializer->denormalize($userTab, User::class, true);
         $user->setProfil($profil);
         $user->setPassword($encoder->encodePassword($user, $userTab['password']));

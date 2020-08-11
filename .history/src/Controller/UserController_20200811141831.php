@@ -31,7 +31,7 @@ class UserController extends AbstractController
         }
 
         $userTab = $request->request->all();
-
+        
         if (empty($userTab['profil'])){
             return new JsonResponse("Le profil est obligatoire", Response::HTTP_BAD_REQUEST, [], true);
         }
@@ -45,9 +45,7 @@ class UserController extends AbstractController
         if ($libelle == "APPRENANT") {
             $object = new Apprenant();
         }
-        
         unset($userTab['profil']);
-        
         $user = $serializer->denormalize($userTab, User::class, true);
         $user->setProfil($profil);
         $user->setPassword($encoder->encodePassword($user, $userTab['password']));

@@ -18,19 +18,21 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 /**
  * @Route("/api")
  */
-class UserController extends AbstractController
+class AddPromotionController extends AbstractController
 {
     /**
-     * @Route("/admin/users", name="add_user", methods="POST")
+     * @Route("/admin/promotion", name="add_promotion", methods="POST")
      */
     public function addUser(SerializerInterface $serializer, Request $request, ValidatorInterface $validator, EntityManagerInterface $em, UserProfilRepository $repo, UserPasswordEncoderInterface $encoder)
     {
+        $userTab = $request->request->all();
+        dd()
         $currentUser = $this->getUser();
         if (!in_array("ROLE_ADMIN", $currentUser->getRoles())) {
             return new JsonResponse('Vous n\'avez pas accès à cette ressource.', Response::HTTP_FORBIDDEN, [], true);
         }
 
-        $userTab = $request->request->all();
+        
 
         if (empty($userTab['profil'])){
             return new JsonResponse("Le profil est obligatoire", Response::HTTP_BAD_REQUEST, [], true);

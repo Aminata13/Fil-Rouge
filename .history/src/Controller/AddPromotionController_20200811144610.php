@@ -18,19 +18,35 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 /**
  * @Route("/api")
  */
-class UserController extends AbstractController
+class AddPromotionController extends AbstractController
 {
     /**
-     * @Route("/admin/users", name="add_user", methods="POST")
+     * @Route("/admin/promotion", name="add_promotion", methods="POST")
      */
     public function addUser(SerializerInterface $serializer, Request $request, ValidatorInterface $validator, EntityManagerInterface $em, UserProfilRepository $repo, UserPasswordEncoderInterface $encoder)
     {
+        $userTab = $request->request->all();
+
+
+        // Traitement Image
+        $ = $request->files;
+        if (is_null($avatar->get('avatar'))) {
+            return new JsonResponse("L'avatar est obligatoire", Response::HTTP_BAD_REQUEST, [], true);
+        }
+        $avatarType = explode("/", $avatar->get('avatar')->getMimeType())[1];
+        $avatarPath = $avatar->get('avatar')->getRealPath();
+
+        $image = file_get_contents($avatarPath, 'img/img.' . $avatarType);
+        $user->setAvatar($image);
+
+        dd($userTab);
+
         $currentUser = $this->getUser();
         if (!in_array("ROLE_ADMIN", $currentUser->getRoles())) {
             return new JsonResponse('Vous n\'avez pas accès à cette ressource.', Response::HTTP_FORBIDDEN, [], true);
         }
 
-        $userTab = $request->request->all();
+        
 
         if (empty($userTab['profil'])){
             return new JsonResponse("Le profil est obligatoire", Response::HTTP_BAD_REQUEST, [], true);

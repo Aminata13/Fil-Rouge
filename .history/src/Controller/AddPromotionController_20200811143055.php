@@ -18,7 +18,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 /**
  * @Route("/api")
  */
-class UserController extends AbstractController
+class A extends AbstractController
 {
     /**
      * @Route("/admin/users", name="add_user", methods="POST")

@@ -18,10 +18,10 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 /**
  * @Route("/api")
  */
-class UserController extends AbstractController
+class AddPromotionController extends AbstractController
 {
     /**
-     * @Route("/admin/users", name="add_user", methods="POST")
+     * @Route("/admin/promotion", name="add_promotion", methods="POST")
      */
     public function addUser(SerializerInterface $serializer, Request $request, ValidatorInterface $validator, EntityManagerInterface $em, UserProfilRepository $repo, UserPasswordEncoderInterface $encoder)
     {
