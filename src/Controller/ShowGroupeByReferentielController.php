@@ -5,12 +5,13 @@ namespace App\Controller;
 use App\Entity\Referentiel;
 use App\Repository\ReferentielRepository;
 use App\Repository\GroupeCompetenceRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class ShowGroupeByReferentiel
+class ShowGroupeByReferentielController extends AbstractController
 {
     private $repoReferentiel;
     private $repoGroupeComp;
@@ -27,16 +28,11 @@ class ShowGroupeByReferentiel
      * @Route(
      *     name="show_groupe_referentiel_id",
      *     path="/api/admin/referentiels/{id_referentiel}/groupe_competences/{id_groupe}",
-     *     methods={"GET"},
-     *     defaults={
-     *         "_api_resource_class"=Referentiel::class,
-     *         "_api_collection_operation_name"="get_groupe_referentiel_id"
-     *     }
+     *     methods={"GET"}
      * )
      */
-    public function __invoke(int $id_referentiel, int $id_groupe)
+    public function showGroupe(int $id_referentiel, int $id_groupe)
     {
-        dd($id_groupe);
         $referentiel = $this->repoReferentiel->find($id_referentiel);
         $groupeCompetence = $this->repoGroupeComp->find($id_groupe);
 
