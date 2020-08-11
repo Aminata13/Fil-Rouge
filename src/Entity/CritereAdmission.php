@@ -10,6 +10,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ApiResource(
  *  routePrefix="/admin",
+ *  normalizationContext={"groups"={"critereAdmission:read"}},
  *  itemOperations={
  *      "put","get"
  *  }
@@ -22,19 +23,20 @@ class CritereAdmission
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"promo_groupe_apprenants:read","referentiel:read","referentiel:read_all","promotion:read","promotion:read_all","promotion:read_all_ref"})
+     * @Groups({"promo_groupe_apprenants:read","critereAdmission:read","referentiel:read","referentiel:read_all","promotion:read","promotion:read_all","promotion:read_all_ref"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"promo_groupe_apprenants:read","referentiel:read","referentiel:read_all","promotion:read","promotion:read_all","promotion:read_all_ref"})
+     * @Groups({"promo_groupe_apprenants:read","critereAdmission:read","referentiel:read","referentiel:read_all","promotion:read","promotion:read_all","promotion:read_all_ref"})
      */
     private $libelle;
 
     /**
      * @ORM\ManyToOne(targetEntity=Referentiel::class, inversedBy="critereAdmissions")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"critereAdmission:read"})
      */
     private $referentiel;
 

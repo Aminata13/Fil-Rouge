@@ -34,9 +34,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     }
  *  },
  *  itemOperations={
- *      "get"={
- *          "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_APPRENANT') or is_granted('ROLE_CM'))",
- *          "normalization_context"={"groups"={"referentiel:read"}}
+ *      "get_referentiel_id"={
+ *          "method"="GET",
+ *          "path"="/referentiels/{id}",
+ *          "defaults"={"id"=null}
  *      },
  *      "get_groupe_referentiel_id"={
  *          "method"="GET",
