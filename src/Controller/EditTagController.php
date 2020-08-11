@@ -32,11 +32,16 @@ class EditTagController extends AbstractController
         /**Archivage */
         if(isset($data['deleted']) && $data['deleted']) {
             $tag->setDeleted(true);
+            $em->flush();
             return new JsonResponse('Tag archivé.', Response::HTTP_NO_CONTENT, [], true);
         }
 
         if (empty($data['libelle'])) {
             return new JsonResponse('Le libelle est requis.', Response::HTTP_BAD_REQUEST, [], true);
+        }
+        
+        if (empty($data['groupeTags'])) {
+            return new JsonResponse('Le groupe de tags est requis.', Response::HTTP_BAD_REQUEST, [], true);
         }
 
         
@@ -48,7 +53,7 @@ class EditTagController extends AbstractController
 
         for ($i = 0; $i < count($data["groupeTags"]); $i++) {
             $grpTag = $repoGroupeTag->findBy(array('libelle' => $data["groupeTags"][$i]["libelle"]));
-            if (!is_null($grpTag)) {
+            if (!empty($grpTag)) {
                 $tag->addGroupeTag($grpTag[0]);
             }
         }

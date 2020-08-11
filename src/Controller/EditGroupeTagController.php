@@ -27,12 +27,13 @@ class EditGroupeTagController extends AbstractController
 
         $groupeTag = $repoGroupeTag->find($id);
         if(is_null($groupeTag)) {
+            $em->flush();
             return new JsonResponse("Ce groupe de tags n'existe pas.", Response::HTTP_BAD_REQUEST, [], true);
         }
 
         /**Archivage */
         if(isset($data['deleted']) && $data['deleted']) {
-            $groupeTag->setDeleted(true);
+            $groupeTag->setDeleted($data['deleted']);
             return new JsonResponse('Groupe de tags archivé.', Response::HTTP_NO_CONTENT, [], true);
         }
         

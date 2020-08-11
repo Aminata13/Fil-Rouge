@@ -101,7 +101,7 @@ class Referentiel
 
     /**
      * @ORM\Column(type="blob")
-     * @Groups({"referentiel:write","referentiel:read","referentiel:read_all","promo_groupe_apprenants:read","promotion:read","promotion:read_all","promotion:read_all_ref"})
+     * @Groups({"referentiel:write","referentiel:read_all","promo_groupe_apprenants:read","promotion:read","promotion:read_all","promotion:read_all_ref"})
      */
     private $programme;
 
@@ -242,12 +242,14 @@ class Referentiel
 
     public function getProgramme()
     {
-        return $this->programme!=null?stream_get_contents($this->programme):null;
+        // return $this->programme!=null?stream_get_contents($this->programme):null;
+        return $this->programme;
     }
 
     public function setProgramme($programme): self
     {
-        $this->programme = base64_encode($programme);
+        // $this->programme = base64_encode($programme);
+        $this->programme = $programme;
 
         return $this;
     }

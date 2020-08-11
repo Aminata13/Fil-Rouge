@@ -37,6 +37,7 @@ class EditReferentielController extends AbstractController
         /**Archivage */
         if(isset($data['deleted']) && $data['deleted']) {
             $referentiel->setDeleted(true);
+            $em->flush();
             return new JsonResponse('Référentiel archivé.', Response::HTTP_NO_CONTENT, [], true);
         }
 

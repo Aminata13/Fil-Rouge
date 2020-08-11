@@ -33,6 +33,7 @@ class EditGroupeCompetenceController extends AbstractController
         /**Archivage */
         if(isset($data['deleted']) && $data['deleted']) {
             $groupeCompetence->setDeleted(true);
+            $em->flush();
             return new JsonResponse('Groupe de Compétences archivé.', Response::HTTP_NO_CONTENT, [], true);
         }
 

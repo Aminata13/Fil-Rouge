@@ -55,13 +55,13 @@ class GroupeTag
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"groupe_tag:read"})
+     * @Groups({"groupe_tag:read","tag:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"groupe_tag:read","tag:write","groupe_tag:write"})
+     * @Groups({"groupe_tag:read","tag:write","groupe_tag:write","tag:read"})
      */
     private $libelle;
 
@@ -75,7 +75,7 @@ class GroupeTag
     /**
      * @ORM\Column(type="boolean")
      */
-    private $deleted = false;
+    private $deleted;
 
     public function __construct()
     {
