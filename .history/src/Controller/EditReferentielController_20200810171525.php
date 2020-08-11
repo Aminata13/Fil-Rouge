@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Controller;
+
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+class EditReferentielController extends AbstractController
+{
+    /**
+     * @Route(
+     *     name="edit_referentiel",
+     *     path="/api/admin/referentiels/{id}",
+     *     methods={"PU"}
+     * )
+     */
+    public function editReferentiel(Request $request, int $id)
+    {
+        dd($id);
+    }
+}

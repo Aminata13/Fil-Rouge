@@ -55,13 +55,13 @@ class GroupeTag
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"groupe_tag:read"})
+     * @Groups({"groupe_tag:read","tag:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"groupe_tag:read","tag:write","groupe_tag:write"})
+     * @Groups({"groupe_tag:read","tag:write","groupe_tag:write","tag:read"})
      */
     private $libelle;
 
@@ -71,6 +71,11 @@ class GroupeTag
      * @ApiSubresource
      */
     private $tags;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $deleted;
 
     public function __construct()
     {
@@ -116,6 +121,18 @@ class GroupeTag
         if ($this->tags->contains($tag)) {
             $this->tags->removeElement($tag);
         }
+
+        return $this;
+    }
+
+    public function getDeleted(): ?bool
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(bool $deleted): self
+    {
+        $this->deleted = $deleted;
 
         return $this;
     }

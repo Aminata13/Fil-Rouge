@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
@@ -69,12 +70,14 @@ class Referentiel
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"referentiel:write","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all", "promotion:read","promotion:read_all","promotion:read_all_ref"})
+     * @Assert\NotBlank(message="Le libelle est requis.")
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="text")
      * @Groups({"referentiel:write","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all", "promotion:read","promotion:read_all","promotion:read_all_ref"})
+     * @Assert\NotBlank(message="La présentation est requise.")
      */
     private $description;
 
@@ -98,7 +101,7 @@ class Referentiel
 
     /**
      * @ORM\Column(type="blob")
-     * @Groups({"referentiel:write","referentiel:read","referentiel:read_all","promo_groupe_apprenants:read","promotion:read","promotion:read_all","promotion:read_all_ref"})
+     * @Groups({"referentiel:write","referentiel:read_all","promo_groupe_apprenants:read","promotion:read","promotion:read_all","promotion:read_all_ref"})
      */
     private $programme;
 
@@ -239,12 +242,14 @@ class Referentiel
 
     public function getProgramme()
     {
-        return $this->programme!=null?stream_get_contents($this->programme):null;
+        // return $this->programme!=null?stream_get_contents($this->programme):null;
+        return $this->programme;
     }
 
     public function setProgramme($programme): self
     {
-        $this->programme = base64_encode($programme);
+        // $this->programme = base64_encode($programme);
+        $this->programme = $programme;
 
         return $this;
     }

@@ -23,7 +23,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *  },
  *  routePrefix="/admin",
  *  collectionOperations={
- *      "get",
+ *      "get"={
+ *          "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
+ *          "normalization_context"={"groups"={"tag:read"}}
+ *      },
  *      "post_tag"={
  *         "method"="POST",
  *         "path"="/tags",
@@ -33,7 +36,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *     }
  *  },
  *  itemOperations={
- *      "get",
+ *      "get"={"normalization_context"={"groups"={"tag:read"}}},
  *      "put_tag"={
  *         "method"="PUT",
  *         "path"="/tags/{id}",
@@ -52,22 +55,27 @@ class Tag
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"groupe_tag:read","groupe_tag:read_tag"})
+     * @Groups({"groupe_tag:read","groupe_tag:read_tag","tag:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"groupe_tag:read","tag:write","groupe_tag:write"})
+     * @Groups({"groupe_tag:read","tag:write","groupe_tag:write","tag:read"})
      * @Assert\NotBlank(message="le libelle d'un tag est requis.")
      */
     private $libelle;
 
     /**
      * @ORM\ManyToMany(targetEntity=GroupeTag::class, mappedBy="tags")
-     * @Groups({"tag:write"})
+     * @Groups({"tag:write","tag:read"})
      */
     private $groupeTags;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $deleted = false;
 
     public function __construct()
     {
@@ -115,6 +123,18 @@ class Tag
             $this->groupeTags->removeElement($groupeTag);
             $groupeTag->removeTag($this);
         }
+
+        return $this;
+    }
+
+    public function getDeleted(): ?bool
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(bool $deleted): self
+    {
+        $this->deleted = $deleted;
 
         return $this;
     }
