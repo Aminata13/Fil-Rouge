@@ -82,69 +82,69 @@ class Promotion
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
+     * @Groups({"groupe:read","promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"promotion:write","promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
+     * @Groups({"groupe:read","promotion:write","promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
      */
     private $titre;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"promotion:write","promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
+     * @Groups({"groupe:read","promotion:write","promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
      */
     private $description;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"promotion:write","promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
+     * @Groups({"groupe:read","promotion:write","promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
      */
     private $lieu;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"promotion:write","promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
+     * @Groups({"groupe:read","promotion:write","promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
      */
     private $referenceAgate;
 
     /**
      * @ORM\Column(type="date")
-     * @Groups({"promotion:write","promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
+     * @Groups({"groupe:read","promotion:write","promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
      */
     private $dateDebut;
 
     /**
      * @ORM\Column(type="date")
-     * @Groups({"promotion:write","promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
+     * @Groups({"groupe:read","promotion:write","promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
      */
     private $dateFin;
 
     /**
      * @ORM\ManyToMany(targetEntity=Referentiel::class, inversedBy="promotions")
-     * @Groups({"promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
+     * @Groups({"groupe:read","promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
      */
     private $referentiels;
 
     /**
      * @ORM\Column(type="blob", nullable=true)
-     * @Groups({"promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
+     * @Groups({"groupe:read","promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
      */
     private $image;
 
     /**
      * @ORM\ManyToOne(targetEntity=Langue::class, inversedBy="promotions")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
+     * @Groups({"groupe:read","promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
      */
     private $langue;
 
     /**
      * @ORM\ManyToOne(targetEntity=Fabrique::class, inversedBy="promotions")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
+     * @Groups({"groupe:read","promotion:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
      */
     private $fabrique;
 

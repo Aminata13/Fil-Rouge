@@ -8,10 +8,52 @@ use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=GroupeRepository::class)
- * @ApiResource()
+ * @UniqueEntity(
+ * fields={"libelle"},
+ * message="Le libelle existe déjà."
+ * )
+ * @ApiResource(
+ *  attributes={
+ *      "security"="is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR')",
+ *      "security_message"="Vous n'avez pas accès à cette ressource."
+ *  },
+ *  routePrefix="/admin",
+ *  collectionOperations={
+ *      "get"={
+ *          "normalization_context"={"groups"={"groupe:read"}}
+ *      },
+ *      "get_apprenants_groupe"={
+ *          "method"="GET",
+ *          "path"="/groupes/apprenants",
+ *          "controller"=ShowApprenantsByGroupe::class,
+ *          "route_name"="show_apprenants_groupe",
+ *          "normalization_context"={"groups"={"apprenants_groupe:read"}}
+ *      },
+ *      "post_groupe"={
+ *         "method"="POST",
+ *         "path"="/groupes",
+ *         "controller"=AddGroupe::class,
+ *         "route_name"="add_groupe",
+ *         "denormalization_context"={"groups"={"groupe:write"}}
+ *     }
+ *  },
+ *  itemOperations={
+ *      "get"={
+ *          "normalization_context"={"groups"={"groupe:read"}}
+ *      },
+ *      "put_groupe"={
+ *         "method"="PUT",
+ *         "path"="/groupes/{id}",
+ *         "controller"=EditGroupeController::class,
+ *         "route_name"="edit_groupe",
+ *         "denormalization_context"={"groups"={"groupe:write"}}
+ *     }
+ *  }
+ * )
  */
 class Groupe
 {
@@ -19,35 +61,37 @@ class Groupe
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"promotion:read","promo_groupe_apprenants:read"})
+     * @Groups({"groupe:read","apprenants_groupe:read","promotion:read","promo_groupe_apprenants:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"promotion:read","promo_groupe_apprenants:read"})
+     * @Groups({"groupe:read","apprenants_groupe:read","promotion:read","promo_groupe_apprenants:read"})
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="date")
-     * @Groups({"promotion:read","promo_groupe_apprenants:read"})
+     * @Groups({"groupe:read","apprenants_groupe:read","promotion:read","promo_groupe_apprenants:read"})
      */
     private $dateCreation;
 
     /**
      * @ORM\ManyToMany(targetEntity=Apprenant::class, inversedBy="groupes")
-     * @Groups({"promo_groupe_apprenants:read"})
+     * @Groups({"groupe:read","apprenants_groupe:read","promo_groupe_apprenants:read"})
      */
     private $apprenants;
 
     /**
      * @ORM\ManyToOne(targetEntity=Promotion::class, inversedBy="groupes")
+     * @Groups({"groupe:read"})
      */
     private $promotion;
 
     /**
      * @ORM\ManyToMany(targetEntity=Formateur::class, mappedBy="groupes")
+     * @Groups({"groupe:read"})
      */
     private $formateurs;
 

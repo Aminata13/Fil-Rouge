@@ -33,13 +33,13 @@ class ProfilSortie
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"apprenant:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"groupe:read","apprenants_groupe:read","apprenant:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"apprenant:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"groupe:read","apprenants_groupe:read","apprenant:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $libelle;
 

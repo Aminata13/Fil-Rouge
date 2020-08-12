@@ -64,33 +64,33 @@ class Referentiel
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"promo_groupe_apprenants:read","referentiel:read","referentiel:read_all","promotion:read","promotion:read_all","promotion:read_all_ref"})
+     * @Groups({"groupe:read","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all","promotion:read","promotion:read_all","promotion:read_all_ref"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"referentiel:write","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all", "promotion:read","promotion:read_all","promotion:read_all_ref"})
+     * @Groups({"groupe:read","referentiel:write","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all", "promotion:read","promotion:read_all","promotion:read_all_ref"})
      * @Assert\NotBlank(message="Le libelle est requis.")
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"referentiel:write","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all", "promotion:read","promotion:read_all","promotion:read_all_ref"})
+     * @Groups({"groupe:read","referentiel:write","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all", "promotion:read","promotion:read_all","promotion:read_all_ref"})
      * @Assert\NotBlank(message="La présentation est requise.")
      */
     private $description;
 
     /**
      * @ORM\OneToMany(targetEntity=CritereAdmission::class, mappedBy="referentiel", orphanRemoval=true, cascade={"persist"})
-     * @Groups({"promo_groupe_apprenants:read","referentiel:read","referentiel:read_all","promotion:read","promotion:read_all","promotion:read_all_ref"})
+     * @Groups({"groupe:read","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all","promotion:read","promotion:read_all","promotion:read_all_ref"})
      */
     private $critereAdmissions;
 
     /**
      * @ORM\OneToMany(targetEntity=CritereEvaluation::class, mappedBy="referentiel", orphanRemoval=true, cascade={"persist"})
-     * @Groups({"promo_groupe_apprenants:read","referentiel:read","referentiel:read_all","promotion:read","promotion:read_all","promotion:read_all_ref"})
+     * @Groups({"groupe:read","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all","promotion:read","promotion:read_all","promotion:read_all_ref"})
      */
     private $critereEvaluations;
 
@@ -102,7 +102,7 @@ class Referentiel
 
     /**
      * @ORM\Column(type="blob")
-     * @Groups({"referentiel:read","referentiel:write","promo_groupe_apprenants:read","promotion:read","promotion:read_all","promotion:read_all_ref"})
+     * @Groups({"groupe:read","referentiel:read","referentiel:write","promo_groupe_apprenants:read","promotion:read","promotion:read_all","promotion:read_all_ref"})
      */
     private $programme;
 

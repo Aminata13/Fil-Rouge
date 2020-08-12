@@ -23,13 +23,13 @@ class CritereAdmission
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"promo_groupe_apprenants:read","critereAdmission:read","referentiel:read","referentiel:read_all","promotion:read","promotion:read_all","promotion:read_all_ref"})
+     * @Groups({"groupe:read","promo_groupe_apprenants:read","critereAdmission:read","referentiel:read","referentiel:read_all","promotion:read","promotion:read_all","promotion:read_all_ref"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"promo_groupe_apprenants:read","critereAdmission:read","referentiel:read","referentiel:read_all","promotion:read","promotion:read_all","promotion:read_all_ref"})
+     * @Groups({"groupe:read","promo_groupe_apprenants:read","critereAdmission:read","referentiel:read","referentiel:read_all","promotion:read","promotion:read_all","promotion:read_all_ref"})
      */
     private $libelle;
 

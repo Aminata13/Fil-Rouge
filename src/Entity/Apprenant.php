@@ -26,27 +26,27 @@ class Apprenant
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"apprenant:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"groupe:read","apprenants_groupe:read","apprenant:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $id;
 
     /**
      * @ORM\OneToOne(targetEntity=User::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=true)
-     * @Groups({"apprenant:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"groupe:read","apprenants_groupe:read","apprenant:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity=ProfilSortie::class, inversedBy="apprenants")
-     * @Groups({"apprenant:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"groupe:read","apprenants_groupe:read","apprenant:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $profilSortie;
 
     /**
      * @ORM\ManyToOne(targetEntity=Statut::class, inversedBy="apprenants")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"apprenant:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"groupe:read","apprenants_groupe:read","apprenant:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $statut;
 
