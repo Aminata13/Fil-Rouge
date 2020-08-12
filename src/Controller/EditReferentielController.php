@@ -31,7 +31,7 @@ class EditReferentielController extends AbstractController
 
         $referentiel = $repoReferentiel->find($id);
         if(is_null($referentiel)) {
-            return new JsonResponse("Ce référentiel n'existe pas.", Response::HTTP_BAD_REQUEST, [], true);
+            return new JsonResponse("Ce référentiel n'existe pas.", Response::HTTP_NOT_FOUND, [], true);
         }
 
         /**Archivage */
@@ -141,6 +141,6 @@ class EditReferentielController extends AbstractController
 
         $em->persist($referentiel);
         $em->flush();
-        return new JsonResponse("success", Response::HTTP_CREATED, [], true);
+        return new JsonResponse("success", Response::HTTP_OK, [], true);
     }
 }
