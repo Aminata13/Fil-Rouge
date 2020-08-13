@@ -55,7 +55,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *         "denormalization_context"={"groups"={"groupe:write"}}
  *      },
  *      "delete_apprenant"={
- *         "method"="DELETE",
+ *         "method"="PUT",
  *         "path"="/groupes/{id_groupe}/apprenants/{id_apprenant}",
  *         "controller"=AddGroupeController::class,
  *         "route_name"="delete_apprenant_groupe",
