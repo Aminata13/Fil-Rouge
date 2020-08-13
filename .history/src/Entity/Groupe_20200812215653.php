@@ -73,13 +73,13 @@ class Groupe
 
     /**
      * @ORM\Column(type="date")
-     * @Groups({"groupe:read","apprenants_groupe:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"groupe:read","apprenants_groupe:read","promotion:read",,"promo_groupe_apprenants:read"})
      */
     private $dateCreation;
 
     /**
      * @ORM\ManyToMany(targetEntity=Apprenant::class, inversedBy="groupes")
-     * @Groups({"groupe:read","promotion:read_all","apprenants_groupe:read","promo_groupe_apprenants:read"})
+     * @Groups({"groupe:read","apprenants_groupe:read","promo_groupe_apprenants:read"})
      */
     private $apprenants;
 

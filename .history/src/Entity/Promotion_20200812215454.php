@@ -83,6 +83,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          "path"="/promotion/{id}/apprenants",
  *          "route_name"="edit_promotion_apprenants",
  *          "normalization_context"={"groups"={"promotion:read_all"}}
+
  *      },
  *      "put_promotion_formateurs" = {
  *          "method"="PUT",
@@ -177,7 +178,7 @@ class Promotion
 
     /**
      * @ORM\OneToMany(targetEntity=Apprenant::class, mappedBy="promotion", cascade={"persist"})
-     * @Groups({""})
+     * @Groups({"promotion:read_all"})
      */
     private $apprenants;
 

@@ -83,6 +83,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          "path"="/promotion/{id}/apprenants",
  *          "route_name"="edit_promotion_apprenants",
  *          "normalization_context"={"groups"={"promotion:read_all"}}
+
  *      },
  *      "put_promotion_formateurs" = {
  *          "method"="PUT",
@@ -151,7 +152,7 @@ class Promotion
 
     /**
      * @ORM\Column(type="blob", nullable=true)
-     * @Groups({"groupe:read","promotion:read_all_ref","promo_groupe_apprenants:read"})
+     * @Groups({"promotion:read","groupe:read","promotion:read_all","promotion:read_all_ref","promo_groupe_apprenants:read"})
      */
     private $image;
 
@@ -171,13 +172,13 @@ class Promotion
 
     /**
      * @ORM\OneToMany(targetEntity=Groupe::class, mappedBy="promotion", cascade={"persist"})
-     * @Groups({"promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({,"promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $groupes;
 
     /**
      * @ORM\OneToMany(targetEntity=Apprenant::class, mappedBy="promotion", cascade={"persist"})
-     * @Groups({""})
+     * @Groups({"promotion:read_all"})
      */
     private $apprenants;
 
