@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Validator\Constraints as Assert;
+
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
@@ -50,15 +50,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *      "put_groupe"={
  *         "method"="PUT",
  *         "path"="/groupes/{id}",
- *         "controller"=AddGroupeController::class,
+ *         "controller"=EditGroupeController::class,
  *         "route_name"="edit_groupe",
- *         "denormalization_context"={"groups"={"groupe:write"}}
- *      },
- *      "delete_apprenant"={
- *         "method"="DELETE",
- *         "path"="/groupes/{id_groupe}/apprenants/{id_apprenant}",
- *         "controller"=AddGroupeController::class,
- *         "route_name"="delete_apprenant_groupe",
  *         "denormalization_context"={"groups"={"groupe:write"}}
  *     }
  *  }
