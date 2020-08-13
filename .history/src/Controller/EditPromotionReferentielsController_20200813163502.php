@@ -106,7 +106,7 @@ class EditPromotionReferentielsController extends AbstractController
     /**
     * @Route("/admin/promotion/{id}/apprenants", name="edit_promotion_apprenants", methods="PUT")
     */
-    public function editPromotionApprenats(int $id,UserProfilRepository $repoProfil,PromotionRepository $repoPromotion,StatutRepository $repoStatus,Request $request,EntityManagerInterface $em,UserPasswordEncoderInterface $encoder,\Swift_Mailer $mailer){
+    public function editPromotionApprenats(int $id,,PromotionRepository $repoPromotion,StatutRepository $repoStatus,Request $request,EntityManagerInterface $em,UserPasswordEncoderInterface $encoder,\Swift_Mailer $mailer){
         
         
         $editPromotion = $repoPromotion->find($id);
@@ -172,7 +172,7 @@ class EditPromotionReferentielsController extends AbstractController
                 $apprenant->setUser($user);
                 if ($editPromotion->addApprenant($apprenant)){
                     $groupPrincipal->addApprenant($apprenant);
-                    $user->sendEmail($mailer ,$password);
+                    $apprenant->sendEmail($mailer ,$password);
                 }
             }
         }

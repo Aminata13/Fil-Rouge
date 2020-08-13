@@ -32,7 +32,7 @@ class Apprenant
 
     /**
      * @ORM\OneToOne(targetEntity=User::class, cascade={"persist","remove"})
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn()
      * @Groups({"groupe:read","apprenants_groupe:read","apprenant:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $user;

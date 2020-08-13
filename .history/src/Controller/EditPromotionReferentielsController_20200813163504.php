@@ -172,7 +172,7 @@ class EditPromotionReferentielsController extends AbstractController
                 $apprenant->setUser($user);
                 if ($editPromotion->addApprenant($apprenant)){
                     $groupPrincipal->addApprenant($apprenant);
-                    $user->sendEmail($mailer ,$password);
+                    $apprenant->sendEmail($mailer ,$password);
                 }
             }
         }

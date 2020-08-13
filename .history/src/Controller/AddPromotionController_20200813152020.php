@@ -49,8 +49,7 @@ class AddPromotionController extends AbstractController
     ValidatorInterface $validator, 
     EntityManagerInterface $em, 
     UserPasswordEncoderInterface $encoder,
-    \Swift_Mailer $mailer,
-    UserProfilRepository $repoProfil
+    \Swift_Mailer $mailer
     )
     {
         $promotionTab = $request->request->all();
@@ -123,23 +122,18 @@ class AddPromotionController extends AbstractController
         if (count($emailApprenat)<1) {
             return new JsonResponse("Les Apprenants sont obligatoire", Response::HTTP_BAD_REQUEST, [], true);
         }
-        
+
         foreach ($emailApprenat as $value) {
             if (!empty($value)){
                 $apprenant = new Apprenant();
-                $user= new User();
-                $user->setEmail($value);
+                
+                $apprenant->setEmail($value);
                 $password = "1234-".$value[4].$value[0].$value[3];
-                $user->setPassword($encoder->encodePassword(new User(),$password));
-                $user->setUsername(explode("@",$value)[0]);
-                $user->setFirstname("firstname");
-                $user->setLastname("lastname");
-                $user->setProfil($repoProfil->findBy(['libelle'=>"APPRENANT"])[0]);
+                $apprenant->setPassword($encoder->encodePassword(new User(),$password));
                 $apprenant->setStatut($repoStatus->find(1));
-                $apprenant->setUser($user);
                 if ($promotion->addApprenant($apprenant)) {
                     $groupe->addApprenant($apprenant);
-                    $user->sendEmail($mailer ,$password);
+                    $apprenant->sendEmail($mailer ,$password);
                 }
             }
         }

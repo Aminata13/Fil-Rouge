@@ -136,7 +136,6 @@ class AddPromotionController extends AbstractController
                 $user->setLastname("lastname");
                 $user->setProfil($repoProfil->findBy(['libelle'=>"APPRENANT"])[0]);
                 $apprenant->setStatut($repoStatus->find(1));
-                $apprenant->setUser($user);
                 if ($promotion->addApprenant($apprenant)) {
                     $groupe->addApprenant($apprenant);
                     $user->sendEmail($mailer ,$password);
