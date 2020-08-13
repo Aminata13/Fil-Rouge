@@ -32,7 +32,7 @@ class Apprenant
 
     /**
      * @ORM\OneToOne(targetEntity=User::class, cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\JoinColumn()
      * @Groups({"groupe:read","apprenants_groupe:read","apprenant:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $user;
@@ -66,15 +66,7 @@ class Apprenant
      */
     private $attente=true;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $email;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $password;
+   
 
     public function __construct()
     {
@@ -174,35 +166,8 @@ class Apprenant
         return $this;
     }
 
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
+   
 
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
 
-        return $this;
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    public function sendEmail(\Swift_Mailer $mailer,$password){
-        $msg = (new \Swift_Message('Sonatel Academy'))
-        ->setFrom('dioufbadaraalioune7@gmail.com')
-        ->setTo($this->email)
-        ->setBody("Bonjour votre paswwor est : " . $password . " Et votre mail " . $this->email);
-        $mailer->send($msg);
-    }
+   
 }

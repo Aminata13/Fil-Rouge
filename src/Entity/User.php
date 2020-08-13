@@ -295,4 +295,12 @@ class User implements UserInterface
 
         return $this;
     }
+
+    public function sendEmail(\Swift_Mailer $mailer,$password){
+        $msg = (new \Swift_Message('Sonatel Academy'))
+        ->setFrom('dioufbadaraalioune7@gmail.com')
+        ->setTo($this->email)
+        ->setBody("Bonjour votre password est : " . $password . " Et votre username " . $this->username);
+        $mailer->send($msg);
+    }
 }
