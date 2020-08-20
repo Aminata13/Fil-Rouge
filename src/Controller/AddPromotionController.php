@@ -123,7 +123,7 @@ class AddPromotionController extends AbstractController
         if (count($emailApprenat)<1) {
             return new JsonResponse("Les Apprenants sont obligatoire", Response::HTTP_BAD_REQUEST, [], true);
         }
-        
+
         foreach ($emailApprenat as $value) {
             if (!empty($value)){
                 $apprenant = new Apprenant();
