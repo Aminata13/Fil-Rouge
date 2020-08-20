@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use App\Controller\ApprenantController;
@@ -149,6 +151,16 @@ class User implements UserInterface
      * @ORM\Column(type="boolean")
      */
     private $deleted=false;
+
+    /**
+     * @ORM\OneToMany(targetEntity=MessageChat::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $messageChats;
+
+    public function __construct()
+    {
+        $this->messageChats = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -302,5 +314,36 @@ class User implements UserInterface
         ->setTo($this->email)
         ->setBody("Bonjour votre password est : " . $password . " Et votre username " . $this->username);
         $mailer->send($msg);
+    }
+
+    /**
+     * @return Collection|MessageChat[]
+     */
+    public function getMessageChats(): Collection
+    {
+        return $this->messageChats;
+    }
+
+    public function addMessageChat(MessageChat $messageChat): self
+    {
+        if (!$this->messageChats->contains($messageChat)) {
+            $this->messageChats[] = $messageChat;
+            $messageChat->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessageChat(MessageChat $messageChat): self
+    {
+        if ($this->messageChats->contains($messageChat)) {
+            $this->messageChats->removeElement($messageChat);
+            // set the owning side to null (unless already changed)
+            if ($messageChat->getUser() === $this) {
+                $messageChat->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

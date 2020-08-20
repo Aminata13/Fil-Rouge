@@ -102,6 +102,11 @@ class Groupe
      */
     private $formateurs;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=EtatBriefGroupe::class, inversedBy="groupe")
+     */
+    private $etatBriefGroupe;
+
     public function __construct()
     {
         $this->apprenants = new ArrayCollection();
@@ -201,6 +206,18 @@ class Groupe
             $this->formateurs->removeElement($formateur);
             $formateur->removeGroupe($this);
         }
+
+        return $this;
+    }
+
+    public function getEtatBriefGroupe(): ?EtatBriefGroupe
+    {
+        return $this->etatBriefGroupe;
+    }
+
+    public function setEtatBriefGroupe(?EtatBriefGroupe $etatBriefGroupe): self
+    {
+        $this->etatBriefGroupe = $etatBriefGroupe;
 
         return $this;
     }

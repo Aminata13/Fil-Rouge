@@ -66,11 +66,35 @@ class Apprenant
      */
     private $attente=true;
 
+    /**
+     * @ORM\OneToMany(targetEntity=LivrableApprenant::class, mappedBy="apprenant", orphanRemoval=true)
+     */
+    private $livrableApprenants;
+
+    /**
+     * @ORM\OneToMany(targetEntity=CompetenceValide::class, mappedBy="apprenant", orphanRemoval=true)
+     */
+    private $competenceValides;
+
+    /**
+     * @ORM\OneToMany(targetEntity=LivrableRendu::class, mappedBy="apprenant", orphanRemoval=true)
+     */
+    private $livrableRendus;
+
+    /**
+     * @ORM\OneToMany(targetEntity=BriefApprenant::class, mappedBy="apprenant", orphanRemoval=true)
+     */
+    private $briefApprenants;
+
    
 
     public function __construct()
     {
         $this->groupes = new ArrayCollection();
+        $this->livrableApprenants = new ArrayCollection();
+        $this->competenceValides = new ArrayCollection();
+        $this->livrableRendus = new ArrayCollection();
+        $this->briefApprenants = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -162,6 +186,130 @@ class Apprenant
     public function setAttente(bool $attente): self
     {
         $this->attente = $attente;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|LivrableApprenant[]
+     */
+    public function getLivrableApprenants(): Collection
+    {
+        return $this->livrableApprenants;
+    }
+
+    public function addLivrableApprenant(LivrableApprenant $livrableApprenant): self
+    {
+        if (!$this->livrableApprenants->contains($livrableApprenant)) {
+            $this->livrableApprenants[] = $livrableApprenant;
+            $livrableApprenant->setApprenant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLivrableApprenant(LivrableApprenant $livrableApprenant): self
+    {
+        if ($this->livrableApprenants->contains($livrableApprenant)) {
+            $this->livrableApprenants->removeElement($livrableApprenant);
+            // set the owning side to null (unless already changed)
+            if ($livrableApprenant->getApprenant() === $this) {
+                $livrableApprenant->setApprenant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|CompetenceValide[]
+     */
+    public function getCompetenceValides(): Collection
+    {
+        return $this->competenceValides;
+    }
+
+    public function addCompetenceValide(CompetenceValide $competenceValide): self
+    {
+        if (!$this->competenceValides->contains($competenceValide)) {
+            $this->competenceValides[] = $competenceValide;
+            $competenceValide->setApprenant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompetenceValide(CompetenceValide $competenceValide): self
+    {
+        if ($this->competenceValides->contains($competenceValide)) {
+            $this->competenceValides->removeElement($competenceValide);
+            // set the owning side to null (unless already changed)
+            if ($competenceValide->getApprenant() === $this) {
+                $competenceValide->setApprenant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|LivrableRendu[]
+     */
+    public function getLivrableRendus(): Collection
+    {
+        return $this->livrableRendus;
+    }
+
+    public function addLivrableRendu(LivrableRendu $livrableRendu): self
+    {
+        if (!$this->livrableRendus->contains($livrableRendu)) {
+            $this->livrableRendus[] = $livrableRendu;
+            $livrableRendu->setApprenant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLivrableRendu(LivrableRendu $livrableRendu): self
+    {
+        if ($this->livrableRendus->contains($livrableRendu)) {
+            $this->livrableRendus->removeElement($livrableRendu);
+            // set the owning side to null (unless already changed)
+            if ($livrableRendu->getApprenant() === $this) {
+                $livrableRendu->setApprenant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|BriefApprenant[]
+     */
+    public function getBriefApprenants(): Collection
+    {
+        return $this->briefApprenants;
+    }
+
+    public function addBriefApprenant(BriefApprenant $briefApprenant): self
+    {
+        if (!$this->briefApprenants->contains($briefApprenant)) {
+            $this->briefApprenants[] = $briefApprenant;
+            $briefApprenant->setApprenant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBriefApprenant(BriefApprenant $briefApprenant): self
+    {
+        if ($this->briefApprenants->contains($briefApprenant)) {
+            $this->briefApprenants->removeElement($briefApprenant);
+            // set the owning side to null (unless already changed)
+            if ($briefApprenant->getApprenant() === $this) {
+                $briefApprenant->setApprenant(null);
+            }
+        }
 
         return $this;
     }

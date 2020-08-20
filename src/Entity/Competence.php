@@ -83,10 +83,16 @@ class Competence
      */
     private $deleted = false;
 
+    /**
+     * @ORM\OneToMany(targetEntity=CompetenceValide::class, mappedBy="competence", orphanRemoval=true)
+     */
+    private $competenceValides;
+
     public function __construct()
     {
         $this->groupeCompetences = new ArrayCollection();
         $this->niveaux = new ArrayCollection();
+        $this->competenceValides = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -173,6 +179,37 @@ class Competence
     public function setDeleted(bool $deleted): self
     {
         $this->deleted = $deleted;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|CompetenceValide[]
+     */
+    public function getCompetenceValides(): Collection
+    {
+        return $this->competenceValides;
+    }
+
+    public function addCompetenceValide(CompetenceValide $competenceValide): self
+    {
+        if (!$this->competenceValides->contains($competenceValide)) {
+            $this->competenceValides[] = $competenceValide;
+            $competenceValide->setCompetence($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompetenceValide(CompetenceValide $competenceValide): self
+    {
+        if ($this->competenceValides->contains($competenceValide)) {
+            $this->competenceValides->removeElement($competenceValide);
+            // set the owning side to null (unless already changed)
+            if ($competenceValide->getCompetence() === $this) {
+                $competenceValide->setCompetence(null);
+            }
+        }
 
         return $this;
     }
