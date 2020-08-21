@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\NiveauEvaluationRepository;
@@ -48,6 +50,22 @@ class NiveauEvaluation
      * @ORM\JoinColumn(nullable=false)
      */
     private $competence;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Brief::class, mappedBy="niveauCompetences")
+     */
+    private $briefs;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=LivrablePartiel::class, mappedBy="niveauCompetences")
+     */
+    private $livrablePartiels;
+
+    public function __construct()
+    {
+        $this->briefs = new ArrayCollection();
+        $this->livrablePartiels = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -98,6 +116,62 @@ class NiveauEvaluation
     public function setCompetence(?Competence $competence): self
     {
         $this->competence = $competence;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Brief[]
+     */
+    public function getBriefs(): Collection
+    {
+        return $this->briefs;
+    }
+
+    public function addBrief(Brief $brief): self
+    {
+        if (!$this->briefs->contains($brief)) {
+            $this->briefs[] = $brief;
+            $brief->addNiveauCompetence($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBrief(Brief $brief): self
+    {
+        if ($this->briefs->contains($brief)) {
+            $this->briefs->removeElement($brief);
+            $brief->removeNiveauCompetence($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|LivrablePartiel[]
+     */
+    public function getLivrablePartiels(): Collection
+    {
+        return $this->livrablePartiels;
+    }
+
+    public function addLivrablePartiel(LivrablePartiel $livrablePartiel): self
+    {
+        if (!$this->livrablePartiels->contains($livrablePartiel)) {
+            $this->livrablePartiels[] = $livrablePartiel;
+            $livrablePartiel->addNiveauCompetence($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLivrablePartiel(LivrablePartiel $livrablePartiel): self
+    {
+        if ($this->livrablePartiels->contains($livrablePartiel)) {
+            $this->livrablePartiels->removeElement($livrablePartiel);
+            $livrablePartiel->removeNiveauCompetence($this);
+        }
 
         return $this;
     }

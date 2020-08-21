@@ -209,12 +209,24 @@ class Promotion
      */
     private $formateurs;
 
+    /**
+     * @ORM\OneToMany(targetEntity=CompetenceValide::class, mappedBy="promotion")
+     */
+    private $competenceValides;
+
+    /**
+     * @ORM\OneToMany(targetEntity=BriefPromotion::class, mappedBy="promotion")
+     */
+    private $briefPromotions;
+
     public function __construct()
     {
         $this->referentiels = new ArrayCollection();
         $this->groupes = new ArrayCollection();
         $this->apprenants = new ArrayCollection();
         $this->formateurs = new ArrayCollection();
+        $this->competenceValides = new ArrayCollection();
+        $this->briefPromotions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -442,6 +454,68 @@ class Promotion
         if ($this->formateurs->contains($formateur)) {
             $this->formateurs->removeElement($formateur);
             $formateur->removePromotion($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|CompetenceValide[]
+     */
+    public function getCompetenceValides(): Collection
+    {
+        return $this->competenceValides;
+    }
+
+    public function addCompetenceValide(CompetenceValide $competenceValide): self
+    {
+        if (!$this->competenceValides->contains($competenceValide)) {
+            $this->competenceValides[] = $competenceValide;
+            $competenceValide->setPromotion($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompetenceValide(CompetenceValide $competenceValide): self
+    {
+        if ($this->competenceValides->contains($competenceValide)) {
+            $this->competenceValides->removeElement($competenceValide);
+            // set the owning side to null (unless already changed)
+            if ($competenceValide->getPromotion() === $this) {
+                $competenceValide->setPromotion(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|BriefPromotion[]
+     */
+    public function getBriefPromotions(): Collection
+    {
+        return $this->briefPromotions;
+    }
+
+    public function addBriefPromotion(BriefPromotion $briefPromotion): self
+    {
+        if (!$this->briefPromotions->contains($briefPromotion)) {
+            $this->briefPromotions[] = $briefPromotion;
+            $briefPromotion->setPromotion($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBriefPromotion(BriefPromotion $briefPromotion): self
+    {
+        if ($this->briefPromotions->contains($briefPromotion)) {
+            $this->briefPromotions->removeElement($briefPromotion);
+            // set the owning side to null (unless already changed)
+            if ($briefPromotion->getPromotion() === $this) {
+                $briefPromotion->setPromotion(null);
+            }
         }
 
         return $this;
