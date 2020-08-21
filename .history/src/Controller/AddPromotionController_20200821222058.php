@@ -94,7 +94,7 @@ class AddPromotionController extends AbstractController
         $imageType = explode("/", $image->get('image')->getMimeType())[1];
         $imagePath = $image->get('image')->getRealPath();
 
-        $image = file_get_contents($imagePath, 'img/img.'.$imageType);
+        $image = file_get_contents($imagePath, 'img/img.' .$imageType);
         $promotion->setimage($image);
 
         // Traitement Apprenants ---------------

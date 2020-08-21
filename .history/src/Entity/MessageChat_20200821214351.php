@@ -22,7 +22,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *          "controller"=ChatController::class,
  *          "route_name"="show_messages_apprenant"
  *      },
- *      "post_messages_apprenant"={
+ *     "post_messages_apprenant"={
  *          "method"="POST",
  *          "path"="/users/promotions/{id_promo}/apprenants/{id_apprenant}/chats",
  *          "controller"=ChatController::class,
@@ -104,12 +104,12 @@ class MessageChat
 
     public function getPieceJointe()
     {
-        return $this->pieceJointe!=null?stream_get_contents($this->pieceJointe):null;
+        return $this->pieceJointe;
     }
 
     public function setPieceJointe($pieceJointe): self
     {
-        $this->pieceJointe = base64_encode($pieceJointe);
+        $this->pieceJointe = $pieceJointe;
 
         return $this;
     }

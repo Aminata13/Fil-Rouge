@@ -109,7 +109,7 @@ class MessageChat
 
     public function setPieceJointe($pieceJointe): self
     {
-        $this->pieceJointe = base64_encode($pieceJointe);
+        $this->pieceJointe = $pieceJointe;
 
         return $this;
     }

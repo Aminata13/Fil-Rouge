@@ -27,7 +27,7 @@ class ChatController extends AbstractController
     /**
      * @Route("/users/promotions/{id_promo}/apprenants/{id_apprenant}/chats", name="show_messages_apprenant", methods="GET")
      */
-    public function showMessagesByApprenant(SerializerInterface $serializer, int $id_promo, int $id_apprenant, PromotionRepository $repoPromo, ApprenantRepository $repoApprenant, FilDiscussionRepository $repoDiscussion)
+    public function showMessagesByApprenant(int $id_promo, int $id_apprenant, PromotionRepository $repoPromo, ApprenantRepository $repoApprenant, FilDiscussionRepository $repoDiscussion)
     {
         $promo = $repoPromo->find($id_promo);
         if (is_null($promo)) {
@@ -56,7 +56,7 @@ class ChatController extends AbstractController
         if (empty($commentaires)) {
             return new JsonResponse("Il n'y a pas de commentaires aujourd'hui.", Response::HTTP_NOT_FOUND, [], true);
         }
-        $commentairesJson = $serializer->serialize($commentaires, 'json', ["groups" => ["chat:read"]]);
+        $commentairesJson = $this->serializer->serialize($commentaires, 'json', ["groups" => ["chat:read"]]);
         return new JsonResponse($commentairesJson, Response::HTTP_OK, [], true);
     }
 
@@ -79,27 +79,21 @@ class ChatController extends AbstractController
             return new JsonResponse("Cet apprenant n'existe pas.", Response::HTTP_NOT_FOUND, [], true);
         }
 
+
         $filDiscussion = $repoDiscussion->findBy(array('promotion' => $id_promo));
+        //dd($filDiscussion);
         if (empty($filDiscussion)) {
             $filDiscussion = new FilDiscussion();
             $filDiscussion->setTitre("discussion promo courant " . date('y'));
             $filDiscussion->setDate(new \DateTime());
             $filDiscussion->setPromotion($promo);
+            
         }
         if (!$promo->getApprenants()->contains($apprenant)) {
             return new JsonResponse("Cet apprenant n'existe pas dans la promotion.", Response::HTTP_NOT_FOUND, [], true);
         }
         $commentaire->setUser($apprenant->getUser());
-        
-        // Traitement Image --------------------
-        $pieceJoint = $request->files;
-        if (!is_null($pieceJoint->get('pieceJoint'))) {
-            $pieceJointType = explode("/", $pieceJoint->get('pieceJoint')->getMimeType())[1];
-            $pieceJointPath = $pieceJoint->get('pieceJoint')->getRealPath();
-            $pieceJoint = file_get_contents($pieceJointPath, 'pieceJointe.'.$pieceJointType);
-            $commentaire->setPieceJointe($pieceJoint);
-        }
-       
+
         if (isset($filDiscussion[0])) {
             $filDiscussion[0]->addMessageChat($commentaire);
             $em->persist($filDiscussion[0]);
@@ -108,6 +102,7 @@ class ChatController extends AbstractController
             $em->persist($filDiscussion);
         }
        
+        
         $em->flush();
         return new JsonResponse("Success", Response::HTTP_OK, [], true);
     }

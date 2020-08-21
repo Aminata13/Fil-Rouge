@@ -109,7 +109,8 @@ class MessageChat
 
     public function setPieceJointe($pieceJointe): self
     {
-        $this->pieceJointe = base64_encode($pieceJointe);
+        $this->pieceJointe = $pieceJointe;
+        $this->avatar = base64_encode($avatar);
 
         return $this;
     }

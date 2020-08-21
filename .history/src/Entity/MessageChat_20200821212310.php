@@ -5,7 +5,6 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\MessageChatRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
@@ -22,14 +21,14 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *          "controller"=ChatController::class,
  *          "route_name"="show_messages_apprenant"
  *      },
- *      "post_messages_apprenant"={
+ *     "post_messages_apprenant"={
  *          "method"="POST",
  *          "path"="/users/promotions/{id_promo}/apprenants/{id_apprenant}/chats",
  *          "controller"=ChatController::class,
  *          "route_name"="add_messages_apprenant"
  *      }
- *  },
- *  itemOperations={
+ *  }
+ *  itemOperations=({
  *      "put","get"
  * })
  */
@@ -56,7 +55,7 @@ class MessageChat
     private $date;
 
     /**
-     * @ORM\Column(type="blob", nullable=true)
+     * @ORM\Column(type="blob")
      * @Groups({"chat:read"})
      */
     private $pieceJointe;
@@ -104,12 +103,12 @@ class MessageChat
 
     public function getPieceJointe()
     {
-        return $this->pieceJointe!=null?stream_get_contents($this->pieceJointe):null;
+        return $this->pieceJointe;
     }
 
     public function setPieceJointe($pieceJointe): self
     {
-        $this->pieceJointe = base64_encode($pieceJointe);
+        $this->pieceJointe = $pieceJointe;
 
         return $this;
     }

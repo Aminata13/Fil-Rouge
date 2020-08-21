@@ -91,7 +91,7 @@ class AddReferentielController extends AbstractController
         $fileType = explode("/", $file->get('programme')->getMimeType())[1];
         $filePath = $file->get('programme')->getRealPath();
 
-        $programme = file_get_contents($filePath, 'programme.'.$fileType);
+        $programme = file_get_contents($filePath, 'programme.' . $fileType);
         $referentiel->setProgramme($programme);
 
 

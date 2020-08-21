@@ -80,11 +80,13 @@ class ChatController extends AbstractController
         }
 
         $filDiscussion = $repoDiscussion->findBy(array('promotion' => $id_promo));
+        //dd($filDiscussion);
         if (empty($filDiscussion)) {
             $filDiscussion = new FilDiscussion();
             $filDiscussion->setTitre("discussion promo courant " . date('y'));
             $filDiscussion->setDate(new \DateTime());
             $filDiscussion->setPromotion($promo);
+            
         }
         if (!$promo->getApprenants()->contains($apprenant)) {
             return new JsonResponse("Cet apprenant n'existe pas dans la promotion.", Response::HTTP_NOT_FOUND, [], true);
@@ -96,7 +98,8 @@ class ChatController extends AbstractController
         if (!is_null($pieceJoint->get('pieceJoint'))) {
             $pieceJointType = explode("/", $pieceJoint->get('pieceJoint')->getMimeType())[1];
             $pieceJointPath = $pieceJoint->get('pieceJoint')->getRealPath();
-            $pieceJoint = file_get_contents($pieceJointPath, 'pieceJointe.'.$pieceJointType);
+            dd($)
+            $pieceJoint = file_get_contents($pieceJointPath, 'img/img.'.$pieceJointType);
             $commentaire->setPieceJointe($pieceJoint);
         }
        

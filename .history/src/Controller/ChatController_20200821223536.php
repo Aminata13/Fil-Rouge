@@ -80,6 +80,7 @@ class ChatController extends AbstractController
         }
 
         $filDiscussion = $repoDiscussion->findBy(array('promotion' => $id_promo));
+        //dd($filDiscussion);
         if (empty($filDiscussion)) {
             $filDiscussion = new FilDiscussion();
             $filDiscussion->setTitre("discussion promo courant " . date('y'));

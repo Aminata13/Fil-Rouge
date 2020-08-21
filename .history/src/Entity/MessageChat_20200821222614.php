@@ -104,12 +104,13 @@ class MessageChat
 
     public function getPieceJointe()
     {
-        return $this->pieceJointe!=null?stream_get_contents($this->pieceJointe):null;
+        return $this->pieceJointe;
+        return $this->avatar!=null?stream_get_contents($this->avatar):null;
     }
 
     public function setPieceJointe($pieceJointe): self
     {
-        $this->pieceJointe = base64_encode($pieceJointe);
+        $this->pieceJointe = $pieceJointe;
 
         return $this;
     }
