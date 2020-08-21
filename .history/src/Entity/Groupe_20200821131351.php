@@ -106,6 +106,8 @@ class Groupe
     {
         $this->apprenants = new ArrayCollection();
         $this->formateurs = new ArrayCollection();
+
+        
         
     }
 
