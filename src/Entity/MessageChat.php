@@ -7,6 +7,30 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=MessageChatRepository::class)
+ *  @UniqueEntity(
+ *  fields={"libelle"},
+ *  message="Le libelle existe déjà."
+ * )
+ * @ApiResource(
+ *  collectionOperations={
+ *       "get_messages_apprenant"={
+ *          "method"="GET",
+ *          "path"="/users/promotions/{id_promo}/apprenants/{id_apprenant}/chats",
+ *          "controller"=ChatController::class,
+ *          "route_name"="show_messages_apprenant"
+ *      },
+ *     "post_messages_apprenant"={
+ *          "method"="POST",
+ *          "path"="/users/promotions/{id_promo}/apprenants/{id_apprenant}/chats",
+ *          "controller"=ChatController::class,
+ *          "route_name"="add_messages_apprenant"
+ *      },
+ *          
+ * 
+ *  }
+ *  itemOperations={
+ *      "put","get"
+ * })
  */
 class MessageChat
 {
@@ -14,21 +38,25 @@ class MessageChat
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"chat:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"chat:read","commentaire:write"})
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"chat:read"})
      */
     private $date;
 
     /**
      * @ORM\Column(type="blob")
+     * @Groups({"chat:read"})
      */
     private $pieceJointe;
 

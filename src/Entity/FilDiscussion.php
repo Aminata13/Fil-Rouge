@@ -36,7 +36,7 @@ class FilDiscussion
     private $promotion;
 
     /**
-     * @ORM\OneToMany(targetEntity=MessageChat::class, mappedBy="filDiscussion", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=MessageChat::class, mappedBy="filDiscussion", orphanRemoval=true,cascade={"persist"})
      */
     private $messageChats;
 

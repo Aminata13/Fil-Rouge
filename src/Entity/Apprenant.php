@@ -14,6 +14,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * @ORM\Entity(repositoryClass=ApprenantRepository::class)
  * @ApiResource(
+ * subresourceOperations={
+ *      "apprenants_get_subresource"={
+ *        "normalization_context"={"groups"={"profil_sortie_promo:read"}},
+ *        "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))"
+ *      }
+ *  },
  *  itemOperations={
  *      "put","get"
  *  },
@@ -26,20 +32,20 @@ class Apprenant
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"groupe:read","apprenants_groupe:read","apprenant:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"profil_sortie_promo:read","groupe:read","apprenants_groupe:read","apprenant:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $id;
 
     /**
      * @ORM\OneToOne(targetEntity=User::class, cascade={"persist","remove"})
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"groupe:read","apprenants_groupe:read","apprenant:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"profil_sortie_promo:read","groupe:read","apprenants_groupe:read","apprenant:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity=ProfilSortie::class, inversedBy="apprenants")
-     * @Groups({"groupe:read","apprenants_groupe:read","apprenant:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"profil_sortie_promo:read","groupe:read","apprenants_groupe:read","apprenant:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $profilSortie;
 

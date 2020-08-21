@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\PromotionRepository;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -41,6 +42,12 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *          "method"="POST",
  *          "path"="/promotion",
  *          "route_name"="add_promotion"
+ *      }
+ *  },
+ *   subresourceOperations={
+ *      "apprenants_get_subresource"={
+ *          "method"="GET",
+ *          "path"="/admin/promotions/{id}/profil_sorties"
  *      }
  *  },
  *  itemOperations={
@@ -109,7 +116,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *          "method"="POST",
  *          "path"="/promotion/{id_promo}/relanceOne/{id_apprenant}",
  *          "route_name"="relance_individuel"
- *      } 
+ *      },
+ *      "get_apprenants_profil_sortie"={
+ *          "method"="GET",
+ *          "path"="/promotion/{id_promo}/profil_sortie/{id_profil}",
+ *          "controller"=ProfilSortiePromotionController::class,
+ *          "route_name"="profil_sortie_promotion"
+ *      }
  *  }
  * )
  */
@@ -200,6 +213,7 @@ class Promotion
     /**
      * @ORM\OneToMany(targetEntity=Apprenant::class, mappedBy="promotion", cascade={"persist"})
      * @Groups({""})
+     * @ApiSubresource
      */
     private $apprenants;
 

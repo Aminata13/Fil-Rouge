@@ -93,7 +93,7 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"groupe:read","apprenant:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"profil_sortie_promo:read","groupe:read","apprenant:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $id;
 
@@ -115,14 +115,14 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Le prénom est obligatoire.")
-     * @Groups({"groupe:read","apprenants_groupe:read","apprenant:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"profil_sortie_promo:read","groupe:read","apprenants_groupe:read","apprenant:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Le nom est obligatoire.")
-     * @Groups({"groupe:read","apprenants_groupe:read","apprenant:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"profil_sortie_promo:read","groupe:read","apprenants_groupe:read","apprenant:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $lastname;
 
@@ -130,7 +130,7 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="L'adresse mail est obligatoire.")
      * @Assert\Email(message="L'adresse mail est invalide")
-     * @Groups({"apprenant:read"})
+     * @Groups({"profil_sortie_promo:read","apprenant:read"})
      */
     private $email;
 
