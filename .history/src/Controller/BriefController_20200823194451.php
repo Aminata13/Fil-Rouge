@@ -440,7 +440,8 @@ class BriefController extends AbstractController
                 $etatBriefGroupe->addGroupe($groupe);
                 $statut = $repoStatutBrief->findBy(array('libelle' => 'ASSIGNE'));
                 $etatBriefGroupe->setStatut($statut[0]);
-                
+                $brief->setEtatBriefGroupe($e)
+
                 /** Implementation de BriefPromotion */
                 $briefPromo = new BriefPromotion();
                 $promo = $groupe->getPromotion();
@@ -459,6 +460,7 @@ class BriefController extends AbstractController
                 }
             }
         }
+        //dd($brief);
 
         $em->persist($brief);
         $em->flush();

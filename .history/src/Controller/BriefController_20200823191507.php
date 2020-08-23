@@ -414,7 +414,7 @@ class BriefController extends AbstractController
 
         /** Affecter EtatBrief */
         $errors = $validator->validate($brief);
-        
+        $etat= null;
         if (($errors) > 0) {
             $errorsString = $this->serializer->serialize($errors, 'json');
             return new JsonResponse($errorsString, Response::HTTP_BAD_REQUEST, [], true);
@@ -428,7 +428,6 @@ class BriefController extends AbstractController
         }
         $brief->setEtatBrief($etat[0]);
 
-        
         /** Assignation du brief à un groupe */
         if (isset($data['groupes'])) {
             foreach ($data['groupes'] as $value) {
@@ -440,7 +439,7 @@ class BriefController extends AbstractController
                 $etatBriefGroupe->addGroupe($groupe);
                 $statut = $repoStatutBrief->findBy(array('libelle' => 'ASSIGNE'));
                 $etatBriefGroupe->setStatut($statut[0]);
-                
+
                 /** Implementation de BriefPromotion */
                 $briefPromo = new BriefPromotion();
                 $promo = $groupe->getPromotion();
