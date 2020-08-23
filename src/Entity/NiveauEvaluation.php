@@ -23,32 +23,32 @@ class NiveauEvaluation
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"briefGroupe:read","brief:read","grpcompetence:read_all","competence:read_all","promotion:read_all_ref"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read","grpcompetence:read_all","competence:read_all","promotion:read_all_ref"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"briefGroupe:read","brief:read","grpcompetence:read_all","competence:read_all","competence:write","promotion:read_all_ref"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read","grpcompetence:read_all","competence:read_all","competence:write","promotion:read_all_ref"})
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"briefGroupe:read","brief:read","grpcompetence:read_all","competence:read_all","competence:write","promotion:read_all_ref"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read","grpcompetence:read_all","competence:read_all","competence:write","promotion:read_all_ref"})
      */
     private $groupeAction;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"briefGroupe:read","brief:read","grpcompetence:read_all","competence:read_all","competence:write","promotion:read_all_ref"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read","grpcompetence:read_all","competence:read_all","competence:write","promotion:read_all_ref"})
      */
     private $critereEvaluation;
 
     /**
      * @ORM\ManyToOne(targetEntity=Competence::class, inversedBy="niveaux")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"briefGroupe:read","brief:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read"})
      */
     private $competence;
 

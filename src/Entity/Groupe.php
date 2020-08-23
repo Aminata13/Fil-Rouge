@@ -66,13 +66,13 @@ class Groupe
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"briefGroupe:read","groupe:read","apprenants_groupe:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","groupe:read","apprenants_groupe:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"briefGroupe:read","groupe:read","apprenants_groupe:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","groupe:read","apprenants_groupe:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
      * @Assert\NotBlank(message="Le libelle est obligatoire.")
      */
     private $libelle;
@@ -80,7 +80,7 @@ class Groupe
     /**
      * @ORM\Column(type="date")
      * @Assert\NotBlank(message="La date de creation du groupe est obligatoire.")
-     * @Groups({"briefGroupe:read","groupe:read","apprenants_groupe:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","groupe:read","apprenants_groupe:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $dateCreation;
 
@@ -103,7 +103,7 @@ class Groupe
     private $formateurs;
 
     /**
-     * @ORM\ManyToOne(targetEntity=EtatBriefGroupe::class, inversedBy="groupe")
+     * @ORM\ManyToOne(targetEntity=EtatBriefGroupe::class, inversedBy="groupe", cascade={"persist"})
      * @Groups({"briefGroupe:read"})
      */
     private $etatBriefGroupe;

@@ -55,13 +55,13 @@ class Competence
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"brief:read","grpcompetence:read","grpcompetence:read_all","competence:read_all","referentiel:read_all","promotion:read_all_ref"})
+     * @Groups({"brief_livrable_partiel:read","brief:read","grpcompetence:read","grpcompetence:read_all","competence:read_all","referentiel:read_all","promotion:read_all_ref"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"briefGroupe:read","brief:read","grpcompetence:read","grpcompetence:read_all","competence:read_all","referentiel:read_all","grpcompetence:write", "competence:write","promotion:read_all_ref"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read","grpcompetence:read","grpcompetence:read_all","competence:read_all","referentiel:read_all","grpcompetence:write", "competence:write","promotion:read_all_ref"})
      * @Assert\NotBlank(message="le libelle d'une competence est requis.")
      */
     private $libelle;

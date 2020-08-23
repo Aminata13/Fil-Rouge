@@ -25,14 +25,14 @@ class Langue
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"briefGroupe:read","brief:read","groupe:read","promo_groupe_apprenants:read","promotion:read","promotion:read_all","promotion:read_all_ref"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read","groupe:read","promo_groupe_apprenants:read","promotion:read","promotion:read_all","promotion:read_all_ref"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Le libelle est obligatoire.")
-     * @Groups({"briefGroupe:read","brief:read","groupe:read","promo_groupe_apprenants:read","promotion:read","promotion:read_all","promotion:read_all_ref"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read","groupe:read","promo_groupe_apprenants:read","promotion:read","promotion:read_all","promotion:read_all_ref"})
      */
     private $libelle;
 
