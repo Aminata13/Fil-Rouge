@@ -64,33 +64,33 @@ class Referentiel
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"briefGroupe:read","groupe:read","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all","promotion:read_all","promotion:read_all_ref"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","groupe:read","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all","promotion:read_all","promotion:read_all_ref"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"briefGroupe:read","promotion:read","groupe:read","referentiel:write","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all","promotion:read_all","promotion:read_all_ref"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","promotion:read","groupe:read","referentiel:write","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all","promotion:read_all","promotion:read_all_ref"})
      * @Assert\NotBlank(message="Le libelle est requis.")
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"briefGroupe:read","promotion:read","groupe:read","referentiel:write","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all","promotion:read_all","promotion:read_all_ref"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","promotion:read","groupe:read","referentiel:write","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all","promotion:read_all","promotion:read_all_ref"})
      * @Assert\NotBlank(message="La présentation est requise.")
      */
     private $description;
 
     /**
      * @ORM\OneToMany(targetEntity=CritereAdmission::class, mappedBy="referentiel", orphanRemoval=true, cascade={"persist"})
-     * @Groups({"briefGroupe:read","promotion:read","groupe:read","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all","promotion:read_all","promotion:read_all_ref"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","promotion:read","groupe:read","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all","promotion:read_all","promotion:read_all_ref"})
      */
     private $critereAdmissions;
 
     /**
      * @ORM\OneToMany(targetEntity=CritereEvaluation::class, mappedBy="referentiel", orphanRemoval=true, cascade={"persist"})
-     * @Groups({"briefGroupe:read","promotion:read","groupe:read","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all","promotion:read_all","promotion:read_all_ref"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","promotion:read","groupe:read","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all","promotion:read_all","promotion:read_all_ref"})
      */
     private $critereEvaluations;
 
@@ -102,7 +102,7 @@ class Referentiel
 
     /**
      * @ORM\Column(type="blob")
-     * @Groups({"briefGroupe:read","groupe:read","referentiel:read","referentiel:write","promo_groupe_apprenants:read","promotion:read_all_ref"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","groupe:read","referentiel:read","referentiel:write","promo_groupe_apprenants:read","promotion:read_all_ref"})
      */
     private $programme;
 

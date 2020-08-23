@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\LivrablePartielRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=LivrablePartielRepository::class)
@@ -18,36 +19,43 @@ class LivrablePartiel
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"brief_livrable_partiel:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"brief_livrable_partiel:read"})
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"brief_livrable_partiel:read"})
      */
     private $description;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"brief_livrable_partiel:read"})
      */
     private $type;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"brief_livrable_partiel:read"})
      */
     private $dateAffectation;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"brief_livrable_partiel:read"})
      */
     private $dateSoumission;
 
     /**
      * @ORM\ManyToMany(targetEntity=NiveauEvaluation::class, inversedBy="livrablePartiels")
+     * @Groups({"brief_livrable_partiel:read"})
      */
     private $niveauCompetences;
 

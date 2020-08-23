@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20200822123157 extends AbstractMigration
+final class Version20200822140156 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -24,6 +24,7 @@ final class Version20200822123157 extends AbstractMigration
         $this->addSql('ALTER TABLE brief ADD etat_brief_id INT NOT NULL');
         $this->addSql('ALTER TABLE brief ADD CONSTRAINT FK_1FBB1007E8AA036F FOREIGN KEY (etat_brief_id) REFERENCES etat_brief (id)');
         $this->addSql('CREATE INDEX IDX_1FBB1007E8AA036F ON brief (etat_brief_id)');
+        $this->addSql('ALTER TABLE message_chat CHANGE piece_jointe piece_jointe LONGBLOB DEFAULT NULL');
     }
 
     public function down(Schema $schema) : void
@@ -33,5 +34,6 @@ final class Version20200822123157 extends AbstractMigration
         $this->addSql('DROP TABLE etat_brief');
         $this->addSql('DROP INDEX IDX_1FBB1007E8AA036F ON brief');
         $this->addSql('ALTER TABLE brief DROP etat_brief_id');
+        $this->addSql('ALTER TABLE message_chat CHANGE piece_jointe piece_jointe LONGBLOB NOT NULL');
     }
 }

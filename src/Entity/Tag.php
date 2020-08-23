@@ -55,13 +55,13 @@ class Tag
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"briefGroupe:read","brief:read","groupe_tag:read","groupe_tag:read_tag","tag:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read","groupe_tag:read","groupe_tag:read_tag","tag:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"briefGroupe:read","brief:read","groupe_tag:read","tag:write","groupe_tag:write","tag:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read","groupe_tag:read","tag:write","groupe_tag:write","tag:read"})
      * @Assert\NotBlank(message="le libelle d'un tag est requis.")
      */
     private $libelle;

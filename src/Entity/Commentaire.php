@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CommentaireRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=CommentaireRepository::class)
@@ -16,21 +17,25 @@ class Commentaire
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"brief_livrable_partiel:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"brief_livrable_partiel:read"})
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"brief_livrable_partiel:read"})
      */
     private $date;
 
     /**
      * @ORM\Column(type="blob", nullable=true)
+     * @Groups({"brief_livrable_partiel:read"})
      */
     private $pieceJointe;
 

@@ -32,14 +32,14 @@ class Apprenant
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"briefGroupe:read","profil_sortie_promo:read","groupe:read","apprenants_groupe:read","apprenant:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","profil_sortie_promo:read","groupe:read","apprenants_groupe:read","apprenant:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $id;
 
     /**
      * @ORM\OneToOne(targetEntity=User::class, cascade={"persist","remove"})
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"briefGroupe:read","profil_sortie_promo:read","groupe:read","apprenants_groupe:read","apprenant:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","profil_sortie_promo:read","groupe:read","apprenants_groupe:read","apprenant:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $user;
 
@@ -58,6 +58,7 @@ class Apprenant
 
     /**
      * @ORM\ManyToMany(targetEntity=Groupe::class, mappedBy="apprenants")
+     * @Groups({"brief_livrable_partiel:read"})
      */
     private $groupes;
 
@@ -84,6 +85,7 @@ class Apprenant
 
     /**
      * @ORM\OneToMany(targetEntity=LivrableRendu::class, mappedBy="apprenant", orphanRemoval=true)
+     * @Groups({"brief_livrable_partiel:read"})
      */
     private $livrableRendus;
 

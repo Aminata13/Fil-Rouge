@@ -19,13 +19,13 @@ class LivrableAttendu
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"brief:read","briefGroupe:read"})
+     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"brief:read","briefGroupe:read"})
+     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read"})
      */
     private $libelle;
 
@@ -35,7 +35,8 @@ class LivrableAttendu
     private $briefs;
 
     /**
-     * @ORM\OneToMany(targetEntity=LivrableApprenant::class, mappedBy="livrableAttendu")
+     * @ORM\OneToMany(targetEntity=LivrableApprenant::class, mappedBy="livrableAttendu", cascade={"persist"})
+     * @Groups({"brief_livrable_partiel:read"})
      */
     private $livrableApprenants;
 

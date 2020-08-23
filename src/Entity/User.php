@@ -93,7 +93,7 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"briefGroupe:read","briefGroupe:read","profil_sortie_promo:read","groupe:read","apprenant:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","briefGroupe:read","profil_sortie_promo:read","groupe:read","apprenant:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $id;
 
@@ -115,14 +115,14 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Le prénom est obligatoire.")
-     * @Groups({"briefGroupe:read","profil_sortie_promo:read","groupe:read","apprenants_groupe:read","apprenant:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","profil_sortie_promo:read","groupe:read","apprenants_groupe:read","apprenant:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Le nom est obligatoire.")
-     * @Groups({"briefGroupe:read","briefGroupe:read","profil_sortie_promo:read","groupe:read","apprenants_groupe:read","apprenant:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","briefGroupe:read","profil_sortie_promo:read","groupe:read","apprenants_groupe:read","apprenant:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $lastname;
 
@@ -130,14 +130,14 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="L'adresse mail est obligatoire.")
      * @Assert\Email(message="L'adresse mail est invalide")
-     * @Groups({"briefGroupe:read","profil_sortie_promo:read","apprenant:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","profil_sortie_promo:read","apprenant:read"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="blob", nullable=true)
      * @Assert\NotBlank(message="L'avatar est obligatoire.")
-     * @Groups({"briefGroupe:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read"})
      */
     private $avatar;
 
