@@ -23,7 +23,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  *         "method"="GET",
  *         "path"="/apprenant/id/promo/id/referentiel/id/competences",
  *         "controller"=LivrablePartielController::class,
- *         "access_control"="(is_granted('ROLE_APPRENANT') or is_granted('ROLE_ADMIN'))",
+ *         "access_control"="(is_granted('ROLE_APPRENANT') )",
  *         "route_name"="show_competences_by_apprenant_id"
  *     },
  *     "get_statistiques_by_apprenant_id"={

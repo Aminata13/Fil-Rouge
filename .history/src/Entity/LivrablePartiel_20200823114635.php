@@ -23,14 +23,14 @@ use Doctrine\Common\Collections\ArrayCollection;
  *         "method"="GET",
  *         "path"="/apprenant/id/promo/id/referentiel/id/competences",
  *         "controller"=LivrablePartielController::class,
- *         "access_control"="(is_granted('ROLE_APPRENANT') or is_granted('ROLE_ADMIN'))",
+ *         "access_control"="(is_granted('ROLE_APPRENANT'))",
  *         "route_name"="show_competences_by_apprenant_id"
  *     },
  *     "get_statistiques_by_apprenant_id"={
  *         "method"="GET",
  *         "path"="/apprenants/id/promo/id/referentiel/id/statistiques/briefs",
  *         "controller"=LivrablePartielController::class,
- *         "access_control"="(is_granted('ROLE_APPRENANT') or is_granted('ROLE_ADMIN'))",
+ *         "access_control"="(is_granted('ROLE_APPRENANT'))",
  *         "route_name"="show_statistiques_by_apprenant_id"
  *     },
  *     "get_statistiques_by_competences"={
@@ -44,14 +44,14 @@ use Doctrine\Common\Collections\ArrayCollection;
  *         "method"="GET",
  *         "path"="/formateurs/livrablepartiels/id/commentaires",
  *         "controller"=LivrablePartielController::class,
- *         "access_control"="(is_granted('ROLE_FORMATEUR') or is_granted('ROLE_APPRENANT) or is_granted('ROLE_ADMIN'))",
+ *         "access_control"="(is_granted('ROLE_FORMATEUR') or is_granted('ROLE_APPRENANT))",
  *         "route_name"="show_commentaires_by_livrablePartiel"
  *     },
  *     "add_commentaire_by_formateur"={
  *         "method"="POST",
  *         "path"="/formateurs/livrablepartiels/id/commentaires",
  *         "controller"=LivrablePartielController::class,
- *         "access_control"="(is_granted('ROLE_FORMATEUR') or is_granted('ROLE_ADMIN'))",
+ *         "access_control"="(is_granted('ROLE_FORMATEUR'))",
  *         "route_name"="post_commentaire_by_formateur"
  *     }, 
  *     "add_commentaire_by_apprenant"={
