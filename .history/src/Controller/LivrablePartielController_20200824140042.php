@@ -311,6 +311,9 @@ class LivrablePartielController extends AbstractController
             return new JsonResponse("Veuillez remplir le statut.", Response::HTTP_BAD_REQUEST, [], true);
         }
 
+        if (!isset($data['delai']) || empty($data['delai'])) {
+            return new JsonResponse("Veuillez remplir le delai.", Response::HTTP_BAD_REQUEST, [], true);
+        }
 
         $livrablePartiel = $repoLivrablePartiels->find($id_livrable);
         $apprenant = $repoApprenant->find($id_apprenant);
@@ -323,14 +326,11 @@ class LivrablePartielController extends AbstractController
         foreach ($livrablePartiel->getLivrableRendus() as $value) {
             if ($apprenant == $value->getApprenant()) {
                 $value->setStatut($statut[0]);
-                if (isset($data['delai']) || !empty($data['delai'])) {
-                    $value->setDelai(date_create_from_format('Y-m-d', $data['delai']));
-                }
-                $em->persist($value);
+                //$em->persist($value);
             }
         }
 
-        $em->flush();
+        //$em->flush();
     }
 
 

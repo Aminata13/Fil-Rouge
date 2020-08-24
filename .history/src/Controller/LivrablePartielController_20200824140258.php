@@ -326,11 +326,11 @@ class LivrablePartielController extends AbstractController
                 if (isset($data['delai']) || !empty($data['delai'])) {
                     $value->setDelai(date_create_from_format('Y-m-d', $data['delai']));
                 }
-                $em->persist($value);
+                //$em->persist($value);
             }
         }
 
-        $em->flush();
+        //$em->flush();
     }
 
 

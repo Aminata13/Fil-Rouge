@@ -330,7 +330,7 @@ class LivrablePartielController extends AbstractController
             }
         }
 
-        $em->flush();
+        //$em->flush();
     }
 
 
