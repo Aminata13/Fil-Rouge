@@ -28,7 +28,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @Route("/api")
- */
+*/
 class BriefController extends AbstractController
 {
 
@@ -52,7 +52,6 @@ class BriefController extends AbstractController
         return new JsonResponse($briefJson, Response::HTTP_OK, [], true);
     }
 
-
     /**
      * @Route("/formateurs/promotions/{id_promo}/briefs", name="show_brief_by_promoId", methods="GET")
      */
@@ -70,21 +69,21 @@ class BriefController extends AbstractController
     /**
      * @Route("/formateurs/{id}/briefs/brouillons", name="show_brief_brouillons_formateur", methods="GET")
      */
-    public function getBriefBroullonFormateurId(SerializerInterface $serializer, int $id, int $id_groupe, PromotionRepository $repoPromo, BriefPromotionRepository $repoBriefPromo, FormateurRepository $repoFormateur, BriefRepository $repoBrief, GroupeRepository $ripoGroupe)
+    public function getBriefBroullonFormateurId(SerializerInterface $serializer, int $id, PromotionRepository $repoPromo, BriefPromotionRepository $repoBriefPromo, FormateurRepository $repoFormateur, BriefRepository $repoBrief, GroupeRepository $ripoGroupe)
     {
 
         $formateur = $repoFormateur->find($id);
         if (empty($formateur)) {
             return new JsonResponse("Ce formateur n'existe pas.", Response::HTTP_NOT_FOUND, [], true);
         }
-
+ 
         foreach ($formateur->getBriefs() as $value) {
             if ($value->getEtatBrief()->getLibelle() != "BROUILLON") {
                 $formateur->removeBrief($value);
             }
         }
 
-        if (empty($formateur->getBriefs())) {
+        if (count($formateur->getBriefs())<1) {
             return new JsonResponse("Aucun brief en brouillon.", Response::HTTP_NOT_FOUND, [], true);
         }
 
@@ -95,7 +94,7 @@ class BriefController extends AbstractController
     /**
      * @Route("/formateurs/{id}/briefs/valide", name="show_brief_valide_formateur", methods="GET")
      */
-    public function getBriefValideFormateurId(SerializerInterface $serializer, int $id, int $id_groupe, PromotionRepository $repoPromo, BriefPromotionRepository $repoBriefPromo, FormateurRepository $repoFormateur, BriefRepository $repoBrief, GroupeRepository $ripoGroupe)
+    public function getBriefValideFormateurId(SerializerInterface $serializer, int $id, PromotionRepository $repoPromo, BriefPromotionRepository $repoBriefPromo, FormateurRepository $repoFormateur, BriefRepository $repoBrief, GroupeRepository $ripoGroupe)
     {
 
         $formateur = $repoFormateur->find($id);
@@ -104,12 +103,12 @@ class BriefController extends AbstractController
         }
 
         foreach ($formateur->getBriefs() as $value) {
-            if ($value->getEtatBrief()->getLibelle() != "COMPLET") {
+            if ($value->getEtatBrief()->getLibelle() != "VALIDE" && $value->getEtatBrief()->getLibelle() != "NON ASSIGNE"  ) {
                 $formateur->removeBrief($value);
             }
         }
 
-        if (empty($formateur->getBriefs())) {
+        if (count($formateur->getBriefs())<1) {
             return new JsonResponse("Aucun brief valide.", Response::HTTP_NOT_FOUND, [], true);
         }
 
@@ -129,8 +128,20 @@ class BriefController extends AbstractController
         }
 
         $brief = $repoBrief->find($id_brief);
-        if (empty($brief) || !$promo->getGroupes()->contains($brief)) {
+
+        if (!($brief)) {
             return new JsonResponse("Ce brief n'existe pas.", Response::HTTP_NOT_FOUND, [], true);
+        }
+        
+        $containt = false;
+        foreach ($promo->getBriefPromotions() as  $value) {
+            if ($value->getBrief() == $brief) {
+                $containt = true;
+            }
+        }
+
+        if (!$containt) {
+            return new JsonResponse("Ce brief n'est pas dans se promotion.", Response::HTTP_NOT_FOUND, [], true);
         }
 
         $briefJson = $serializer->serialize($brief, 'json', ["groups" => ["briefGroupe:read"]]);
@@ -272,7 +283,7 @@ class BriefController extends AbstractController
         foreach ($data as $key => $value) {
             $livrableApprenant = new LivrableApprenant();
             $livrableApprenant->setUrl($value);
-            
+
 
             $livrableAttendu = $repoLivrableAttendu->findBy(array('libelle' => $key));
             if ($livrableAttendu) {
@@ -289,14 +300,15 @@ class BriefController extends AbstractController
             }
             $livrableApprenants[] = $livrableApprenant;
         }
-        // dd($livrableApprenants);
+        dd($livrableApprenants);
         foreach ($livrableApprenants as $value) {
             foreach ($apprenants as $a) {
                 $value->setApprenant($a);
-                $em->persist($value);
+                //$em->persist($value);
             }
         }
-        $em->flush();
+
+        //$em->flush();
         return new JsonResponse("Livrables enregistrés avec succès.", Response::HTTP_CREATED, [], true);
     }
 
@@ -330,6 +342,7 @@ class BriefController extends AbstractController
      */
     public function addBrief(SerializerInterface $serializer, ValidatorInterface $validator, StatutBriefRepository $repoStatutBrief, BriefRepository $repoBrief, GroupeRepository $repoGroupe, EtatBriefRepository $repoEtatBrief, FormateurRepository $repoFormateur, LivrableAttenduRepository $repoLivrableAttendu, EntityManagerInterface $em, Request $request, \Swift_Mailer $mailer)
     {
+        
         $data = $request->request->all();
 
         /**Recupération référentiel */
@@ -337,6 +350,7 @@ class BriefController extends AbstractController
         if (isset($data["referentiel"])) {
             $data["referentiel"] = $referentielIri;
         }
+
 
         /**Récupération langue */
         $langueIri = 'api/langues/' . $data["langue"];
@@ -413,6 +427,7 @@ class BriefController extends AbstractController
 
         /** Affecter EtatBrief */
         $errors = $validator->validate($brief);
+
         if (($errors) > 0) {
             $errorsString = $this->serializer->serialize($errors, 'json');
             return new JsonResponse($errorsString, Response::HTTP_BAD_REQUEST, [], true);
@@ -425,7 +440,16 @@ class BriefController extends AbstractController
             $etat = $repoEtatBrief->findBy(array('libelle' => 'BROUILLON'));
         }
         $brief->setEtatBrief($etat[0]);
+<<<<<<< HEAD
+
+        $em->persist($brief);
+        $em->flush();
+
+        return new JsonResponse("Success", Response::HTTP_CREATED, [], true);
+        // :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+=======
         
+>>>>>>> 9d67d64f0c50c61fc3ca7d58235dd8dd13584d34
         /** Assignation du brief à un groupe */
         if (isset($data['groupes'])) {
             foreach ($data['groupes'] as $value) {
@@ -457,10 +481,7 @@ class BriefController extends AbstractController
             }
         }
 
-        $em->persist($brief);
-        $em->flush();
 
-        return new JsonResponse("Success", Response::HTTP_CREATED, [], true);
     }
 
     /**Fonction traitement image */
@@ -469,5 +490,5 @@ class BriefController extends AbstractController
         $fileType = explode("/", $file->getMimeType())[1];
         $filePath = $file->getRealPath();
         return file_get_contents($filePath, $name . '.' . $fileType);
-    }
+    }    
 }
