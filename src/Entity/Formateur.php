@@ -19,14 +19,14 @@ class Formateur
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"groupe:read","promotion:read","promotion:read_all"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","groupe:read","promotion:read","promotion:read_all"})
      */
     private $id;
 
     /**
      * @ORM\OneToOne(targetEntity=User::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"groupe:read","promotion:read","promotion:read_all"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","groupe:read","promotion:read","promotion:read_all"})
      */
     private $user;
 
@@ -123,7 +123,7 @@ class Formateur
         if ($this->promotions->contains($promotion)) {
             $this->promotions->removeElement($promotion);
         }
-
+        
         return $this;
     }
 

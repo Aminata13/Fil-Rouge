@@ -2,13 +2,16 @@
 
 namespace App\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\LivrableAttenduRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=LivrableAttenduRepository::class)
+ * @ApiResource()
  */
 class LivrableAttendu
 {
@@ -16,11 +19,13 @@ class LivrableAttendu
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read"})
      */
     private $libelle;
 
@@ -30,7 +35,8 @@ class LivrableAttendu
     private $briefs;
 
     /**
-     * @ORM\OneToMany(targetEntity=LivrableApprenant::class, mappedBy="livrableAttendu")
+     * @ORM\OneToMany(targetEntity=LivrableApprenant::class, mappedBy="livrableAttendu", cascade={"persist"})
+     * @Groups({"brief_livrable_partiel:read"})
      */
     private $livrableApprenants;
 

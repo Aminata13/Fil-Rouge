@@ -66,13 +66,13 @@ class Groupe
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"groupe:read","apprenants_groupe:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","groupe:read","apprenants_groupe:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"groupe:read","apprenants_groupe:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","groupe:read","apprenants_groupe:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
      * @Assert\NotBlank(message="Le libelle est obligatoire.")
      */
     private $libelle;
@@ -80,30 +80,31 @@ class Groupe
     /**
      * @ORM\Column(type="date")
      * @Assert\NotBlank(message="La date de creation du groupe est obligatoire.")
-     * @Groups({"groupe:read","apprenants_groupe:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","groupe:read","apprenants_groupe:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $dateCreation;
 
     /**
      * @ORM\ManyToMany(targetEntity=Apprenant::class, inversedBy="groupes")
-     * @Groups({"groupe:read","promotion:read_all","apprenants_groupe:read","promo_groupe_apprenants:read"})
+     * @Groups({"briefGroupe:read","groupe:read","promotion:read_all","apprenants_groupe:read","promo_groupe_apprenants:read"})
      */
     private $apprenants;
 
     /**
      * @ORM\ManyToOne(targetEntity=Promotion::class, inversedBy="groupes")
-     * @Groups({"groupe:read"})
+     * @Groups({"groupe:read","briefGroupe:read"})
      */
     private $promotion;
 
     /**
      * @ORM\ManyToMany(targetEntity=Formateur::class, mappedBy="groupes")
-     * @Groups({"groupe:read"})
+     * @Groups({"groupe:read","briefGroupe:read"})
      */
     private $formateurs;
 
     /**
-     * @ORM\ManyToOne(targetEntity=EtatBriefGroupe::class, inversedBy="groupe")
+     * @ORM\ManyToOne(targetEntity=EtatBriefGroupe::class, inversedBy="groupe", cascade={"persist"})
+     * @Groups({"briefGroupe:read"})
      */
     private $etatBriefGroupe;
 
@@ -111,7 +112,6 @@ class Groupe
     {
         $this->apprenants = new ArrayCollection();
         $this->formateurs = new ArrayCollection();
-
         
     }
 
