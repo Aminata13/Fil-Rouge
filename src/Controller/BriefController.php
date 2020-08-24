@@ -440,12 +440,16 @@ class BriefController extends AbstractController
             $etat = $repoEtatBrief->findBy(array('libelle' => 'BROUILLON'));
         }
         $brief->setEtatBrief($etat[0]);
+<<<<<<< HEAD
 
         $em->persist($brief);
         $em->flush();
 
         return new JsonResponse("Success", Response::HTTP_CREATED, [], true);
         // :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+=======
+        
+>>>>>>> 9d67d64f0c50c61fc3ca7d58235dd8dd13584d34
         /** Assignation du brief à un groupe */
         if (isset($data['groupes'])) {
             foreach ($data['groupes'] as $value) {

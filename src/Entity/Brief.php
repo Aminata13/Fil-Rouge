@@ -212,8 +212,12 @@ class Brief
 
     /**
      * @ORM\ManyToOne(targetEntity=EtatBriefGroupe::class, inversedBy="brief", cascade={"persist"})
+<<<<<<< HEAD
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"briefGroupe:read"})
+=======
+     * @ORM\JoinColumn(nullable=true)
+>>>>>>> 9d67d64f0c50c61fc3ca7d58235dd8dd13584d34
      */
     private $etatBriefGroupe;
 
