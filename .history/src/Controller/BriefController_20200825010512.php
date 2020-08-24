@@ -474,10 +474,7 @@ class BriefController extends AbstractController
 
 
         $em->persist($brief);
-        $em->flush();
-
-        return new JsonResponse("succès.", Response::HTTP_CREATED, [], true);
-
+        $
     }
 
     /**Fonction traitement image */
