@@ -27,6 +27,7 @@ class ChatController extends AbstractController
     /**
      * @Route("users/promotions/{id_promo}/apprenants/{id_apprenant}/chats", name="show_messages_apprenant")
      */
+    // recupere et montrer meaasge 
     public function showMessagesByApprenant(int $id_promo, int $id_apprenant, PromotionRepository $repoPromo, ApprenantRepository $repoApprenant, FilDiscussionRepository $repoDiscussion)
     {
         $promo=$repoPromo->find($id_promo);
@@ -64,7 +65,7 @@ class ChatController extends AbstractController
      * @Route("users/promotions/{id_promo}/apprenants/{id_apprenant}/chats", name="add_messages_apprenant")
      */
     public function addMessagesByApprenant(EntityManagerInterface $em,SerializerInterface $serializer,Request $request,int $id_promo, int $id_apprenant, PromotionRepository $repoPromo, ApprenantRepository $repoApprenant, FilDiscussionRepository $repoDiscussion)
-    {
+    { //ajouter message:commentaire
         $commentaireTab = $request->request->all();
         $commentaire = $serializer->denormalize($commentaireTab, MessageChat::class, true, ["groups" => "commentaire:write"]);
         $commentaire->setDate(new \DateTime());
@@ -77,7 +78,7 @@ class ChatController extends AbstractController
             return new JsonResponse("Cet apprenant n'existe pas.", Response::HTTP_NOT_FOUND, [], true);
         }
         
-
+//recuperer fil de diskusion wou bene promo
         $filDiscussion= $repoDiscussion->findBy(array('promotion_id' => $id_promo));
         if(empty($filDiscussion)) {
            $filDiscussion= new FilDiscussion();
