@@ -20,10 +20,12 @@ class ProfilSortiePromotionController extends AbstractController
      */
     public function index(int $id_promo, int $id_profil, PromotionRepository $repoPromo,ProfilSortieRepository $repoProfil)
     {
+        //verification existence 'validation'
         $promo=$repoPromo->find($id_promo);
         if(is_null($promo)) {
             return new JsonResponse("Cette promotion n'existe pas.", Response::HTTP_NOT_FOUND, [], true);
         }
+  //profil
         $profilSortie=$repoProfil->find($id_profil);
         if(is_null($profilSortie)) {
             return new JsonResponse("Ce profil de sortie n'existe pas.", Response::HTTP_NOT_FOUND, [], true);
@@ -36,6 +38,7 @@ class ProfilSortiePromotionController extends AbstractController
             }
 
         }
+        //apprenant
         if(empty($apprenants)) {
             return new JsonResponse("Il n'y a aucun apprenant avec ce profil de sortie.", Response::HTTP_NOT_FOUND, [], true);
         }

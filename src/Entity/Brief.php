@@ -112,111 +112,108 @@ class Brief
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read"})
+     * @Groups({"brief:read"})
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=Langue::class, inversedBy="briefs")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read","brief:write"})
      * @Assert\NotBlank(message="La langue est obligatoire.")
+     * @Groups({"brief:read"})
      */
     private $langue;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read","brief:write"})
      * @Assert\NotBlank(message="Le titre est obligatoire.")
+     * @Groups({"briefGroupe:read","brief:read"})
      */
     private $titre;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read","brief:write"})
      * @Assert\NotBlank(message="La description est obligatoire.")
+     * @Groups({"briefGroupe:read","brief:read"})
      */
     private $description;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read","brief:write"})
      * @Assert\NotBlank(message="Le contexte est obligatoire.")
+     * @Groups({"briefGroupe:read","brief:read"})
      */
     private $contexte;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read","brief:write"})
      * @Assert\NotBlank(message="Les modalités pédagogiques sont obligatoire.")
+     * @Groups({"briefGroupe:read","brief:read"})
      */
     private $modalitePedagogique;
 
     /**
      * @ORM\OneToMany(targetEntity=Ressource::class, mappedBy="brief", orphanRemoval=true, cascade={"persist"})
-     * @Groups({"brief_livrable_partiel:read","brief:read"})
      */
     private $ressource;
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read","brief:write"})
+     * @Groups({"briefGroupe:read","brief:read"})
      */
     private $criterePerformance;
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read","brief:write"})
+     * @Groups({"briefGroupe:read","brief:read"})
      */
     private $modaliteEvaluation;
 
     /**
      * @ORM\Column(type="blob", nullable=true)
-     * @Groups({"brief_livrable_partiel:read","brief:read"})
      */
     private $image;
 
     /**
      * @ORM\Column(type="date")
-     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read"})
+     * @Groups({"briefGroupe:read","brief:read"})
      */
     private $dateCreation;
 
     /**
      * @ORM\ManyToOne(targetEntity=Referentiel::class, inversedBy="briefs")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:write"})
      */
     private $referentiel;
 
     /**
      * @ORM\ManyToMany(targetEntity=NiveauEvaluation::class, inversedBy="briefs")
-     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read","brief:write"})
+     * @Groups({"briefGroupe:read","brief:read"})
      */
     private $niveauCompetences;
 
     /**
      * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="briefs")
-     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read","brief:write"})
+     * @Groups({"briefGroupe:read","brief:read"})
      */
     private $tags;
 
     /**
      * @ORM\ManyToOne(targetEntity=Formateur::class, inversedBy="briefs")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"brief_livrable_partiel:read","briefGroupe:read"})
+     * @Groups({"briefGroupe:read"})
      */
     private $formateur;
 
     /**
      * @ORM\ManyToMany(targetEntity=LivrableAttendu::class, mappedBy="briefs", cascade={"persist"})
-     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read"})
+     * @Groups({"briefGroupe:read","brief:read"})
      */
     private $livrableAttendus;
 
     /**
      * @ORM\OneToMany(targetEntity=BriefPromotion::class, mappedBy="brief", cascade={"persist"})
-     * 
+     * @Groups({"briefGroupe:read"})
      */
     private $briefPromotions;
 
@@ -229,13 +226,13 @@ class Brief
     /**
      * @ORM\ManyToOne(targetEntity=EtatBrief::class, inversedBy="briefs")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read"})
+     * @Groups({"briefGroupe:read"})
      */
     private $etatBrief;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"brief:read","briefGroupe:read","brief:write"})
+     * @Groups({"briefGroupe:read","brief:write","brief:read"})
      * @Assert\NotBlank(message="Les livrables sont obligatoire.")
      */
     private $livrables;
