@@ -22,6 +22,7 @@ use App\Entity\BriefPromotion;
 use App\Entity\EtatBriefGroupe;
 use App\Entity\LivrableApprenant;
 use App\Repository\ApprenantRepository;
+use App\Repository\RessourceRepository;
 use App\Repository\StatutBriefRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -29,7 +30,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @Route("/api")
-*/
+ */
 class BriefController extends AbstractController
 {
 
@@ -77,14 +78,14 @@ class BriefController extends AbstractController
         if (empty($formateur)) {
             return new JsonResponse("Ce formateur n'existe pas.", Response::HTTP_NOT_FOUND, [], true);
         }
- 
+
         foreach ($formateur->getBriefs() as $value) {
             if ($value->getEtatBrief()->getLibelle() != "BROUILLON") {
                 $formateur->removeBrief($value);
             }
         }
 
-        if (count($formateur->getBriefs())<1) {
+        if (count($formateur->getBriefs()) < 1) {
             return new JsonResponse("Aucun brief en brouillon.", Response::HTTP_NOT_FOUND, [], true);
         }
 
@@ -104,12 +105,12 @@ class BriefController extends AbstractController
         }
 
         foreach ($formateur->getBriefs() as $value) {
-            if ($value->getEtatBrief()->getLibelle() != "VALIDE" && $value->getEtatBrief()->getLibelle() != "NON ASSIGNE"  ) {
+            if ($value->getEtatBrief()->getLibelle() != "VALIDE" && $value->getEtatBrief()->getLibelle() != "NON ASSIGNE") {
                 $formateur->removeBrief($value);
             }
         }
 
-        if (count($formateur->getBriefs())<1) {
+        if (count($formateur->getBriefs()) < 1) {
             return new JsonResponse("Aucun brief valide.", Response::HTTP_NOT_FOUND, [], true);
         }
 
@@ -327,7 +328,7 @@ class BriefController extends AbstractController
         /**Récupération du formateur connecté */
         $user = $this->getUser()->getId();
         $formateur = $repoFormateur->findBy(array('user' => $user))[0];
-        
+
         $newBrief->setFormateur($formateur);
 
         foreach ($newBrief->getBriefPromotions() as $value) {
@@ -349,7 +350,7 @@ class BriefController extends AbstractController
      */
     public function addBrief(SerializerInterface $serializer, ValidatorInterface $validator, StatutBriefRepository $repoStatutBrief, GroupeRepository $repoGroupe, EtatBriefRepository $repoEtatBrief, FormateurRepository $repoFormateur, LivrableAttenduRepository $repoLivrableAttendu, EntityManagerInterface $em, Request $request, \Swift_Mailer $mailer)
     {
-        
+
         $data = $request->request->all();
 
         /**Recupération référentiel */
@@ -484,7 +485,6 @@ class BriefController extends AbstractController
         $em->flush();
 
         return new JsonResponse("succès.", Response::HTTP_CREATED, [], true);
-
     }
 
     /**
@@ -645,5 +645,22 @@ class BriefController extends AbstractController
             ->setTo($user->getUser()->getEmail())
             ->setBody("Vous avez été desassigné au brief " . $brief->getTitre() . ".Veuillez vous connecter sur la plateforme pour voir les détails.");
         $mailer->send($msg);
+    }
+    /**
+     * @Route("/formateurs/briefs_test/{id}", name="put_brief", methods="POST")
+     */
+    public function editImage(RessourceRepository $repoRess, Request $request, BriefRepository $repoBrief, int $id, EntityManagerInterface $em) {
+        // dd($request->files->get('image'));
+        $data = $request->files->get('image');
+        // $data = $request->files->get('pieceJointe');
+        $brief = $repoBrief->find($id);
+        // $ressource = $repoRess->find(5);
+        // $ressource->setPieceJointe($this->uploadFile($data, 'pdf'));
+
+        $brief->setImage($this->uploadFile($data, 'image'));
+
+        $em->flush();
+        return new JsonResponse("succès.", Response::HTTP_CREATED, [], true);
+
     }
 }

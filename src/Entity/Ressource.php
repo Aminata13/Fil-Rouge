@@ -17,19 +17,19 @@ class Ressource
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"brief_livrable_partiel:read","brief:read"})
+     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"brief_livrable_partiel:read","brief:read"})
+     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read"})
      */
     private $url;
 
     /**
      * @ORM\Column(type="blob", nullable=true)
-     * @Groups({"brief_livrable_partiel:read","brief:read"})
+     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read"})
      */
     private $pieceJointe;
 

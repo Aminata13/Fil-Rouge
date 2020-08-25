@@ -154,6 +154,7 @@ class Brief
 
     /**
      * @ORM\OneToMany(targetEntity=Ressource::class, mappedBy="brief", orphanRemoval=true, cascade={"persist"})
+     * @Groups({"briefGroupe:read","brief:read"})
      */
     private $ressource;
 
@@ -171,6 +172,7 @@ class Brief
 
     /**
      * @ORM\Column(type="blob", nullable=true)
+     * @Groups({"briefGroupe:read","brief:read"})
      */
     private $image;
 
