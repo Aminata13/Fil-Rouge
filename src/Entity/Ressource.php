@@ -58,12 +58,12 @@ class Ressource
 
     public function getPieceJointe()
     {
-        return $this->pieceJointe;
+        return $this->pieceJointe!=null?stream_get_contents($this->pieceJointe):null;
     }
 
     public function setPieceJointe($pieceJointe): self
     {
-        $this->pieceJointe = $pieceJointe;
+        $this->pieceJointe = base64_encode($pieceJointe);
 
         return $this;
     }

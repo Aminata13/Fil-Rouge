@@ -95,6 +95,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "controller"=BriefController::class,
  *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR'))",
  *              "route_name"="add_brief"
+ *          },
+ *          "post_assign_brief="={
+ *              "method"="POST",
+ *              "path"="/formateurs/promotions/{id_promo}/briefs/{id_promo}/assignation",
+ *              "controller"=BriefController::class,
+ *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR'))",
+ *              "route_name"="assign_brief"
  *          }
  *  }
  * )
@@ -147,7 +154,7 @@ class Brief
 
     /**
      * @ORM\OneToMany(targetEntity=Ressource::class, mappedBy="brief", orphanRemoval=true, cascade={"persist"})
-     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read"})
+     * @Groups({"brief_livrable_partiel:read","brief:read"})
      */
     private $ressource;
 
@@ -165,7 +172,7 @@ class Brief
 
     /**
      * @ORM\Column(type="blob", nullable=true)
-     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read"})
+     * @Groups({"brief_livrable_partiel:read","brief:read"})
      */
     private $image;
 
@@ -369,12 +376,12 @@ class Brief
 
     public function getImage()
     {
-        return $this->image;
+        return $this->image!=null?stream_get_contents($this->image):null;
     }
 
     public function setImage($image): self
     {
-        $this->image = $image;
+        $this->image = base64_encode($image);
 
         return $this;
     }
