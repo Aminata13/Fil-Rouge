@@ -17,19 +17,19 @@ class Ressource
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"brief_livrable_partiel:read","brief:read"})
+     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"brief_livrable_partiel:read","brief:read"})
+     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read"})
      */
     private $url;
 
     /**
      * @ORM\Column(type="blob", nullable=true)
-     * @Groups({"brief_livrable_partiel:read","brief:read"})
+     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read"})
      */
     private $pieceJointe;
 
@@ -58,13 +58,11 @@ class Ressource
 
     public function getPieceJointe()
     {
-       // return $this->pieceJointe;
         return $this->pieceJointe!=null?stream_get_contents($this->pieceJointe):null;
     }
 
     public function setPieceJointe($pieceJointe): self
     {
-       // $this->pieceJointe = $pieceJointe;
         $this->pieceJointe = base64_encode($pieceJointe);
 
         return $this;

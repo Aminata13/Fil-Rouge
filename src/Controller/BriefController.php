@@ -17,10 +17,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use ApiPlatform\Core\Validator\ValidatorInterface;
+use App\Entity\BriefApprenant;
 use App\Entity\BriefPromotion;
 use App\Entity\EtatBriefGroupe;
 use App\Entity\LivrableApprenant;
 use App\Repository\ApprenantRepository;
+use App\Repository\RessourceRepository;
 use App\Repository\StatutBriefRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -28,7 +30,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @Route("/api")
-*/
+ */
 class BriefController extends AbstractController
 {
 
@@ -76,14 +78,14 @@ class BriefController extends AbstractController
         if (empty($formateur)) {
             return new JsonResponse("Ce formateur n'existe pas.", Response::HTTP_NOT_FOUND, [], true);
         }
- 
+
         foreach ($formateur->getBriefs() as $value) {
             if ($value->getEtatBrief()->getLibelle() != "BROUILLON") {
                 $formateur->removeBrief($value);
             }
         }
 
-        if (count($formateur->getBriefs())<1) {
+        if (count($formateur->getBriefs()) < 1) {
             return new JsonResponse("Aucun brief en brouillon.", Response::HTTP_NOT_FOUND, [], true);
         }
 
@@ -103,12 +105,12 @@ class BriefController extends AbstractController
         }
 
         foreach ($formateur->getBriefs() as $value) {
-            if ($value->getEtatBrief()->getLibelle() != "VALIDE" && $value->getEtatBrief()->getLibelle() != "NON ASSIGNE"  ) {
+            if ($value->getEtatBrief()->getLibelle() != "VALIDE" && $value->getEtatBrief()->getLibelle() != "NON ASSIGNE") {
                 $formateur->removeBrief($value);
             }
         }
 
-        if (count($formateur->getBriefs())<1) {
+        if (count($formateur->getBriefs()) < 1) {
             return new JsonResponse("Aucun brief valide.", Response::HTTP_NOT_FOUND, [], true);
         }
 
@@ -315,7 +317,7 @@ class BriefController extends AbstractController
     /**
      * @Route("/formateurs/briefs/{id}", name="duplicate_brief", methods="POST")
      */
-    public function duplicateBrief(int $id, BriefRepository $repoBrief, EtatBriefRepository $repoEtatBrief, EntityManagerInterface $em)
+    public function duplicateBrief(int $id, BriefRepository $repoBrief, FormateurRepository $repoFormateur, EtatBriefRepository $repoEtatBrief, EntityManagerInterface $em)
     {
         $brief = $repoBrief->find($id);
         if (empty($brief)) {
@@ -323,6 +325,12 @@ class BriefController extends AbstractController
         }
 
         $newBrief = $brief;
+        /**Récupération du formateur connecté */
+        $user = $this->getUser()->getId();
+        $formateur = $repoFormateur->findBy(array('user' => $user))[0];
+
+        $newBrief->setFormateur($formateur);
+
         foreach ($newBrief->getBriefPromotions() as $value) {
             $newBrief->removeBriefPromotion($value);
         }
@@ -340,9 +348,9 @@ class BriefController extends AbstractController
     /**
      * @Route("/formateurs/briefs", name="add_brief", methods="POST")
      */
-    public function addBrief(SerializerInterface $serializer, ValidatorInterface $validator, StatutBriefRepository $repoStatutBrief, BriefRepository $repoBrief, GroupeRepository $repoGroupe, EtatBriefRepository $repoEtatBrief, FormateurRepository $repoFormateur, LivrableAttenduRepository $repoLivrableAttendu, EntityManagerInterface $em, Request $request, \Swift_Mailer $mailer)
+    public function addBrief(SerializerInterface $serializer, ValidatorInterface $validator, StatutBriefRepository $repoStatutBrief, GroupeRepository $repoGroupe, EtatBriefRepository $repoEtatBrief, FormateurRepository $repoFormateur, LivrableAttenduRepository $repoLivrableAttendu, EntityManagerInterface $em, Request $request, \Swift_Mailer $mailer)
     {
-        
+
         $data = $request->request->all();
 
         /**Recupération référentiel */
@@ -440,7 +448,7 @@ class BriefController extends AbstractController
             $etat = $repoEtatBrief->findBy(array('libelle' => 'BROUILLON'));
         }
         $brief->setEtatBrief($etat[0]);
-        
+
         /** Assignation du brief à un groupe */
         if (isset($data['groupes'])) {
             foreach ($data['groupes'] as $value) {
@@ -464,7 +472,7 @@ class BriefController extends AbstractController
                 /** Envoi de mails aux apprenants assignés au brief*/
                 foreach ($groupe->getApprenants() as $value) {
                     $msg = (new \Swift_Message('Sonatel Academy'))
-                        ->setFrom('n.minakey@gmail.com')
+                        ->setFrom('dioufbadaraalioune7@gmail.com')
                         ->setTo($value->getUser()->getEmail())
                         ->setBody("Vous avez été assigné au brief " . $brief->getTitre() . ".Veuillez vous connecter sur la plateforme pour voir les détails.");
                     $mailer->send($msg);
@@ -477,7 +485,138 @@ class BriefController extends AbstractController
         $em->flush();
 
         return new JsonResponse("succès.", Response::HTTP_CREATED, [], true);
+    }
 
+    /**
+     * @Route("/formateurs/promotions/{id_promo}/briefs/{id_brief}/assignation", name="assign_brief", methods="POST")
+     */
+    public function assignBrief(int $id_promo, int $id_brief, SerializerInterface $serializer, ValidatorInterface $validator, StatutBriefRepository $repoStatutBrief, ApprenantRepository $repoApprenant, BriefRepository $repoBrief, BriefPromotionRepository $repoBriefPromo, GroupeRepository $repoGroupe, EtatBriefRepository $repoEtatBrief, PromotionRepository $repoPromo, LivrableAttenduRepository $repoLivrableAttendu, EntityManagerInterface $em, Request $request, \Swift_Mailer $mailer)
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $promo = $repoPromo->find($id_promo);
+        if (empty($promo)) {
+            return new JsonResponse("Ce promo n'existe pas.", Response::HTTP_NOT_FOUND, [], true);
+        }
+
+        $brief = $repoBrief->find($id_brief);
+        if (empty($brief)) {
+            return new JsonResponse("Ce brief n'existe pas .", Response::HTTP_NOT_FOUND, [], true);
+        }
+
+        /** Traitement assignation d'un brief à un apprenant, un groupe ou plusieurs groupes */
+        if (isset($data['assignation']) && $data['assignation']) {
+            $statutAssigne = $repoStatutBrief->findBy(array('libelle' => 'ASSIGNE'))[0];
+            $statutEnCours = $repoStatutBrief->findBy(array('libelle' => 'EN COURS'))[0];
+
+            /** Assignation d'un brief à un apprenant */
+            if (isset($data['apprenant'])) {
+                $apprenant = $repoApprenant->find($data['apprenant']);
+                if ($promo->getApprenants()->contains($apprenant)) {
+                    /** Implementation de BriefApprenant */
+                    $briefApprenant = new BriefApprenant();
+                    $briefApprenant->setStatut($statutAssigne);
+                    $briefApprenant->setApprenant($apprenant);
+
+                    /** Implementation de BriefPromotion */
+                    $briefPromotion = $repoBriefPromo->findBy(array('promotion' => $promo, 'brief' => $brief));
+
+                    if (empty($briefPromotion)) {
+                        $briefPromo = new BriefPromotion();
+                        $briefPromo->setPromotion($promo);
+                        $briefPromo->setBrief($brief);
+                        $briefPromo->setStatut($statutEnCours);
+                        $briefApprenant->setBriefPromotion($briefPromo);
+
+                        $em->persist($briefPromo);
+                        $em->flush();
+                    } else {
+                        $briefApprenant->setBriefPromotion($briefPromotion[0]);
+                    }
+                    $this->sendEmail($mailer, $apprenant, $brief);
+
+                    $em->persist($briefApprenant);
+                    $em->flush();
+                }
+
+                /** Assignation d'un brief à un groupe ou plusieurs groupes */
+            } elseif (isset($data['groupes'])) {
+                foreach ($data['groupes'] as $value) {
+                    $groupe = $repoGroupe->find($value['id']);
+                    $promotion = $groupe->getPromotion();
+
+                    /** Implémentation de EtatBriefGroupe */
+                    $etatBriefGroupe = new EtatBriefGroupe;
+                    $etatBriefGroupe->addBrief($brief);
+                    $etatBriefGroupe->addGroupe($groupe);
+                    $etatBriefGroupe->setStatut($repoStatutBrief->findBy(array('libelle' => 'ASSIGNE'))[0]);
+
+                    $em->persist($etatBriefGroupe);
+                    $em->flush();
+
+                    /** Implementation de BriefPromotion */
+                    $briefPromotion = $repoBriefPromo->findBy(array('promotion' => $promotion, 'brief' => $brief));
+
+                    if (empty($briefPromotion)) {
+                        $briefPromo = new BriefPromotion();
+                        $briefPromo->setPromotion($promotion);
+                        $briefPromo->setBrief($brief);
+                        $briefPromo->setStatut($statutEnCours);
+
+                        $em->persist($briefPromo);
+                        $em->flush();
+                    } else {
+                        $brief->addBriefPromotion($briefPromotion[0]);
+                    }
+                    $brief->setEtatBrief($repoEtatBrief->findBy(array('libelle' => 'ASSIGNE'))[0]);
+
+                    /** Envoi de mails aux apprenants assignés au brief*/
+                    foreach ($groupe->getApprenants() as $value) {
+                        $this->sendEmail($mailer, $value, $brief);
+                    }
+                }
+            }
+        }
+
+        /** Traitement desassignation d'un brief à un apprenant, un groupe ou plusieurs groupes */
+        if (isset($data['assignation']) && $data['assignation']) {
+
+            /** Desassignation d'un brief à un apprenant */
+            if (isset($data['apprenant'])) {
+                $apprenant = $repoApprenant->find($data['apprenant']);
+                if ($promo->getApprenants()->contains($apprenant)) {
+                    $briefPromotion = $repoBriefPromo->findBy(array('promotion' => $promo, 'brief' => $brief))[0];
+
+                    foreach ($apprenant->getBriefApprenants() as $value) {
+                        if ($value->getBriefPromotion() == $briefPromotion) {
+                            $value->setBriefPromotion(null);
+                            $value->setApprenant(null);
+
+                            $em->remove($value);
+                            $em->flush();
+                        }
+                    }
+
+                    $this->sendEmailDessasignation($mailer, $apprenant, $brief);
+                }
+
+                /** desassignation d'un brief à un groupe ou plusieurs groupes */
+            } elseif (isset($data['groupes'])) {
+                foreach ($data['groupes'] as $value) {
+                    $etatBriefGroupe = $groupe->getEtatBriefGroupe();
+                    $etatBriefGroupe->removeBrief($brief);
+                    $etatBriefGroupe->removeGroupe($groupe);
+
+                    $em->flush();
+
+                    foreach ($groupe->getApprenants() as $value) {
+                        $this->sendEmailDessasignation($mailer, $value, $brief);
+                    }
+                }
+            }
+        }
+
+        return new JsonResponse("Success", Response::HTTP_OK, [], true);
     }
 
     /**Fonction traitement image */
@@ -486,5 +625,42 @@ class BriefController extends AbstractController
         $fileType = explode("/", $file->getMimeType())[1];
         $filePath = $file->getRealPath();
         return file_get_contents($filePath, $name . '.' . $fileType);
-    }    
+    }
+
+    /** Send email */
+    public function sendEmail(\Swift_Mailer $mailer, $user, $brief)
+    {
+        $msg = (new \Swift_Message('Sonatel Academy'))
+            ->setFrom('dioufbadaraalioune7@gmail.com')
+            ->setTo($user->getUser()->getEmail())
+            ->setBody("Vous avez été assigné au brief " . $brief->getTitre() . ".Veuillez vous connecter sur la plateforme pour voir les détails.");
+        $mailer->send($msg);
+    }
+
+    /** Send email */
+    public function sendEmailDessasignation(\Swift_Mailer $mailer, $user, $brief)
+    {
+        $msg = (new \Swift_Message('Sonatel Academy'))
+            ->setFrom('dioufbadaraalioune7@gmail.com')
+            ->setTo($user->getUser()->getEmail())
+            ->setBody("Vous avez été desassigné au brief " . $brief->getTitre() . ".Veuillez vous connecter sur la plateforme pour voir les détails.");
+        $mailer->send($msg);
+    }
+    /**
+     * @Route("/formateurs/briefs_test/{id}", name="put_brief", methods="POST")
+     */
+    public function editImage(RessourceRepository $repoRess, Request $request, BriefRepository $repoBrief, int $id, EntityManagerInterface $em) {
+        // dd($request->files->get('image'));
+        $data = $request->files->get('image');
+        // $data = $request->files->get('pieceJointe');
+        $brief = $repoBrief->find($id);
+        // $ressource = $repoRess->find(5);
+        // $ressource->setPieceJointe($this->uploadFile($data, 'pdf'));
+
+        $brief->setImage($this->uploadFile($data, 'image'));
+
+        $em->flush();
+        return new JsonResponse("succès.", Response::HTTP_CREATED, [], true);
+
+    }
 }
