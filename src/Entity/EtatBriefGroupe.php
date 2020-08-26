@@ -31,22 +31,16 @@ class EtatBriefGroupe
     private $statut;
 
     /**
-     * @ORM\OneToMany(targetEntity=Brief::class, mappedBy="etatBriefGroupe")
-     * @Groups({"briefGroupe:read"})
+     * @ORM\ManyToOne(targetEntity=Brief::class, inversedBy="etatBriefGroupes")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $brief;
 
     /**
-     * @ORM\OneToMany(targetEntity=Groupe::class, mappedBy="etatBriefGroupe")
-     * @Groups({"briefGroupe:read"})
+     * @ORM\ManyToOne(targetEntity=Groupe::class, inversedBy="etatBriefGroupes")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $groupe;
-
-    public function __construct()
-    {
-        $this->brief = new ArrayCollection();
-        $this->groupe = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -65,65 +59,28 @@ class EtatBriefGroupe
         return $this;
     }
 
-    /**
-     * @return Collection|Brief[]
-     */
-    public function getBrief(): Collection
+    public function getBrief(): ?Brief
     {
         return $this->brief;
     }
 
-    public function addBrief(Brief $brief): self
+    public function setBrief(?Brief $brief): self
     {
-        if (!$this->brief->contains($brief)) {
-            $this->brief[] = $brief;
-            $brief->setEtatBriefGroupe($this);
-        }
+        $this->brief = $brief;
 
         return $this;
     }
 
-    public function removeBrief(Brief $brief): self
-    {
-        if ($this->brief->contains($brief)) {
-            $this->brief->removeElement($brief);
-            // set the owning side to null (unless already changed)
-            if ($brief->getEtatBriefGroupe() === $this) {
-                $brief->setEtatBriefGroupe(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Groupe[]
-     */
-    public function getGroupe(): Collection
+    public function getGroupe(): ?Groupe
     {
         return $this->groupe;
     }
 
-    public function addGroupe(Groupe $groupe): self
+    public function setGroupe(?Groupe $groupe): self
     {
-        if (!$this->groupe->contains($groupe)) {
-            $this->groupe[] = $groupe;
-            $groupe->setEtatBriefGroupe($this);
-        }
+        $this->groupe = $groupe;
 
         return $this;
     }
 
-    public function removeGroupe(Groupe $groupe): self
-    {
-        if ($this->groupe->contains($groupe)) {
-            $this->groupe->removeElement($groupe);
-            // set the owning side to null (unless already changed)
-            if ($groupe->getEtatBriefGroupe() === $this) {
-                $groupe->setEtatBriefGroupe(null);
-            }
-        }
-
-        return $this;
-    }
 }

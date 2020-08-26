@@ -229,12 +229,6 @@ class Brief
     private $briefPromotions;
 
     /**
-     * @ORM\ManyToOne(targetEntity=EtatBriefGroupe::class, inversedBy="brief", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $etatBriefGroupe;
-
-    /**
      * @ORM\ManyToOne(targetEntity=EtatBrief::class, inversedBy="briefs")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"briefGroupe:read"})
@@ -248,6 +242,11 @@ class Brief
      */
     private $livrables;
 
+    /**
+     * @ORM\OneToMany(targetEntity=EtatBriefGroupe::class, mappedBy="brief", orphanRemoval=true, cascade={"persist"})
+     */
+    private $etatBriefGroupes;
+
     public function __construct()
     {
         $this->ressource = new ArrayCollection();
@@ -255,6 +254,7 @@ class Brief
         $this->tags = new ArrayCollection();
         $this->livrableAttendus = new ArrayCollection();
         $this->briefPromotions = new ArrayCollection();
+        $this->etatBriefGroupes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -541,18 +541,6 @@ class Brief
         return $this;
     }
 
-    public function getEtatBriefGroupe(): ?EtatBriefGroupe
-    {
-        return $this->etatBriefGroupe;
-    }
-
-    public function setEtatBriefGroupe(?EtatBriefGroupe $etatBriefGroupe): self
-    {
-        $this->etatBriefGroupe = $etatBriefGroupe;
-
-        return $this;
-    }
-
     public function getEtatBrief(): ?EtatBrief
     {
         return $this->etatBrief;
@@ -573,6 +561,37 @@ class Brief
     public function setLivrables(string $livrables): self
     {
         $this->livrables = $livrables;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|EtatBriefGroupe[]
+     */
+    public function getEtatBriefGroupes(): Collection
+    {
+        return $this->etatBriefGroupes;
+    }
+
+    public function addEtatBriefGroupe(EtatBriefGroupe $etatBriefGroupe): self
+    {
+        if (!$this->etatBriefGroupes->contains($etatBriefGroupe)) {
+            $this->etatBriefGroupes[] = $etatBriefGroupe;
+            $etatBriefGroupe->setBrief($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEtatBriefGroupe(EtatBriefGroupe $etatBriefGroupe): self
+    {
+        if ($this->etatBriefGroupes->contains($etatBriefGroupe)) {
+            $this->etatBriefGroupes->removeElement($etatBriefGroupe);
+            // set the owning side to null (unless already changed)
+            if ($etatBriefGroupe->getBrief() === $this) {
+                $etatBriefGroupe->setBrief(null);
+            }
+        }
 
         return $this;
     }
