@@ -22,8 +22,10 @@ use App\Entity\BriefPromotion;
 use App\Entity\EtatBriefGroupe;
 use App\Entity\LivrableApprenant;
 use App\Repository\ApprenantRepository;
+use App\Repository\NiveauEvaluationRepository;
 use App\Repository\RessourceRepository;
 use App\Repository\StatutBriefRepository;
+use App\Repository\TagRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -619,6 +621,97 @@ class BriefController extends AbstractController
         return new JsonResponse("Success", Response::HTTP_OK, [], true);
     }
 
+    /**
+     * @Route("/formateurs/briefs/{id}", name="edit_brief", methods="PUT")
+     */
+    public function editBrief(Int $id, BriefRepository $repoBrief, SerializerInterface $serializer, ValidatorInterface $validator, StatutBriefRepository $repoStatutBrief, TagRepository $repoTag, NiveauEvaluationRepository $repoNiveauEvaluation, RessourceRepository $repoRessource, GroupeRepository $repoGroupe, EtatBriefRepository $repoEtatBrief, LivrableAttenduRepository $repoLivrableAttendu, EntityManagerInterface $em, Request $request)
+    {
+
+        $data = $request->request->all();
+        $brief = $repoBrief->find($id);
+
+        if (is_null($brief)) {
+            return new JsonResponse("Ce brief n'existe pas.", Response::HTTP_NOT_FOUND, [], true);
+        }
+
+        /** Archiver un brief */
+        if (isset($data['archive']) && $data['archive']) {
+            $brief->setEtatBrief($repoEtatBrief->findBy(array('libelle' => 'ARCHIVE'))[0]);
+
+            foreach ($brief->getBriefPromotions() as $value) {
+                $statut = $repoStatutBrief->findBy(array('libelle' => 'CLOTURE'))[0];
+                $value->setSatut($statut);
+                foreach ($value->getBriefApprenants() as $val) {
+                    $val->setSatut($statut);
+                }
+            }
+
+            $em->flush();
+        }
+
+        /** Cloturer un brief */
+        if (isset($data['cloture']) && $data['cloture']) {
+            //we'll see later
+        }
+
+        /**Modification des compétences et des niveaux */
+        if (isset($data['niveauCompetences'])) {
+            foreach ($brief->getNiveauCompetences() as $value) {
+                $brief->removeNiveauCompetence($value);
+            }
+            foreach ($data['niveauCompetences'] as $value) {
+                $niveauCompetence = $repoNiveauEvaluation->find($value);
+                $brief->addNiveauCompetence($niveauCompetence);
+            }
+
+            $em->flush();
+        }
+
+        /** Modification des tags */
+        if (isset($data['tags'])) {
+            foreach ($brief->getTags() as $value) {
+                $brief->removeTag($value);
+            }
+            foreach ($data['tags'] as $value) {
+                $tag = $repoTag->find($value);
+                $brief->addTag($tag);
+            }
+
+            $em->flush();
+        }
+
+        /** Modification des livrables attendus: on les rattache au brief ou on les crée si nécessaire */
+        if (isset($data['livrableAttendus'])) {
+            foreach ($brief->getLivrableAttendus() as $value) {
+                $brief->removeLivrableAttendu($value);
+            }
+
+            foreach ($data['livrableAttendus'] as $value) {
+                $livrableAttendu = $repoLivrableAttendu->find($value);
+                $brief->addLivrableAttendu($livrableAttendu);
+            }
+
+            $em->flush();
+        }
+
+        /** Modification des ressources de type URL */
+        if (isset($data['ressource'])) {
+            foreach ($data['ressource'] as $key => $value) {
+                $ressource = $repoRessource->find($key);
+                $ressource->setUrl($value);
+            }
+        }
+
+        /** Modification des ressources de type fichier */
+        if (isset($request->files) && $data['ressourceId']) {
+            $ressource = $repoRessource->find($data['ressourceId']);
+            $ressource->setPieceJointe($this->uploadFile($request->files->get('pieceJointe'), 'ressource'));
+        }
+
+
+        return new JsonResponse("succès.", Response::HTTP_CREATED, [], true);
+    }
+
     /**Fonction traitement image */
     public function uploadFile($file, $name)
     {
@@ -649,7 +742,8 @@ class BriefController extends AbstractController
     /**
      * @Route("/formateurs/briefs_test/{id}", name="put_brief", methods="POST")
      */
-    public function editImage(RessourceRepository $repoRess, Request $request, BriefRepository $repoBrief, int $id, EntityManagerInterface $em) {
+    public function editImage(RessourceRepository $repoRess, Request $request, BriefRepository $repoBrief, int $id, EntityManagerInterface $em)
+    {
         // dd($request->files->get('image'));
         $data = $request->files->get('image');
         // $data = $request->files->get('pieceJointe');
@@ -661,6 +755,5 @@ class BriefController extends AbstractController
 
         $em->flush();
         return new JsonResponse("succès.", Response::HTTP_CREATED, [], true);
-
     }
 }

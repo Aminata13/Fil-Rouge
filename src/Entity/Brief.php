@@ -103,7 +103,16 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR'))",
  *              "route_name"="assign_brief"
  *          }
- *  }
+ *      },
+ *      itemOperations = {
+ *          "put"={
+ *              "method"="PUT",
+ *              "path"="/formateurs/briefs/{id}",
+ *              "controller"=BriefController::class,
+ *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR'))",
+ *              "route_name"="edit_brief"
+ *          }
+ *      }
  * )
  */
 class Brief
