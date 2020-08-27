@@ -3,29 +3,32 @@
 namespace App\Controller;
 
 use App\Entity\Brief;
+use App\Entity\Formateur;
 use App\Entity\Ressource;
-use App\Entity\LivrableAttendu;
-use App\Repository\BriefRepository;
-use App\Repository\GroupeRepository;
-use App\Repository\EtatBriefRepository;
-use App\Repository\FormateurRepository;
-use App\Repository\PromotionRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Repository\BriefPromotionRepository;
-use App\Repository\LivrableAttenduRepository;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use ApiPlatform\Core\Validator\ValidatorInterface;
 use App\Entity\BriefApprenant;
 use App\Entity\BriefPromotion;
 use App\Entity\EtatBriefGroupe;
+use App\Entity\LivrableAttendu;
 use App\Entity\LivrableApprenant;
-use App\Repository\ApprenantRepository;
-use App\Repository\NiveauEvaluationRepository;
-use App\Repository\RessourceRepository;
-use App\Repository\StatutBriefRepository;
 use App\Repository\TagRepository;
+use App\Repository\BriefRepository;
+use App\Repository\GroupeRepository;
+use App\Repository\ApprenantRepository;
+use App\Repository\EtatBriefRepository;
+use App\Repository\FormateurRepository;
+use App\Repository\PromotionRepository;
+use App\Repository\RessourceRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\StatutBriefRepository;
+use App\Repository\BriefPromotionRepository;
+use App\Repository\LivrableAttenduRepository;
+use Symfony\Component\HttpFoundation\Request;
+use App\Repository\NiveauEvaluationRepository;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use ApiPlatform\Core\Validator\ValidatorInterface;
+use App\Repository\BriefApprenantRepository;
+use App\Repository\EtatBriefGroupeRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -179,70 +182,93 @@ class BriefController extends AbstractController
     {
 
         $formateur = $repoFormateur->find($id_formateur);
-        if (empty($formateur)) {
+        if (is_null($formateur)) {
             return new JsonResponse("Ce formateur n'existe pas.", Response::HTTP_NOT_FOUND, [], true);
         }
         $promo = $repoPromo->find($id_promo);
-        if (empty($promo)) {
-            return new JsonResponse("Ce promo n'existe pas.", Response::HTTP_NOT_FOUND, [], true);
+        if (is_null($promo)) {
+            return new JsonResponse("Cette promotion n'existe pas.", Response::HTTP_NOT_FOUND, [], true);
         }
 
         $brief = $repoBrief->find($id_brief);
-        if (empty($brief) || !$promo->getGroupes()->contains($brief)) {
+        if (is_null($brief)) {
+            return new JsonResponse("Ce brief n'existe pas.", Response::HTTP_NOT_FOUND, [], true);
+        }
+        $trouve = false;
+        $briefPromotions = $brief->getBriefPromotions();
+        foreach ($briefPromotions as $value) {
+            $promoCourant = $value->getPromotion();
+            if ($promoCourant == $promo) {
+                $trouve = true;
+                break;
+            }
+        }
+        if (!$trouve) {
             return new JsonResponse("Ce brief n'existe pas dans cette promotion.", Response::HTTP_NOT_FOUND, [], true);
         }
+
         if ($brief->getFormateur() != $formateur) {
             return new JsonResponse("Ce brief n'est pas lié à ce formateur.", Response::HTTP_NOT_FOUND, [], true);
         }
 
-        $briefJson = $serializer->serialize($brief, 'json', ["groups" => ["briefGroupe:read"]]);
+        $briefJson = $serializer->serialize($brief, 'json', ["groups" => ["brief:read"]]);
         return new JsonResponse($briefJson, Response::HTTP_OK, [], true);
     }
 
     /**
      * @Route("/apprenants/{id_apprenant}/promotions/{id_promo}/briefs/{id_brief}", name="show_brief_by_promo_and_apprenant", methods="GET")
      */
-    public function getBriefByPromoAndApprenant(SerializerInterface $serializer, int $id_apprenant, int $id_promo, int $id_brief, PromotionRepository $repoPromo, BriefRepository $repoBrief, ApprenantRepository $repoApprenant)
+    public function getBriefByPromoAndApprenant(SerializerInterface $serializer, int $id_apprenant, int $id_promo, int $id_brief, PromotionRepository $repoPromo, BriefRepository $repoBrief, ApprenantRepository $repoApprenant, StatutBriefRepository $repoStatutBrief)
     {
-
-        $apprenant = $repoApprenant->find($id_apprenant);
-        if (empty($apprenant)) {
-            return new JsonResponse("Cet apprenant n'est pas repertorié sur le système.", Response::HTTP_NOT_FOUND, [], true);
+        $promo = $repoPromo->find($id_promo);
+        if (is_null($promo)) {
+            return new JsonResponse("Cette promotion n'existe pas.", Response::HTTP_NOT_FOUND, [], true);
         }
 
-        $promo = $repoPromo->find($id_promo);
-        if (empty($promo)) {
-            return new JsonResponse("Ce promo n'existe pas.", Response::HTTP_NOT_FOUND, [], true);
+        $apprenant = $repoApprenant->find($id_apprenant);
+        if (is_null($apprenant) || $apprenant->getPromotion() != $promo) {
+            return new JsonResponse("Cet apprenant n'appartient pas à cette promotion.", Response::HTTP_NOT_FOUND, [], true);
         }
 
         $brief = $repoBrief->find($id_brief);
-        if (empty($brief) || !$promo->getGroupes()->contains($brief)) {
-            return new JsonResponse("Ce brief n'existe pas dans cette promotion.", Response::HTTP_NOT_FOUND, [], true);
-        }
-
-        if ($apprenant->getPromotion() != $promo) {
-            return new JsonResponse("Cet apprenant ne fait pas partie de cette promotion.", Response::HTTP_BAD_REQUEST, [], true);
+        if (is_null($brief)) {
+            return new JsonResponse("Ce brief n'existe pas.", Response::HTTP_NOT_FOUND, [], true);
         }
 
         $trouve = false;
-        $briefApprenants = $apprenant->getBriefApprenants();
-        foreach ($briefApprenants as $value) {
-            $briefCourant = $value->getBriefPromotion()->getBrief();
-            if ($briefCourant == $brief) {
+        $briefPromotions = $brief->getBriefPromotions();
+        foreach ($briefPromotions as $value) {
+            $promoCourant = $value->getPromotion();
+            if ($promoCourant == $promo) {
                 $trouve = true;
                 break;
             }
         }
         if (!$trouve) {
-            return new JsonResponse("Ce brief n'est pas assigné à cet apprenant.", Response::HTTP_NOT_FOUND, [], true);
+            return new JsonResponse("Ce brief n'existe pas dans cette promotion.", Response::HTTP_NOT_FOUND, [], true);
         }
 
         /** On cible seulement l'apprenant concerné avec ses livrables partiels et ses commentaires, on passe par la classe LivrableApprenant */
         $livrableAttendus = $brief->getLivrableAttendus();
         foreach ($livrableAttendus as $value) {
-            $apprenantCourant = $value->getLivrableApprenants()->getApprenant();
-            if ($apprenantCourant != $apprenant) {
-                $value->removeLivrableApprenant();
+            $livrables = $value->getLivrableApprenants();
+            foreach ($livrables as $val) {
+                $apprenantCourant = $val->getApprenant();
+                if ($apprenantCourant != $apprenant) {
+                    $value->removeLivrableApprenant($val);
+                }
+            }
+        }
+
+        /** On cible seulement les groupes auxquels appartient l'apprenant */
+        $statutEnCours = $statutEnCours = $repoStatutBrief->findBy(array('libelle' => 'EN COURS'))[0];
+        $groupes = $apprenant->getGroupes();
+        $etatBriefGroupes = $brief->getEtatBriefGroupes();
+        foreach ($groupes as $g) {
+            foreach ($etatBriefGroupes as $value) {
+                if ($value->getGroupe() != $g || $value->getStatut() != $statutEnCours) {
+                    $brief->removeEtatBriefGroupe($value);
+                }
             }
         }
 
@@ -253,12 +279,9 @@ class BriefController extends AbstractController
     /**
      * @Route("/apprenants/{id_apprenant}/groupes/{id_groupe}/livrables", name="add_livrables_by_apprenant_and_groupe", methods="POST")
      */
-    public function addLivrableApprenants(SerializerInterface $serializer, int $id_apprenant, int $id_groupe, GroupeRepository $repoGroupe, ApprenantRepository $repoApprenant, LivrableAttenduRepository $repoLivrableAttendu, Request $request, EntityManagerInterface $em)
+    public function addLivrableApprenants(SerializerInterface $serializer, int $id_apprenant, int $id_groupe, ApprenantRepository $repoApprenant, LivrableAttenduRepository $repoLivrableAttendu, Request $request, EntityManagerInterface $em)
     {
-        $json = file_get_contents('php://input');
-
-        // Converts it into an associative array
-        $data = json_decode($json, true);
+        $data = json_decode($request->getContent(), true);
 
         $apprenant = $repoApprenant->find($id_apprenant);
         if (empty($apprenant)) {
@@ -283,63 +306,81 @@ class BriefController extends AbstractController
         }
 
         $tabLibelle = [];
-        $livrableApprenants = [];
-        foreach ($data as $key => $value) {
-            $livrableApprenant = new LivrableApprenant();
-            $livrableApprenant->setUrl($value);
+        foreach ($apprenants as $a) {
+            foreach ($data as $key => $value) {
+                $livrableApprenant = new LivrableApprenant();
+                $livrableApprenant->setUrl($value);
+                $livrableApprenant->setApprenant($a);
 
-
-            $livrableAttendu = $repoLivrableAttendu->findBy(array('libelle' => $key));
-            if ($livrableAttendu) {
-                // $livrableAttendu[0]->addLivrableApprenant($livrableApprenant);
-                $livrableApprenant->setLivrableAttendu($livrableAttendu[0]);
-            } else {
-                if (!in_array($value, $tabLibelle)) {
-                    $tabLibelle[] = $value;
-                    $livrableAttendu = new LivrableAttendu();
-                    $livrableAttendu->setLibelle($key);
-                    // $livrableAttendu->addLivrableApprenant($livrableApprenant);
-                    $livrableApprenant->setLivrableAttendu($livrableAttendu);
+                $livrableAttendu = $repoLivrableAttendu->findBy(array('libelle' => $key));
+                if ($livrableAttendu) {
+                    $livrableApprenant->setLivrableAttendu($livrableAttendu[0]);
+                } else {
+                    if (!in_array($value, $tabLibelle)) {
+                        $tabLibelle[] = $value;
+                        $livrableAttendu = new LivrableAttendu();
+                        $livrableAttendu->setLibelle($key);
+                        $livrableApprenant->setLivrableAttendu($livrableAttendu);
+                    }
                 }
-            }
-            $livrableApprenants[] = $livrableApprenant;
-        }
-        dd($livrableApprenants);
-        foreach ($livrableApprenants as $value) {
-            foreach ($apprenants as $a) {
-                $value->setApprenant($a);
-                //$em->persist($value);
+
+                $em->persist($livrableApprenant);
+                $em->flush();
             }
         }
 
-        //$em->flush();
         return new JsonResponse("Livrables enregistrés avec succès.", Response::HTTP_CREATED, [], true);
     }
 
     /**
      * @Route("/formateurs/briefs/{id}", name="duplicate_brief", methods="POST")
      */
-    public function duplicateBrief(int $id, BriefRepository $repoBrief, FormateurRepository $repoFormateur, EtatBriefRepository $repoEtatBrief, EntityManagerInterface $em)
+    public function duplicateBrief(int $id, BriefRepository $repoBrief, TagRepository $repoTag, LivrableAttenduRepository $repoLivrableAttendu, FormateurRepository $repoFormateur, NiveauEvaluationRepository $repoNiveauEvaluation, RessourceRepository $repoRess, EtatBriefRepository $repoEtatBrief, EntityManagerInterface $em)
     {
         $brief = $repoBrief->find($id);
         if (empty($brief)) {
             return new JsonResponse("Ce brief n'existe pas.", Response::HTTP_NOT_FOUND, [], true);
         }
 
-        $newBrief = $brief;
+        $newBrief = new Brief();
+
+        $newBrief->setLangue($brief->getLangue());
+        $newBrief->setTitre($brief->getTitre());
+        $newBrief->setDescription($brief->getDescription());
+        $newBrief->setContexte($brief->getContexte());
+        $newBrief->setModalitePedagogique($brief->getModalitePedagogique());
+        $newBrief->setCriterePerformance($brief->getCriterePerformance());
+        $newBrief->setModaliteEvaluation($brief->getModaliteEvaluation());
+        $newBrief->setImage($brief->getImage());
+        $newBrief->setDateCreation(new \DateTime());
+        $newBrief->setReferentiel($brief->getReferentiel());
+        $newBrief->setLivrables($brief->getLivrables());
+
+        foreach ($brief->getRessource() as $r) {
+            $ressource = $repoRess->find($r->getId());
+            $newBrief->addRessource($ressource);
+        }
+        foreach ($brief->getNiveauCompetences() as $n) {
+            $niveau = $repoNiveauEvaluation->find($n->getId());
+            $newBrief->addNiveauCompetence($niveau);
+        }
+        foreach ($brief->getTags() as $t) {
+            $tag = $repoTag->find($t->getId());
+            $newBrief->addTag($tag);
+        }
+        foreach ($brief->getLivrableAttendus() as $l) {
+            $livrableAttendu = $repoLivrableAttendu->find($l->getId());
+            $newBrief->addLivrableAttendu($livrableAttendu);
+        }
+
         /**Récupération du formateur connecté */
         $user = $this->getUser()->getId();
         $formateur = $repoFormateur->findBy(array('user' => $user))[0];
-
         $newBrief->setFormateur($formateur);
 
-        foreach ($newBrief->getBriefPromotions() as $value) {
-            $newBrief->removeBriefPromotion($value);
-        }
-        $newBrief->setEtatBriefGroupe(null);
         $etat = $repoEtatBrief->findBy(array('libelle' => 'COMPLET'));
         $newBrief->setEtatBrief($etat[0]);
-        $newBrief->resetId();
+
 
         $em->persist($newBrief);
         $em->flush();
@@ -458,9 +499,9 @@ class BriefController extends AbstractController
 
                 /** Implémentation de EtatBriefGroupe */
                 $etatBriefGroupe = new EtatBriefGroupe;
-                $etatBriefGroupe->addBrief($brief);
-                $etatBriefGroupe->addGroupe($groupe);
-                $statut = $repoStatutBrief->findBy(array('libelle' => 'ASSIGNE'));
+                $etatBriefGroupe->setBrief($brief);
+                $etatBriefGroupe->setGroupe($groupe);
+                $statut = $repoStatutBrief->findBy(array('libelle' => 'EN COURS'));
                 $etatBriefGroupe->setStatut($statut[0]);
 
                 /** Implementation de BriefPromotion */
@@ -473,11 +514,7 @@ class BriefController extends AbstractController
 
                 /** Envoi de mails aux apprenants assignés au brief*/
                 foreach ($groupe->getApprenants() as $value) {
-                    $msg = (new \Swift_Message('Sonatel Academy'))
-                        ->setFrom('dioufbadaraalioune7@gmail.com')
-                        ->setTo($value->getUser()->getEmail())
-                        ->setBody("Vous avez été assigné au brief " . $brief->getTitre() . ".Veuillez vous connecter sur la plateforme pour voir les détails.");
-                    $mailer->send($msg);
+                    $this->sendEmail($mailer, $value, $brief);
                 }
             }
         }
@@ -492,7 +529,7 @@ class BriefController extends AbstractController
     /**
      * @Route("/formateurs/promotions/{id_promo}/briefs/{id_brief}/assignation", name="assign_brief", methods="POST")
      */
-    public function assignBrief(int $id_promo, int $id_brief, SerializerInterface $serializer, ValidatorInterface $validator, StatutBriefRepository $repoStatutBrief, ApprenantRepository $repoApprenant, BriefRepository $repoBrief, BriefPromotionRepository $repoBriefPromo, GroupeRepository $repoGroupe, EtatBriefRepository $repoEtatBrief, PromotionRepository $repoPromo, LivrableAttenduRepository $repoLivrableAttendu, EntityManagerInterface $em, Request $request, \Swift_Mailer $mailer)
+    public function assignBrief(int $id_promo, int $id_brief, BriefApprenantRepository $repoBriefApprenant, StatutBriefRepository $repoStatutBrief, ApprenantRepository $repoApprenant, BriefRepository $repoBrief, BriefPromotionRepository $repoBriefPromo, GroupeRepository $repoGroupe, EtatBriefRepository $repoEtatBrief, PromotionRepository $repoPromo, EtatBriefGroupeRepository $repoEtatBriefGroupe, EntityManagerInterface $em, Request $request, \Swift_Mailer $mailer)
     {
         $data = json_decode($request->getContent(), true);
 
@@ -529,12 +566,10 @@ class BriefController extends AbstractController
                         $briefPromo->setBrief($brief);
                         $briefPromo->setStatut($statutEnCours);
                         $briefApprenant->setBriefPromotion($briefPromo);
-
-                        $em->persist($briefPromo);
-                        $em->flush();
                     } else {
                         $briefApprenant->setBriefPromotion($briefPromotion[0]);
                     }
+                    $brief->setEtatBrief($repoEtatBrief->findBy(array('libelle' => 'ASSIGNE'))[0]);
                     $this->sendEmail($mailer, $apprenant, $brief);
 
                     $em->persist($briefApprenant);
@@ -549,12 +584,9 @@ class BriefController extends AbstractController
 
                     /** Implémentation de EtatBriefGroupe */
                     $etatBriefGroupe = new EtatBriefGroupe;
-                    $etatBriefGroupe->addBrief($brief);
-                    $etatBriefGroupe->addGroupe($groupe);
-                    $etatBriefGroupe->setStatut($repoStatutBrief->findBy(array('libelle' => 'ASSIGNE'))[0]);
-
-                    $em->persist($etatBriefGroupe);
-                    $em->flush();
+                    $etatBriefGroupe->setBrief($brief);
+                    $etatBriefGroupe->setGroupe($groupe);
+                    $etatBriefGroupe->setStatut($statutEnCours);
 
                     /** Implementation de BriefPromotion */
                     $briefPromotion = $repoBriefPromo->findBy(array('promotion' => $promotion, 'brief' => $brief));
@@ -566,7 +598,6 @@ class BriefController extends AbstractController
                         $briefPromo->setStatut($statutEnCours);
 
                         $em->persist($briefPromo);
-                        $em->flush();
                     } else {
                         $brief->addBriefPromotion($briefPromotion[0]);
                     }
@@ -576,44 +607,45 @@ class BriefController extends AbstractController
                     foreach ($groupe->getApprenants() as $value) {
                         $this->sendEmail($mailer, $value, $brief);
                     }
+
+                    $em->persist($etatBriefGroupe);
+                    $em->flush();
                 }
             }
         }
 
         /** Traitement desassignation d'un brief à un apprenant, un groupe ou plusieurs groupes */
-        if (isset($data['assignation']) && $data['assignation']) {
+        if (isset($data['assignation']) && !$data['assignation']) {
 
             /** Desassignation d'un brief à un apprenant */
             if (isset($data['apprenant'])) {
                 $apprenant = $repoApprenant->find($data['apprenant']);
                 if ($promo->getApprenants()->contains($apprenant)) {
                     $briefPromotion = $repoBriefPromo->findBy(array('promotion' => $promo, 'brief' => $brief))[0];
-
-                    foreach ($apprenant->getBriefApprenants() as $value) {
-                        if ($value->getBriefPromotion() == $briefPromotion) {
-                            $value->setBriefPromotion(null);
-                            $value->setApprenant(null);
-
-                            $em->remove($value);
-                            $em->flush();
-                        }
-                    }
+                    $briefApprenant = $repoBriefApprenant->findBy(array('briefPromotion' => $briefPromotion, 'apprenant' => $apprenant))[0];
+                    $briefApprenant->setBriefPromotion(null);
+                    $briefApprenant->setApprenant(null);
 
                     $this->sendEmailDessasignation($mailer, $apprenant, $brief);
+
+                    $em->remove($value);
+                    $em->flush();
                 }
 
                 /** desassignation d'un brief à un groupe ou plusieurs groupes */
             } elseif (isset($data['groupes'])) {
                 foreach ($data['groupes'] as $value) {
-                    $etatBriefGroupe = $groupe->getEtatBriefGroupe();
-                    $etatBriefGroupe->removeBrief($brief);
-                    $etatBriefGroupe->removeGroupe($groupe);
-
-                    $em->flush();
+                    $groupe = $repoGroupe->find($value['id']);
+                    $etatBriefGroupe = $repoEtatBriefGroupe->findBy(array('groupe' => $groupe, 'brief' => $brief))[0];
+                    $etatBriefGroupe->setGroupe(null);
+                    $etatBriefGroupe->setBrief(null);
 
                     foreach ($groupe->getApprenants() as $value) {
                         $this->sendEmailDessasignation($mailer, $value, $brief);
                     }
+
+                    $em->remove($etatBriefGroupe);
+                    $em->flush();
                 }
             }
         }
@@ -622,16 +654,20 @@ class BriefController extends AbstractController
     }
 
     /**
-     * @Route("/formateurs/briefs/{id}", name="edit_brief", methods="PUT")
+     * @Route("/formateurs/promotions/{id_promo}/briefs/{id_brief}", name="edit_brief", methods="PUT")
      */
-    public function editBrief(Int $id, BriefRepository $repoBrief, SerializerInterface $serializer, ValidatorInterface $validator, StatutBriefRepository $repoStatutBrief, TagRepository $repoTag, NiveauEvaluationRepository $repoNiveauEvaluation, RessourceRepository $repoRessource, GroupeRepository $repoGroupe, EtatBriefRepository $repoEtatBrief, LivrableAttenduRepository $repoLivrableAttendu, EntityManagerInterface $em, Request $request)
+    public function editBrief(Int $id_brief, Int $id_promo, BriefRepository $repoBrief, EtatBriefGroupeRepository $repoEtatBriefGroupe, BriefPromotionRepository $repoBriefPromo, PromotionRepository $repoPromo, ApprenantRepository $repoApprenant, BriefApprenantRepository $repoBriefApprenant, SerializerInterface $serializer, ValidatorInterface $validator, StatutBriefRepository $repoStatutBrief, TagRepository $repoTag, NiveauEvaluationRepository $repoNiveauEvaluation, RessourceRepository $repoRessource, GroupeRepository $repoGroupe, EtatBriefRepository $repoEtatBrief, LivrableAttenduRepository $repoLivrableAttendu, EntityManagerInterface $em, Request $request)
     {
 
         $data = $request->request->all();
-        $brief = $repoBrief->find($id);
 
+        $brief = $repoBrief->find($id_brief);
         if (is_null($brief)) {
             return new JsonResponse("Ce brief n'existe pas.", Response::HTTP_NOT_FOUND, [], true);
+        }
+        $promo = $repoPromo->find($id_promo);
+        if (is_null($promo)) {
+            return new JsonResponse("Cette promotion n'existe pas.", Response::HTTP_NOT_FOUND, [], true);
         }
 
         /** Archiver un brief */
@@ -646,12 +682,22 @@ class BriefController extends AbstractController
                 }
             }
 
-            $em->flush();
         }
 
         /** Cloturer un brief */
         if (isset($data['cloture']) && $data['cloture']) {
-            //we'll see later
+            if (isset($data['apprenant'])) {
+                $apprenant = $repoApprenant->find($data['apprenant']);
+                $briefPromotion = $repoBriefPromo->findBy(array('promotion' => $promo, 'brief' => $brief))[0];
+                $briefApprenant = $repoBriefApprenant->findBy(array('briefPromotion' => $briefPromotion, 'apprenant' => $apprenant))[0];
+
+                $briefApprenant->setStatut($statut = $repoStatutBrief->findBy(array('libelle' => 'CLOTURE'))[0]);
+            
+            } elseif (isset($data['groupe'])) {
+                $groupe = $repoGroupe->find($value['id']);
+                $etatBriefGroupe = $repoEtatBriefGroupe->findBy(array('groupe' => $groupe, 'brief' => $brief))[0];
+                $etatBriefGroupe->setStatut($statut = $repoStatutBrief->findBy(array('libelle' => 'CLOTURE'))[0]);
+            }
         }
 
         /**Modification des compétences et des niveaux */
@@ -663,8 +709,6 @@ class BriefController extends AbstractController
                 $niveauCompetence = $repoNiveauEvaluation->find($value);
                 $brief->addNiveauCompetence($niveauCompetence);
             }
-
-            $em->flush();
         }
 
         /** Modification des tags */
@@ -676,8 +720,6 @@ class BriefController extends AbstractController
                 $tag = $repoTag->find($value);
                 $brief->addTag($tag);
             }
-
-            $em->flush();
         }
 
         /** Modification des livrables attendus: on les rattache au brief ou on les crée si nécessaire */
@@ -690,8 +732,6 @@ class BriefController extends AbstractController
                 $livrableAttendu = $repoLivrableAttendu->find($value);
                 $brief->addLivrableAttendu($livrableAttendu);
             }
-
-            $em->flush();
         }
 
         /** Modification des ressources de type URL */
@@ -708,7 +748,7 @@ class BriefController extends AbstractController
             $ressource->setPieceJointe($this->uploadFile($request->files->get('pieceJointe'), 'ressource'));
         }
 
-
+        $em->flush();
         return new JsonResponse("succès.", Response::HTTP_CREATED, [], true);
     }
 
@@ -720,7 +760,7 @@ class BriefController extends AbstractController
         return file_get_contents($filePath, $name . '.' . $fileType);
     }
 
-    /** Send email */
+    /** Send email assignation brief */
     public function sendEmail(\Swift_Mailer $mailer, $user, $brief)
     {
         $msg = (new \Swift_Message('Sonatel Academy'))
@@ -730,7 +770,7 @@ class BriefController extends AbstractController
         $mailer->send($msg);
     }
 
-    /** Send email */
+    /** Send email desassignation brief*/
     public function sendEmailDessasignation(\Swift_Mailer $mailer, $user, $brief)
     {
         $msg = (new \Swift_Message('Sonatel Academy'))

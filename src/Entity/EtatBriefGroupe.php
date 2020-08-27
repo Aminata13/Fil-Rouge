@@ -19,14 +19,14 @@ class EtatBriefGroupe
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"briefGroupe:read"})
+     * @Groups({"briefGroupe:read","brief_livrable_partiel:read"})
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=StatutBrief::class, inversedBy="etatBriefGroupes")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"briefGroupe:read"})
+     * @Groups({"briefGroupe:read","brief_livrable_partiel:read"})
      */
     private $statut;
 
@@ -39,6 +39,7 @@ class EtatBriefGroupe
     /**
      * @ORM\ManyToOne(targetEntity=Groupe::class, inversedBy="etatBriefGroupes")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"brief_livrable_partiel:read"})
      */
     private $groupe;
 
