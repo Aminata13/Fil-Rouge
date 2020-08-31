@@ -422,7 +422,7 @@ class BriefController extends AbstractController
                 $data['tags'][$key] = 'api/admin/tags/' . $value;
             }
         }
-
+        
         /**Récupération du formateur connecté */
         $user = $this->getUser()->getId();
         $formateur = $repoFormateur->findBy(array('user' => $user));
@@ -512,6 +512,11 @@ class BriefController extends AbstractController
                 $briefPromo->setStatut($statut[0]);
                 $brief->addBriefPromotion($briefPromo);
 
+                /** Implementation du BriefApprenant */
+                foreach ($groupe->getApprenants() as $value) {
+                    $briefApprenant = new BriefApprenant();
+                }
+
                 /** Envoi de mails aux apprenants assignés au brief*/
                 foreach ($groupe->getApprenants() as $value) {
                     $this->sendEmail($mailer, $value, $brief);
@@ -534,12 +539,12 @@ class BriefController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         $promo = $repoPromo->find($id_promo);
-        if (empty($promo)) {
-            return new JsonResponse("Ce promo n'existe pas.", Response::HTTP_NOT_FOUND, [], true);
+        if (is_null($promo)) {
+            return new JsonResponse("Cette promotion n'existe pas.", Response::HTTP_NOT_FOUND, [], true);
         }
 
         $brief = $repoBrief->find($id_brief);
-        if (empty($brief)) {
+        if (is_null($brief)) {
             return new JsonResponse("Ce brief n'existe pas .", Response::HTTP_NOT_FOUND, [], true);
         }
 
