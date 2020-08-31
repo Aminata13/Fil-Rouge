@@ -111,4 +111,35 @@ class ChatController extends AbstractController
         $em->flush();
         return new JsonResponse("Success", Response::HTTP_OK, [], true);
     }
+
+    /**
+     * @Route("/users/promotions/{id_promo}/chats", name="get_commentaire_by_users", methods="GET")
+     */
+    public function getMessagesChat(SerializerInterface $serializer, int $id_promo, PromotionRepository $repoPromo, FilDiscussionRepository $repoDiscussion)
+    {
+        $promo = $repoPromo->find($id_promo);
+        if (is_null($promo)) {
+            return new JsonResponse("Cette promotion n'existe pas.", Response::HTTP_NOT_FOUND, [], true);
+        }
+        
+        $filDiscussion = $repoDiscussion->findBy(array('promotion' => $id_promo));
+        if (empty($filDiscussion)) {
+            return new JsonResponse("Fil de discussion vide.", Response::HTTP_NOT_FOUND, [], true);
+        }
+       
+        $commentaires = array();
+
+        $currentDate = date('d-m-y');
+        foreach ($filDiscussion->getMessageChats() as $value) {
+            if ($value->getDate() >= $currentDate) {
+                $commentaires[] = $value;
+            }
+        }
+        if (empty($commentaires)) {
+            return new JsonResponse("Il n'y a pas de message aujourd'hui.", Response::HTTP_NOT_FOUND, [], true);
+        }
+        $commentairesJson = $serializer->serialize($commentaires, 'json', ["groups" => ["chat:read"]]);
+        return new JsonResponse($commentairesJson, Response::HTTP_OK, [], true);
+    }
+
 }
