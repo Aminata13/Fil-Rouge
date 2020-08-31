@@ -61,20 +61,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "route_name"="show_brief_by_promoId_apprenant",
  *              "access_control"="(is_granted('ROLE_APPRENANT'))"
  *          },
- *          "get_brief_by_promo_and_formateur"={
- *              "method"="GET",
- *              "path"="/formateurs/{id_formateur}/promotions/{id_promo}/briefs/{id_brief}",
- *              "controller"=BriefController::class,
- *              "route_name"="show_brief_by_promo_and_formateur",
- *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR'))"
- *          },
- *          "get_brief_by_promo_and_apprenant"={
- *              "method"="GET",
- *              "path"="/apprenants/{id_apprenant}/promotions/{id_promo}/briefs/{id_brief}",
- *              "controller"=BriefController::class,
- *              "route_name"="show_brief_by_promo_and_apprenant",
- *              "access_control"="(is_granted('ROLE_APPRENANT'))"
- *          },
  *          "post_livrables_by_apprenant_and_groupe"={
  *              "method"="POST",
  *              "path"="/apprenants/{id_apprenant}/groupes/{id_groupe}/livrables",
@@ -103,7 +89,31 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR'))",
  *              "route_name"="assign_brief"
  *          }
- *  }
+ *      },
+ *      itemOperations = {
+ *          "get",
+ *          "get_brief_by_promo_and_formateur"={
+ *              "method"="GET",
+ *              "path"="/formateurs/{id_formateur}/promotions/{id_promo}/briefs/{id_brief}",
+ *              "controller"=BriefController::class,
+ *              "route_name"="show_brief_by_promo_and_formateur",
+ *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR'))"
+ *          },
+ *          "get_brief_by_promo_and_apprenant"={
+ *              "method"="GET",
+ *              "path"="/apprenants/{id_apprenant}/promotions/{id_promo}/briefs/{id_brief}",
+ *              "controller"=BriefController::class,
+ *              "route_name"="show_brief_by_promo_and_apprenant",
+ *              "access_control"="(is_granted('ROLE_APPRENANT'))"
+ *          },
+ *          "put_brief"={
+ *              "method"="PUT",
+ *              "path"="/formateurs/briefs/{id}",
+ *              "controller"=BriefController::class,
+ *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR'))",
+ *              "route_name"="edit_brief"
+ *          }
+ *      }
  * )
  */
 class Brief
@@ -112,7 +122,7 @@ class Brief
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"brief:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read"})
      */
     private $id;
 
@@ -120,96 +130,97 @@ class Brief
      * @ORM\ManyToOne(targetEntity=Langue::class, inversedBy="briefs")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotBlank(message="La langue est obligatoire.")
-     * @Groups({"brief:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read","brief:write"})
      */
     private $langue;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Le titre est obligatoire.")
-     * @Groups({"briefGroupe:read","brief:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read","brief:write"})
      */
     private $titre;
 
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank(message="La description est obligatoire.")
-     * @Groups({"briefGroupe:read","brief:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read","brief:write"})
      */
     private $description;
 
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank(message="Le contexte est obligatoire.")
-     * @Groups({"briefGroupe:read","brief:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read","brief:write"})
      */
     private $contexte;
 
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank(message="Les modalités pédagogiques sont obligatoire.")
-     * @Groups({"briefGroupe:read","brief:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read","brief:write"})
      */
     private $modalitePedagogique;
 
     /**
      * @ORM\OneToMany(targetEntity=Ressource::class, mappedBy="brief", orphanRemoval=true, cascade={"persist"})
-     * @Groups({"briefGroupe:read","brief:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read"})
      */
     private $ressource;
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"briefGroupe:read","brief:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read","brief:write"})
      */
     private $criterePerformance;
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"briefGroupe:read","brief:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read","brief:write"})
      */
     private $modaliteEvaluation;
 
     /**
      * @ORM\Column(type="blob", nullable=true)
-     * @Groups({"briefGroupe:read","brief:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read"})
      */
     private $image;
 
     /**
      * @ORM\Column(type="date")
-     * @Groups({"briefGroupe:read","brief:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read"})
      */
     private $dateCreation;
 
     /**
      * @ORM\ManyToOne(targetEntity=Referentiel::class, inversedBy="briefs")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read","brief:write"})
      */
     private $referentiel;
 
     /**
      * @ORM\ManyToMany(targetEntity=NiveauEvaluation::class, inversedBy="briefs")
-     * @Groups({"briefGroupe:read","brief:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read","brief:write"})
      */
     private $niveauCompetences;
 
     /**
      * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="briefs")
-     * @Groups({"briefGroupe:read","brief:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read","brief:write"})
      */
     private $tags;
 
     /**
      * @ORM\ManyToOne(targetEntity=Formateur::class, inversedBy="briefs")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"briefGroupe:read"})
+     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read"})
      */
     private $formateur;
 
     /**
      * @ORM\ManyToMany(targetEntity=LivrableAttendu::class, mappedBy="briefs", cascade={"persist"})
-     * @Groups({"briefGroupe:read","brief:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read"})
      */
     private $livrableAttendus;
 
@@ -220,24 +231,24 @@ class Brief
     private $briefPromotions;
 
     /**
-     * @ORM\ManyToOne(targetEntity=EtatBriefGroupe::class, inversedBy="brief", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $etatBriefGroupe;
-
-    /**
      * @ORM\ManyToOne(targetEntity=EtatBrief::class, inversedBy="briefs")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"briefGroupe:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:read"})
      */
     private $etatBrief;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"briefGroupe:read","brief:write","brief:read"})
+     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","brief:write","brief:read"})
      * @Assert\NotBlank(message="Les livrables sont obligatoire.")
      */
     private $livrables;
+
+    /**
+     * @ORM\OneToMany(targetEntity=EtatBriefGroupe::class, mappedBy="brief", orphanRemoval=true, cascade={"persist"})
+     * @Groups({"brief_livrable_partiel:read"})
+     */
+    private $etatBriefGroupes;
 
     public function __construct()
     {
@@ -246,6 +257,7 @@ class Brief
         $this->tags = new ArrayCollection();
         $this->livrableAttendus = new ArrayCollection();
         $this->briefPromotions = new ArrayCollection();
+        $this->etatBriefGroupes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -532,18 +544,6 @@ class Brief
         return $this;
     }
 
-    public function getEtatBriefGroupe(): ?EtatBriefGroupe
-    {
-        return $this->etatBriefGroupe;
-    }
-
-    public function setEtatBriefGroupe(?EtatBriefGroupe $etatBriefGroupe): self
-    {
-        $this->etatBriefGroupe = $etatBriefGroupe;
-
-        return $this;
-    }
-
     public function getEtatBrief(): ?EtatBrief
     {
         return $this->etatBrief;
@@ -564,6 +564,37 @@ class Brief
     public function setLivrables(string $livrables): self
     {
         $this->livrables = $livrables;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|EtatBriefGroupe[]
+     */
+    public function getEtatBriefGroupes(): Collection
+    {
+        return $this->etatBriefGroupes;
+    }
+
+    public function addEtatBriefGroupe(EtatBriefGroupe $etatBriefGroupe): self
+    {
+        if (!$this->etatBriefGroupes->contains($etatBriefGroupe)) {
+            $this->etatBriefGroupes[] = $etatBriefGroupe;
+            $etatBriefGroupe->setBrief($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEtatBriefGroupe(EtatBriefGroupe $etatBriefGroupe): self
+    {
+        if ($this->etatBriefGroupes->contains($etatBriefGroupe)) {
+            $this->etatBriefGroupes->removeElement($etatBriefGroupe);
+            // set the owning side to null (unless already changed)
+            if ($etatBriefGroupe->getBrief() === $this) {
+                $etatBriefGroupe->setBrief(null);
+            }
+        }
 
         return $this;
     }

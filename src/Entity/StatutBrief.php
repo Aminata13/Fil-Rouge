@@ -19,13 +19,13 @@ class StatutBrief
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"briefGroupe:read"})
+     * @Groups({"briefGroupe:read","brief_livrable_partiel:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"briefGroupe:read"})
+     * @Groups({"briefGroupe:read","brief_livrable_partiel:read"})
      */
     private $libelle;
 

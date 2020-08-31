@@ -22,13 +22,13 @@ class CritereEvaluation
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","groupe:read","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all","promotion:read","promotion:read_all","promotion:read_all_ref"})
+     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read","groupe:read","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all","promotion:read","promotion:read_all","promotion:read_all_ref"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"brief_livrable_partiel:read","briefGroupe:read","groupe:read","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all","promotion:read","promotion:read_all","promotion:read_all_ref"})
+     * @Groups({"brief_livrable_partiel:read","brief:read","briefGroupe:read","groupe:read","promo_groupe_apprenants:read","referentiel:read","referentiel:read_all","promotion:read","promotion:read_all","promotion:read_all_ref"})
      */
     private $libelle;
 

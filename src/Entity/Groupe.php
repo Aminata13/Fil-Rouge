@@ -103,15 +103,15 @@ class Groupe
     private $formateurs;
 
     /**
-     * @ORM\ManyToOne(targetEntity=EtatBriefGroupe::class, inversedBy="groupe", cascade={"persist"})
-     * @Groups({"briefGroupe:read"})
+     * @ORM\OneToMany(targetEntity=EtatBriefGroupe::class, mappedBy="groupe", orphanRemoval=true, cascade={"persist"})
      */
-    private $etatBriefGroupe;
+    private $etatBriefGroupes;
 
     public function __construct()
     {
         $this->apprenants = new ArrayCollection();
         $this->formateurs = new ArrayCollection();
+        $this->etatBriefGroupes = new ArrayCollection();
         
     }
 
@@ -210,14 +210,33 @@ class Groupe
         return $this;
     }
 
-    public function getEtatBriefGroupe(): ?EtatBriefGroupe
+    /**
+     * @return Collection|EtatBriefGroupe[]
+     */
+    public function getEtatBriefGroupes(): Collection
     {
-        return $this->etatBriefGroupe;
+        return $this->etatBriefGroupes;
     }
 
-    public function setEtatBriefGroupe(?EtatBriefGroupe $etatBriefGroupe): self
+    public function addEtatBriefGroupe(EtatBriefGroupe $etatBriefGroupe): self
     {
-        $this->etatBriefGroupe = $etatBriefGroupe;
+        if (!$this->etatBriefGroupes->contains($etatBriefGroupe)) {
+            $this->etatBriefGroupes[] = $etatBriefGroupe;
+            $etatBriefGroupe->setGroupe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEtatBriefGroupe(EtatBriefGroupe $etatBriefGroupe): self
+    {
+        if ($this->etatBriefGroupes->contains($etatBriefGroupe)) {
+            $this->etatBriefGroupes->removeElement($etatBriefGroupe);
+            // set the owning side to null (unless already changed)
+            if ($etatBriefGroupe->getGroupe() === $this) {
+                $etatBriefGroupe->setGroupe(null);
+            }
+        }
 
         return $this;
     }
