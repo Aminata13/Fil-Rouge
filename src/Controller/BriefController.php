@@ -491,7 +491,6 @@ class BriefController extends AbstractController
             $etat = $repoEtatBrief->findBy(array('libelle' => 'BROUILLON'));
         }
         $brief->setEtatBrief($etat[0]);
-
         /** Assignation du brief à un groupe */
         if (isset($data['groupes'])) {
             foreach ($data['groupes'] as $value) {
@@ -790,13 +789,13 @@ class BriefController extends AbstractController
     public function editImage(RessourceRepository $repoRess, Request $request, BriefRepository $repoBrief, int $id, EntityManagerInterface $em)
     {
         // dd($request->files->get('image'));
-        $data = $request->files->get('image');
+        $data = $request->files->get('pieceJointe');
         // $data = $request->files->get('pieceJointe');
-        $brief = $repoBrief->find($id);
-        // $ressource = $repoRess->find(5);
-        // $ressource->setPieceJointe($this->uploadFile($data, 'pdf'));
+        // $brief = $repoBrief->find($id);
+         $ressource = $repoRess->find(1);
+         $ressource->setPieceJointe($this->uploadFile($data, 'pdf'));
 
-        $brief->setImage($this->uploadFile($data, 'image'));
+        // $brief->setImage($this->uploadFile($data, 'image'));
 
         $em->flush();
         return new JsonResponse("succès.", Response::HTTP_CREATED, [], true);

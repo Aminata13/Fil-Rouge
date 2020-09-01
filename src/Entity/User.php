@@ -80,7 +80,19 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *          "path"="/apprenants/{id}",
  *          "security"="is_granted('APPRENANT_EDIT', object)",
  *          "security_message"="Vous n'avez pas le droit de modifier ces informations."
- *      }
+ *      },
+ *      "show_user_connecte"={
+ *         "method"="GET",
+ *         "path"="/user",
+ *         "controller"=UserController::class,
+ *         "route_name"="get_user_connecte"
+ *     },
+ *     "update_apprenant_connecte"={
+ *         "method"="POST",
+ *         "path"="/user",
+ *         "controller"=UserController::class,
+ *         "route_name"="post_update_apprenast"
+ *     }
  * }
  * )
  * @UniqueEntity(

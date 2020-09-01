@@ -27,7 +27,21 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *          "path"="/users/promotions/{id_promo}/apprenants/{id_apprenant}/chats",
  *          "controller"=ChatController::class,
  *          "route_name"="add_messages_apprenant"
- *      }
+ *      },
+ *      "get_commentaire_users"={
+ *         "method"="GET",
+ *         "path"="/users/promotions/id/chats",
+ *         "controller"=ChatController::class,
+ *         "access_control"="(is_granted('ROLE_USER') or is_granted('ROLE_ADMIN'))",
+ *         "route_name"="get_commentaire_by_users"
+ *     },
+ *       "post_commentaires_users"={
+ *         "method"="POST",
+ *         "path"="/users/promotions/id/chats",
+ *         "controller"=ChatController::class,
+ *         "access_control"="(is_granted('ROLE_USER') or is_granted('ROLE_ADMIN'))",		        
+ *         "route_name"="post_commentaires_by_users"
+ *         }
  *  },
  *  itemOperations={
  *      "put","get"
