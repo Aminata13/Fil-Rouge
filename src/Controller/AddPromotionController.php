@@ -30,13 +30,13 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 
 /**
-* @Route("/api")
-*/
+ * @Route("/api")
+ */
 class AddPromotionController extends AbstractController
 {
     /**
-    * @Route("/admin/promotion", name="add_promotion", methods="POST")
-    */
+     * @Route("/admin/promotion", name="add_promotion", methods="POST")
+     */
     public function addPromotion(
         FormateurRepository $repoFormateur,
         StatutRepository $repoStatus,
@@ -50,7 +50,7 @@ class AddPromotionController extends AbstractController
         UserPasswordEncoderInterface $encoder,
         \Swift_Mailer $mailer,
         UserProfilRepository $repoProfil
-    ){
+    ) {
         $promotionTab = $request->request->all();
         $promotion = $serializer->denormalize($promotionTab, Promotion::class, true, ["groups" => "promotion:write"]);
 
@@ -94,7 +94,7 @@ class AddPromotionController extends AbstractController
         $imageType = explode("/", $image->get('image')->getMimeType())[1];
         $imagePath = $image->get('image')->getRealPath();
 
-        $image = file_get_contents($imagePath, 'img/img.'.$imageType);
+        $image = file_get_contents($imagePath, 'img/img.' . $imageType);
         $promotion->setimage($image);
 
         // Traitement Apprenants ---------------
@@ -161,8 +161,8 @@ class AddPromotionController extends AbstractController
     }
 
     /**
-    * @Route("/admin/promotion/{id_promo}/relanceAll", name="relance_individuel", methods="POST")
-    */
+     * @Route("/admin/promotion/{id_promo}/relanceAll", name="relance_individuel", methods="POST")
+     */
     public function relanceAll(int $id_promo, PromotionRepository $repoPromo, \Swift_Mailer $mailer)
     {
         $user = $this->getUser();
@@ -180,8 +180,8 @@ class AddPromotionController extends AbstractController
     }
 
     /**
-    * @Route("/admin/promotion/{id_promo}/relanceOne/{id_apprenant}", name="relance_groupes", methods="POST")
-    */
+     * @Route("/admin/promotion/{id_promo}/relanceOne/{id_apprenant}", name="relance_groupes", methods="POST")
+     */
     public function relanceOne(int $id_promo, int $id_apprenant, PromotionRepository $repoPromo, \Swift_Mailer $mailer)
     {
         $user = $this->getUser();
