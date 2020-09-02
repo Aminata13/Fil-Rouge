@@ -107,7 +107,7 @@ class AddPromotionTest extends WebTestCase
             "formateurs" => array("1"),
         );
 
-        $client = $this->createAuthenticatedClient("admin1","password");
+        $client = $this->;
 
         $client->request('POST', '/api/admin/promotion', $data,["image"=>$image]);
         $this->assertEquals(201, $client->getResponse()->getStatusCode());

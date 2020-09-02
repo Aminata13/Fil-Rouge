@@ -393,7 +393,7 @@ class BriefController extends AbstractController
      */
     public function addBrief(SerializerInterface $serializer, ValidatorInterface $validator, StatutBriefRepository $repoStatutBrief, GroupeRepository $repoGroupe, EtatBriefRepository $repoEtatBrief, FormateurRepository $repoFormateur, LivrableAttenduRepository $repoLivrableAttendu, EntityManagerInterface $em, Request $request, \Swift_Mailer $mailer)
     {
-        
+
         $data = $request->request->all();
 
         /**Recupération référentiel */
@@ -475,7 +475,8 @@ class BriefController extends AbstractController
                 }
             }
         }
-
+        dd($brief);
+        
         /** Affecter EtatBrief */
         $errors = $validator->validate($brief);
 
@@ -491,19 +492,18 @@ class BriefController extends AbstractController
             $etat = $repoEtatBrief->findBy(array('libelle' => 'BROUILLON'));
         }
         $brief->setEtatBrief($etat[0]);
-        
         /** Assignation du brief à un groupe */
         if (isset($data['groupes'])) {
             foreach ($data['groupes'] as $value) {
                 $groupe = $repoGroupe->find($value);
-                
+
                 /** Implémentation de EtatBriefGroupe */
                 $etatBriefGroupe = new EtatBriefGroupe;
                 $etatBriefGroupe->setBrief($brief);
                 $etatBriefGroupe->setGroupe($groupe);
                 $statut = $repoStatutBrief->findBy(array('libelle' => 'EN COURS'));
                 $etatBriefGroupe->setStatut($statut[0]);
-                
+
                 /** Implementation de BriefPromotion */
                 $briefPromo = new BriefPromotion();
                 $promo = $groupe->getPromotion();
@@ -511,22 +511,23 @@ class BriefController extends AbstractController
                 $briefPromo->setBrief($brief);
                 $briefPromo->setStatut($statut[0]);
                 $brief->addBriefPromotion($briefPromo);
-                
+
                 /** Implementation du BriefApprenant */
                 foreach ($groupe->getApprenants() as $value) {
                     $briefApprenant = new BriefApprenant();
                 }
-                
+
                 /** Envoi de mails aux apprenants assignés au brief*/
                 foreach ($groupe->getApprenants() as $value) {
                     $this->sendEmail($mailer, $value, $brief);
                 }
-                
             }
         }
-        
-        dd($em->persist($brief));
+
+
+        $em->persist($brief);
         $em->flush();
+
         return new JsonResponse("succès.", Response::HTTP_CREATED, [], true);
     }
 

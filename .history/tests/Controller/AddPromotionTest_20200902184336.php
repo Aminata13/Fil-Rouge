@@ -82,34 +82,5 @@ class AddPromotionTest extends WebTestCase
     }
 
 
-    public function testpostPromotion()
-    {
-        $image = new UploadedFile(
-            'C:\Users\DELL\Pictures\nodeJs.png',
-            'nodeJs.png',
-            'image/png',
-            3,62 ,
-            UPLOAD_ERR_OK,
-            true
-        );
-
-        $data = array
-        (
-            "titre"  => "Promotion 2021-image",
-            "description"  => "Futuriste",
-            "lieu" => "Dakar",
-            "referenceAgate"  => "4JKH56DBK",
-            "dateFin"  => "2022-08-21",
-            "langue"  => "Francais",
-            "fabrique"  => "ODC",
-            "referentiels" => array("Dev web et mobile"),
-            "apprenants" => array("abd@gmail.com"),
-            "formateurs" => array("1"),
-        );
-
-        $client = $this->createAuthenticatedClient("admin1","password");
-
-        $client->request('POST', '/api/admin/promotion', $data,["image"=>$image]);
-        $this->assertEquals(201, $client->getResponse()->getStatusCode());
-    }
+    
 }

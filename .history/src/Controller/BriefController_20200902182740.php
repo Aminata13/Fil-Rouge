@@ -393,7 +393,7 @@ class BriefController extends AbstractController
      */
     public function addBrief(SerializerInterface $serializer, ValidatorInterface $validator, StatutBriefRepository $repoStatutBrief, GroupeRepository $repoGroupe, EtatBriefRepository $repoEtatBrief, FormateurRepository $repoFormateur, LivrableAttenduRepository $repoLivrableAttendu, EntityManagerInterface $em, Request $request, \Swift_Mailer $mailer)
     {
-        
+
         $data = $request->request->all();
 
         /**Recupération référentiel */
@@ -525,7 +525,7 @@ class BriefController extends AbstractController
             }
         }
         
-        dd($em->persist($brief));
+        dd($em->persist($brief))
         $em->flush();
         return new JsonResponse("succès.", Response::HTTP_CREATED, [], true);
     }
