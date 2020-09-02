@@ -95,7 +95,7 @@ class AddPromotionTest extends WebTestCase
 
         $data = array
         (
-            "titre"  => "Promotion 2021-image-1", // a change si non error
+            "titre"  => "Promotion 2021-image-1",
             "description"  => "Futuriste",
             "lieu" => "Dakar",
             "referenceAgate"  => "4JKH56DBK",
@@ -103,7 +103,7 @@ class AddPromotionTest extends WebTestCase
             "langue"  => "Francais",
             "fabrique"  => "ODC",
             "referentiels" => array("Dev web et mobile"),
-            "apprenants" => array("papa@gmail.com"),// a change si non error
+            "apprenants" => array("papa@gmail.com"),// 
             "formateurs" => array("1"),
         );
 

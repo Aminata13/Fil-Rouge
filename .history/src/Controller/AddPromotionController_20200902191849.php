@@ -141,6 +141,7 @@ class AddPromotionController extends AbstractController
             }
         }
 
+        dd($promotion);
         // Traitement Formateur -----------------------
         if (!isset($promotionTab['formateurs']) || empty($promotionTab['formateurs'])) {
             return new JsonResponse("Les formateurs sont obligatoire", Response::HTTP_BAD_REQUEST, [], true);

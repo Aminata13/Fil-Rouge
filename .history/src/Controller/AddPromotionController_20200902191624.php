@@ -57,13 +57,13 @@ class AddPromotionController extends AbstractController
         $promotionTab = $request->request->all();
         $promotion = $serializer->denormalize($promotionTab, Promotion::class, true, ["groups" => "promotion:write"]);
 
-        
+
         // Verification des dates -----------------------
         $promotion->setDateDebut(new \DateTime());
         if ($promotion->getDateDebut() > $promotion->getDateFin()) {
             return new JsonResponse("La date de fin doit etre superieur a la date de debut.", Response::HTTP_BAD_REQUEST, [], true);
         }
-        
+
         // Traitement Langue ----------------------------
         if (empty($promotionTab['langue'])) {
             return new JsonResponse("La langue est obligatoire", Response::HTTP_BAD_REQUEST, [], true);
@@ -75,13 +75,15 @@ class AddPromotionController extends AbstractController
             return new JsonResponse("La langue est obligatoire", Response::HTTP_BAD_REQUEST, [], true);
         }
         $promotion->setFabrique($repoFabrique->findBy(array('libelle' => $promotionTab['fabrique']))[0]);
-        
+       
+
         // Traitement Groupes ---------------------
         $groupe = new Groupe();
         $groupe->setLibelle("Groupe principal");
         $groupe->setDateCreation(new \DateTime());
         $promotion->addGroupe($groupe);
 
+        
         // Traitement referentiels --------------------
         foreach ($promotionTab['referentiels'] as $value) {
             if (!empty($value)) {
@@ -89,7 +91,7 @@ class AddPromotionController extends AbstractController
                 $promotion->addReferentiel($referentiel[0]);
             }
         }
-        
+
         // Traitement Image --------------------
         $image = $request->files;
         if (is_null($image->get('image'))) {
@@ -101,7 +103,7 @@ class AddPromotionController extends AbstractController
         $image = file_get_contents($imagePath, 'img.'.$imageType);
         
         $promotion->setimage($image);
-        
+
         // Traitement Apprenants ---------------
         $emailApprenat = array();
         if (!empty($request->files->get('fichier'))) {
@@ -141,6 +143,7 @@ class AddPromotionController extends AbstractController
             }
         }
 
+       
         // Traitement Formateur -----------------------
         if (!isset($promotionTab['formateurs']) || empty($promotionTab['formateurs'])) {
             return new JsonResponse("Les formateurs sont obligatoire", Response::HTTP_BAD_REQUEST, [], true);

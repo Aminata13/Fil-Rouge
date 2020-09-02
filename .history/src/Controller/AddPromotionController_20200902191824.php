@@ -101,7 +101,7 @@ class AddPromotionController extends AbstractController
         $image = file_get_contents($imagePath, 'img.'.$imageType);
         
         $promotion->setimage($image);
-        
+        dd($promotion);
         // Traitement Apprenants ---------------
         $emailApprenat = array();
         if (!empty($request->files->get('fichier'))) {
@@ -141,6 +141,7 @@ class AddPromotionController extends AbstractController
             }
         }
 
+       
         // Traitement Formateur -----------------------
         if (!isset($promotionTab['formateurs']) || empty($promotionTab['formateurs'])) {
             return new JsonResponse("Les formateurs sont obligatoire", Response::HTTP_BAD_REQUEST, [], true);

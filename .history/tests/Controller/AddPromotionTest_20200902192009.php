@@ -95,7 +95,7 @@ class AddPromotionTest extends WebTestCase
 
         $data = array
         (
-            "titre"  => "Promotion 2021-image-1", // a change si non error
+            "titre"  => "Promotion 2021-image-1",
             "description"  => "Futuriste",
             "lieu" => "Dakar",
             "referenceAgate"  => "4JKH56DBK",
