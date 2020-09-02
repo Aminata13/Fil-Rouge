@@ -46,7 +46,4 @@ class AddPromotionTest extends WebTestCase
     }
 
     public function testpostBrief()
-    {
-
-    }
 }

@@ -45,8 +45,7 @@ class AddPromotionTest extends WebTestCase
         $this->assertEquals(201, $client->getResponse()->getStatusCode());
     }
 
-    public function testpostBrief()
-    {
-
+    public function testpostBrief(){
+        
     }
 }
