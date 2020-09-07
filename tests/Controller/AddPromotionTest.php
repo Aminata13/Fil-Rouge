@@ -4,92 +4,112 @@ namespace App\Tests\Controller;
 
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\FileBag;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class AddPromotionTest extends WebTestCase
 {
-    protected function createAuthenticatedClient($username = 'admin1', $password = 'password')
+
+    protected function createAuthenticatedClient(string $login, string $password): KernelBrowser
     {
         $client = static::createClient();
-        
-        $test = $client->request(
+        $infos=["username"=>$login,
+               "password"=>$password];
+        $client->request(
             'POST',
             '/api/login_check',
-            array(),
-            array(),
-            array('CONTENT_TYPE' => 'application/json'),
-            json_encode(array(
-                '_username' => $username,
-                '_password' => $password,
-            ))
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode($infos)
         );
-
-        $data = json_decode($client->getResponse()->getContent(), true);
-        dd($data['token']);
-
-        // $client = static::createClient();
-        $client->setServerParameter('HTTP_Authorization', sprintf('Bearer %s', $data['token']));
+        $this->assertResponsestatusCodeSame(Response::HTTP_OK);
+        $data = \json_decode($client->getResponse()->getContent(), true);
+        $client->setServerParameter('HTTP_Authorization', \sprintf('Bearer %s', $data['token']));
+        $client->setServerParameter('CONTENT_TYPE', 'application/json');
 
         return $client;
     }
-
-    /** @test */
-    public function postPromotion()
+    
+    public function testpostBrief()
     {
 
         $image = new UploadedFile(
-            'C:\Users\AMINA\Documents\Sonatel Academy\languages2019.png',
-            'languages2019.png',
+            'C:\Users\DELL\Pictures\nodeJs.png',
+            'nodeJs.png',
             'image/png',
-            null
+            3,62 ,
+            UPLOAD_ERR_OK,
+            true
         );
 
-        $data = array(
-            "titre"  => "Promotion 2021",
-            "description"  => "Futuriste",
-            "lieu" => "Dakar",
-            "referenceAgate"  => "4JKH56DBK",
-            "dateFin"  => "2022-08-21",
-            "langue"  => "Français",
-            "fabrique"  => "ODC",
-            "referentiels" => array("Développement Web et Mobile"),
-            "apprenants" => array("aminata.ba@univ-thies.sn"),
-            "formateurs" => array("1"),
+        $ressourceTab = new UploadedFile(
+            'C:\Users\DELL\Pictures\nodeJs.png',
+            'nodeJs.png',
+            'image/png',
+            3,62 ,
+            UPLOAD_ERR_OK,
+            true
         );
-        $client = $this->createAuthenticatedClient();
 
-        // $userRepository = static::$container->get(UserRepository::class);
-        // $user = $userRepository->find(1);
+        
 
-        // $client->loginUser($user);
-        // dd($user);
+        $data = array
+        (
+            "titre"  => "titre brief",
+            "description"  => "description du brief",
+            "livrableAttendus" => array("Git","trello"),
+            "contexte"  => "context brief",
+            "modalitePedagogique" => "modalite peda du brief",
+            "criterePerformance" => "critaire du brief",
+            "modaliteEvaluation" => "modalite du brief",
+            "livrables" => "Trello git figma",
+            "groupes"  => array(1),
+            "langue"  => 1,
+            "ressource"  => array("www.oki.com","www.zero.com"),
+            "referentiel" => 2,
+            "apprenants" => array("abd@gmail.com"),
+            "tags" => array(1,2),
+            "niveauCompetences" => array(1,2,3)
+        );
 
-        $client->request('POST', '/api/admin/promotion', $data, ['image' => $image]);
+        $client = $this->createAuthenticatedClient("formateur1","password");
 
+        $client->request('POST', '/api/formateurs/briefs', $data,["image"=>$image]);
         $this->assertEquals(201, $client->getResponse()->getStatusCode());
     }
 
 
-    public function postReferentiel()
+    public function testpostPromotion()
     {
-        $data = array(
-            "libelle"  => "Referentiel test",
-            "description"  => "Referentiel test description",
-            "critereAdmissions" => array("Admission1"),
-            "critereEvaluations" => array("Evaluation1"),
-            "groupeCompetences" => array("GroupeComp1", "GroupeComp2"),
-            "programme" => null,
+        $image = new UploadedFile(
+            'C:\Users\DELL\Pictures\nodeJs.png',
+            'nodeJs.png',
+            'image/png',
+            3,62 ,
+            UPLOAD_ERR_OK,
+            true
         );
-        $client = static::createClient();
 
-        $userRepository = static::$container->get(UserRepository::class);
-        $user = $userRepository->find(1);
+        $data = array
+        (
+            "titre"  => "Promotion 2021-image-1", // a change si non error
+            "description"  => "Futuriste",
+            "lieu" => "Dakar",
+            "referenceAgate"  => "4JKH56DBK",
+            "dateFin"  => "2022-08-21",
+            "langue"  => "Francais",
+            "fabrique"  => "ODC",
+            "referentiels" => array("Dev web et mobile"),
+            "apprenants" => array("papa@gmail.com"),// a change si non error
+            "formateurs" => array("1"),
+        );
 
-        $client->loginUser($user);
+        $client = $this->createAuthenticatedClient("admin1","password");
 
-        $client->request('POST', '/api/admin/referentiels', $data);
-
+        $client->request('POST', '/api/admin/promotion', $data,["image"=>$image]);
         $this->assertEquals(201, $client->getResponse()->getStatusCode());
     }
 }

@@ -71,7 +71,6 @@ class UserController extends AbstractController
         }
         $avatarType = explode("/", $avatar->get('avatar')->getMimeType())[1];
         $avatarPath = $avatar->get('avatar')->getRealPath();
-
         $image = file_get_contents($avatarPath, 'img/img.' . $avatarType);
         $user->setAvatar($image);
 
