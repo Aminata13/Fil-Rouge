@@ -11,6 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use ApiPlatform\Core\Validator\ValidatorInterface;
 use App\Entity\Apprenant;
 use App\Repository\ApprenantRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -22,6 +23,16 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
  */
 class UserController extends AbstractController
 {
+    /**
+     * @Route("/admin/users", name="show_users", methods="GET")
+     */
+    public function getUsers(UserRepository $usersRepository, SerializerInterface $serializer)
+    {
+        $users = $usersRepository->findAll();
+        $usersJson = $serializer->serialize($users, 'json', ["groups" => ["user:read"]]);
+
+        return new JsonResponse($usersJson, Response::HTTP_OK, [], true);
+    }
     /**
      * @Route("/admin/users", name="add_user", methods="POST")
      */

@@ -3,15 +3,41 @@
 namespace App\Tests\Controller;
 
 use App\Repository\UserRepository;
+use Symfony\Component\HttpFoundation\FileBag;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\FileBag;
 
 class AddPromotionTest extends WebTestCase
 {
+    protected function createAuthenticatedClient($username = 'admin1', $password = 'password')
+    {
+        $client = static::createClient();
+        
+        $test = $client->request(
+            'POST',
+            '/api/login_check',
+            array(),
+            array(),
+            array('CONTENT_TYPE' => 'application/json'),
+            json_encode(array(
+                '_username' => $username,
+                '_password' => $password,
+            ))
+        );
+
+        $data = json_decode($client->getResponse()->getContent(), true);
+        dd($data['token']);
+
+        // $client = static::createClient();
+        $client->setServerParameter('HTTP_Authorization', sprintf('Bearer %s', $data['token']));
+
+        return $client;
+    }
+
     /** @test */
     public function postPromotion()
     {
+
         $image = new UploadedFile(
             'C:\Users\AMINA\Documents\Sonatel Academy\languages2019.png',
             'languages2019.png',
@@ -19,8 +45,7 @@ class AddPromotionTest extends WebTestCase
             null
         );
 
-        $data = array
-        (
+        $data = array(
             "titre"  => "Promotion 2021",
             "description"  => "Futuriste",
             "lieu" => "Dakar",
@@ -32,24 +57,23 @@ class AddPromotionTest extends WebTestCase
             "apprenants" => array("aminata.ba@univ-thies.sn"),
             "formateurs" => array("1"),
         );
-        $client = static::createClient();
+        $client = $this->createAuthenticatedClient();
 
-        $userRepository = static::$container->get(UserRepository::class);
-        $user = $userRepository->find(1);
+        // $userRepository = static::$container->get(UserRepository::class);
+        // $user = $userRepository->find(1);
 
-        $client->loginUser($user);
-        dd($user);
+        // $client->loginUser($user);
+        // dd($user);
 
         $client->request('POST', '/api/admin/promotion', $data, ['image' => $image]);
 
         $this->assertEquals(201, $client->getResponse()->getStatusCode());
     }
 
-   
+
     public function postReferentiel()
     {
-        $data = array
-        (
+        $data = array(
             "libelle"  => "Referentiel test",
             "description"  => "Referentiel test description",
             "critereAdmissions" => array("Admission1"),

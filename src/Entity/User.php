@@ -21,7 +21,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *  collectionOperations={
  *      "get"={
  *          "path"="/admin/users",
- *          "access_control"="(is_granted('ROLE_ADMIN'))"
+ *          "controller"=UserController::class,
+ *          "access_control"="(is_granted('ROLE_ADMIN'))",
+ *          "route_name"="show_users"
  *      },
  *      "show_apprenants"={
  *         "method"="GET",
@@ -105,13 +107,14 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"apprenant_competence:read","brief_livrable_partiel:read","brief:read","briefGroupe:read","briefGroupe:read","profil_sortie_promo:read","groupe:read","apprenant:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"user:read","apprenant_competence:read","brief_livrable_partiel:read","brief:read","briefGroupe:read","briefGroupe:read","profil_sortie_promo:read","groupe:read","apprenant:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\NotBlank(message="Le nom d'utilisateur est obligatoire.")
+     * @Groups({"user:read"})
      */
     private $username;
 
@@ -127,14 +130,14 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Le prénom est obligatoire.")
-     * @Groups({"apprenant_competence:read","brief_livrable_partiel:read","brief:read","briefGroupe:read","profil_sortie_promo:read","groupe:read","apprenants_groupe:read","apprenant:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"user:read","apprenant_competence:read","brief_livrable_partiel:read","brief:read","briefGroupe:read","profil_sortie_promo:read","groupe:read","apprenants_groupe:read","apprenant:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Le nom est obligatoire.")
-     * @Groups({"apprenant_competence:read","brief_livrable_partiel:read","brief:read","briefGroupe:read","briefGroupe:read","profil_sortie_promo:read","groupe:read","apprenants_groupe:read","apprenant:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
+     * @Groups({"user:read","apprenant_competence:read","brief_livrable_partiel:read","brief:read","briefGroupe:read","briefGroupe:read","profil_sortie_promo:read","groupe:read","apprenants_groupe:read","apprenant:read","promotion:read","promotion:read_all","promo_groupe_apprenants:read"})
      */
     private $lastname;
 
@@ -142,14 +145,14 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="L'adresse mail est obligatoire.")
      * @Assert\Email(message="L'adresse mail est invalide")
-     * @Groups({"apprenant_competence:read","brief_livrable_partiel:read","brief:read","briefGroupe:read","profil_sortie_promo:read","apprenant:read"})
+     * @Groups({"user:read","apprenant_competence:read","brief_livrable_partiel:read","brief:read","briefGroupe:read","profil_sortie_promo:read","apprenant:read"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="blob", nullable=true)
      * @Assert\NotBlank(message="L'avatar est obligatoire.")
-     * @Groups({"apprenant_competence:read","brief_livrable_partiel:read","brief:read","briefGroupe:read"})
+     * @Groups({"user:read","apprenant_competence:read","brief_livrable_partiel:read","brief:read","briefGroupe:read"})
      */
     private $avatar;
 
@@ -157,6 +160,7 @@ class User implements UserInterface
      * @ORM\ManyToOne(targetEntity=UserProfil::class, inversedBy="users", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotBlank(message="Le profil est obligatoire.")
+     * @Groups({"user:read"})
      */
     private $profil;
 
